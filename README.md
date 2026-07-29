@@ -52,6 +52,12 @@ We are going to choose the `ecommerce` application to show how the tool works, s
 
 The following commands in this README assume you are in the `~/workspace/TREL26-Submission-Material-Testception/dante` folder, assuming that `~` indicates the path to the home directory in your system:
 
+- `git clone \ https://github.com/iOTMecit/TREL26-Submission-Material-Testception.git
+
+- `cd TREL26-Submission-Material-Testception` 
+- `export TESTCEPTION_ROOT="$(pwd)"` 
+
+- `cd "$TESTCEPTION_ROOT/dante"` 
 - `./run-crawling.sh ecommerce false 5` (the crawler terminates the exploration in ~3 min)
 
 After crawling the folder `dante/applications/ecommerce/localhost/crawl-with-inputs` is created, which contains the results of the crawling. In the folder `dante/applications/ecommerce` there is a file called `selenium-actions-ecommerce-fired.txt` which lists the test cases created by the crawler while it was exploring the application. The crawling generates around 18 tests.
@@ -66,7 +72,7 @@ The command generates the java project with the test suite.
 ### Steps
 First, navigate to the project directory:
 
-- `cd Testception/rlm_project` 
+- `cd "$TESTCEPTION_ROOT/Testception/rlm_project"` 
 
 Then create and activate a virtual environment:
  
@@ -91,7 +97,7 @@ Instead of using DANTE’s original generated scenarios from files, we replace t
 
 First, navigate back to the dante project directory:
 
-- `cd workspace/TREL26-Submission-Material-Testception/dante` 
+- `cd "$TESTCEPTION_ROOT/dante"` 
 
 The first argument is `application_name` and the second argument is `headless`. Following with the `ecommerce` example the command to run is:
 
