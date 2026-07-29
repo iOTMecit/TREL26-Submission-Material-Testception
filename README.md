@@ -29,6 +29,13 @@ If the automatic setup worked, you can skip to [the run experiments section](#2-
 
 - Rename the [app.example.properties](https://https://github.com/iOTMecit/TREL26-Submission-Material-Testception/master/dante/src/main/resources/app.example.properties) file as `app.properties` and the [log4j.example.properties](https://https://github.com/iOTMecit/TREL26-Submission-Material-Testception/master/dante/src/main/resources/log4j.example.properties) file as `log4j.properties`.
 
+Install project:
+
+- `git clone \ https://github.com/iOTMecit/TREL26-Submission-Material-Testception.git
+
+- `cd TREL26-Submission-Material-Testception` 
+- `export TESTCEPTION_ROOT="$(pwd)"` 
+
 
 
 ## 2. Run the experiments (Crawling - after the setup)
@@ -52,13 +59,10 @@ We are going to choose the `ecommerce` application to show how the tool works, s
 
 The following commands in this README assume you are in the `~/workspace/TREL26-Submission-Material-Testception/dante` folder, assuming that `~` indicates the path to the home directory in your system:
 
-- `git clone \ https://github.com/iOTMecit/TREL26-Submission-Material-Testception.git
-
-- `cd TREL26-Submission-Material-Testception` 
-- `export TESTCEPTION_ROOT="$(pwd)"` 
-
+ 
 - `cd "$TESTCEPTION_ROOT/dante"` 
 - `./run-crawling.sh ecommerce false 5` (the crawler terminates the exploration in ~3 min)
+
 
 After crawling the folder `dante/applications/ecommerce/localhost/crawl-with-inputs` is created, which contains the results of the crawling. In the folder `dante/applications/ecommerce` there is a file called `selenium-actions-ecommerce-fired.txt` which lists the test cases created by the crawler while it was exploring the application. The crawling generates around 18 tests.
 
@@ -76,14 +80,20 @@ First, navigate to the project directory:
 
 Then create and activate a virtual environment:
  
-- `python3 -m venv rlm_env` 
-- `source rlm_env/bin/activate` 
 
-Since Testception is an LLM-based test generation framework, it requires an OpenRouter API key to access the GPT-4o-mini model during scenario generation. The model is used to analyze Crawljax-generated DOM states and produce test scenarios automatically.
+- `python3 -m venv .venv` 
+- `source .venv/bin/activate` 
+
+- `python -m pip install --upgrade pip` 
+- `python -m pip install -r requirements.txt`
+
+  
+Since Testception is an LLM-based test generation framework, it requires an OpenRouter API key to access the LLM model during scenario generation. The model is used to analyze Crawljax-generated DOM states and produce test scenarios automatically.
 
 Export your OpenRouter API key:
 
-- `export OPENROUTER_API_KEY="<your_api_key>"` 
+- `export OPENROUTER_API_KEY="<your_api_key>"`
+- `export TESTCEPTION_LLM_MODEL="<llm_model_you_chose>"`
 
 Finally, run Testception with the target application name:
 
