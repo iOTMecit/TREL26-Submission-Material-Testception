@@ -1,7 +1,7 @@
 # Testception
-Submission material for TREL 2026 paper "Testception: Recursive LLM Agents for Scalable Black-Box Web Application Testing"
+"Testception: Recursive LLM Agents for Scalable Black-Box Web Application Testing"
 
-This repository contains the tool implementing the approach described in an TREL26 submission, together with the subjects used in the evaluation. Testception has been tested in Ubuntu (24.04 LTS).
+Testception has been tested in Ubuntu (24.04 LTS).
 
 ## 1. Automatic Setup (todo)
 A virtual machine running Ubuntu 24.04 LTS is available for download [here](https://drive.switch.ch/index.php/s/w307bjzHz3tmwXm/download) . The virtual machine contains this repository and all the dependencies needed to run DANTE on the test suite subjects. 
