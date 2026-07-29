@@ -39,4 +39,41 @@ output/
 out/
 
 # Mac
+.DS_Store# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+env/
+rlm_env/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Generated Testception output
+GeneratedTestSuite*.java
+
+# Crawljax runtime results
+**/crawl0/
+**/crawl-with-inputs/crawl*/
+**/screenshots/
+**/doms/
+
+# Logs and reports
+*.log
+logs_*.txt
+coverage-reports/
+target/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
 .DS_Store
+Thumbs.db
