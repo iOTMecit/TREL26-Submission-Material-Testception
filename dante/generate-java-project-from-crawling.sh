@@ -1,5 +1,8 @@
 #!/bin/bash
-
+DANTE_ROOT="$(
+    cd "$(dirname "${BASH_SOURCE[0]}")"
+    pwd
+)"
 os=$(uname)
 
 properties_file=$PWD/src/main/resources/app.properties
@@ -168,6 +171,6 @@ compile=false
 measure_coverage=true
 compileAndRunGeneratedTests $application_name $element_strategy $compile $measure_coverage
 # rename coverage reports directory
-test_suite_directory_path="$HOME/workspace/TREL26-Submission-Material-Testception/dante/applications/$application_name/testsuite-$application_name"
+test_suite_directory_path="$DANTE_ROOT/applications/$application_name/testsuite-$application_name"
 mv $test_suite_directory_path/coverage-reports $test_suite_directory_path/all-coverage-reports
 stopContainer $application_name $current_date

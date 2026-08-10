@@ -11,7 +11,7 @@ fi
 mkdir $results_folder
 mkdir $results_folder/graphs
 
-dependency_graph_path="$HOME/workspace/TREL26-Submission-Material-Testception/dante/applications/$application_name/testsuite-$application_name/src/main/resources"
+dependency_graph_path="$HOME/workspace/ICST20-submission-material-DANTE/dante/applications/$application_name/testsuite-$application_name/src/main/resources"
 mv $dependency_graph_path/dependency-graph-*$application_name.txt $results_folder/graphs
 mv $results_folder/graphs/dependency-graph-$extraction_strategy-initial-*$application_name.txt $results_folder
 mv $results_folder/graphs/dependency-graph-$extraction_strategy-final-*$application_name.txt $results_folder

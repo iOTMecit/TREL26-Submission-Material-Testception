@@ -1,6 +1,5 @@
 package com.dante.subjects.config;
 
-import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.Form;
 import com.crawljax.core.configuration.InputSpecification;
@@ -30,146 +29,365 @@ public class PhoenixConfig extends Config {
     @Override
     public CrawljaxConfiguration.CrawljaxConfigurationBuilder getCrawljaxConfig() {
 
-        CrawljaxConfiguration.CrawljaxConfigurationBuilder builder = this.crawljaxCommonConfig(url,
-                Properties.MAX_RUNTIME, 1000, waitTimeAfterReload);
+        System.out.println("PHOENIX_CONFIG_PROFILE=SIGN_IN_ONLY_V1");
 
-//        builder.setConsiderCandidateElementsOnce(CrawljaxConfiguration.CandidateElementsMode.checked);
-        builder.setConsiderCandidateElementsOnce(CrawljaxConfiguration.CandidateElementsMode.fired);
+        CrawljaxConfiguration.CrawljaxConfigurationBuilder builder =
+                this.crawljaxCommonConfig(
+                        url,
+                        Properties.MAX_RUNTIME,
+                        300,
+                        waitTimeAfterReload);
+
+        /*
+         * FIRED is intentional for this profile.
+         *
+         * CHECKED marked all candidates on the authenticated My Boards page
+         * as consumed after the first "Boards" menu click. The crawler then
+         * reached an equivalent state with zero candidates and stopped before
+         * clicking "Add new board...".
+         *
+         * The previous FIRED list loop is controlled separately by using one
+         * list input value, scoped click rules and same-form-once handling.
+         */
+        builder.setConsiderCandidateElementsOnce(
+                CrawljaxConfiguration.CandidateElementsMode.fired);
 
         builder.setStateVertexFactory(new DHashStateVertexFactory());
 
-        builder.crawlRules().setCrawlPriorityMode(CrawlRules.CrawlPriorityMode.RANDOM);
+        /*
+         * Do not use RANDOM priority and do not register every A/BUTTON/DIV.
+         * Only coverage-relevant business actions from Phoenix.json are
+         * registered below.
+         */
 
-        builder.crawlRules().click("a", "button");
+        // --------------------------------------------------------------
+        // Authentication flow: Sign in only
+        // --------------------------------------------------------------
+        /*
+         * Start from the application's default Sign in page and authenticate
+         * as the seeded John account. The Sign up branch is disabled so the
+         * crawler does not split into two incompatible authenticated sessions.
+         */
+        builder.crawlRules().click("button")
+                .withText("Sign in");
 
-        // board
+        builder.crawlRules().dontClick("a")
+                .withAttribute("href", "/sign_up");
+        builder.crawlRules().dontClick("a")
+                .withText("Create new account");
+        builder.crawlRules().dontClick("button")
+                .withText("Sign up");
+
+        // --------------------------------------------------------------
+        // Board flows
+        // --------------------------------------------------------------
+        builder.crawlRules().click("a")
+                .withAttribute("id", "add_new_board");
+        builder.crawlRules().click("a")
+                .underXPath(
+                        "/HTML[1]/BODY[1]/MAIN[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/SECTION[1]/DIV[1]/DIV[1]/DIV[1]");
         builder.crawlRules().click("div")
                 .withAttribute("class", "board add-new");
-        // list
+
+        /*
+         * Existing board tiles use class="board"; their child DIV.inner was
+         * not reliably matched by the previous scoped XPath rule.
+         */
         builder.crawlRules().click("div")
-                .withAttribute("class", "list add-new");
-        // created boards and lists
+                .withAttribute("class", "board");
+
+        builder.crawlRules().click("button")
+                .withText("Create board");
+        /*
+         * Allow reopening the board selector after a board is created.
+         * This gives Crawljax another chance to reach Add new board...
+         * and submit the form with the next configured board value.
+         */
+        builder.crawlRules().click("a")
+                .withText("Boards");
+        builder.crawlRules().click("a")
+                .withText("Add new board...");
+
+        // --------------------------------------------------------------
+        // List flows
+        // --------------------------------------------------------------
+        /*
+         * Add at most three lists. The Add-new-list tile moves one column
+         * to the right after every successful save, so only the first three
+         * positions are registered.
+         */
+        final String listWrapperXPath =
+                "/HTML[1]/BODY[1]/MAIN[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]"
+                        + "/DIV[1]/DIV[1]/DIV[1]";
+
         builder.crawlRules().click("div")
-                .withAttribute("class", "inner");
-        // created card
+                .withText("Add new list...")
+                .underXPath(listWrapperXPath + "/DIV[1]");
+        builder.crawlRules().click("div")
+                .withText("Add new list...")
+                .underXPath(listWrapperXPath + "/DIV[2]");
+        builder.crawlRules().click("div")
+                .withText("Add new list...")
+                .underXPath(listWrapperXPath + "/DIV[3]");
+        builder.crawlRules().click("button")
+                .withText("Save list");
+
+        // --------------------------------------------------------------
+        // Card flows
+        // --------------------------------------------------------------
+        /*
+         * Create one card in each of the first three lists. The predicate
+         * stops the same list from receiving cards repeatedly.
+         */
+        builder.crawlRules().click("a")
+                .withText("Add a new card...")
+                .underXPath(
+                        listWrapperXPath
+                                + "/DIV[1][not(.//DIV[contains(@class, 'card-content')])]");
+        builder.crawlRules().click("a")
+                .withText("Add a new card...")
+                .underXPath(
+                        listWrapperXPath
+                                + "/DIV[2][not(.//DIV[contains(@class, 'card-content')])]");
+        builder.crawlRules().click("a")
+                .withText("Add a new card...")
+                .underXPath(
+                        listWrapperXPath
+                                + "/DIV[3][not(.//DIV[contains(@class, 'card-content')])]");
+        builder.crawlRules().click("button")
+                .withText("Add");
         builder.crawlRules().click("div")
                 .withAttribute("class", "card-content");
-        // delete card
-        builder.crawlRules().click("i")
+
+        // Card modal: edit, comment, tags and members
+        builder.crawlRules().click("a")
+                .withText("Edit");
+        builder.crawlRules().click("button")
+                .withText("Save card");
+        builder.crawlRules().click("button")
+                .withText("Save comment");
+        builder.crawlRules().click("a")
+                .withText("Members");
+        builder.crawlRules().click("a")
+                .withText("Tags");
+
+        /*
+         * Select concrete member options instead of the selector container.
+         * The previous broad XPath could click the wrong anchor or only open
+         * the selector without choosing a member.
+         */
+        builder.crawlRules().click("a")
+                .underXPath(
+                        "//DIV[contains(@class, 'members-selector')]//LI[1]");
+        builder.crawlRules().click("a")
+                .underXPath(
+                        "//DIV[contains(@class, 'members-selector')]//LI[2]");
+
+        /*
+         * Select only two tags and never click a selected tag again.
+         *
+         * Do not use position-based tag fallbacks here: after selection the
+         * same LI remains visible and the fallback clicked it again, producing
+         * state20 -> selected -> state20 toggle loops until MAX_TIME.
+         */
+        builder.crawlRules().click("a")
+                .withAttribute("class", "tag green ");
+        builder.crawlRules().click("a")
+                .withAttribute("class", "tag yellow ");
+
+        /*
+         * Do not close or delete the card before Edit, Save comment,
+         * Members and Tags have been explored. Both parent anchors and icon
+         * children are excluded because Crawljax may select either node.
+         */
+        builder.crawlRules().dontClick("a")
+                .withAttribute("class", "close");
+        builder.crawlRules().dontClick("a")
+                .withAttribute("class", "delete");
+        builder.crawlRules().dontClick("i")
+                .withAttribute("class", "fa fa-close");
+        builder.crawlRules().dontClick("i")
                 .withAttribute("class", "fa fa-trash-o");
 
-        // trello website
+        // --------------------------------------------------------------
+        // Board member flow disabled for the John Sign-in profile
+        // --------------------------------------------------------------
+        /*
+         * The authenticated user is john@phoenix-trello.com. Submitting the
+         * same address through Add member produces the application's self-add
+         * error, so the member flow is intentionally excluded from this
+         * profile. Board/list/card/modal coverage remains enabled.
+         */
+        builder.crawlRules().dontClick("button")
+                .withText("Add member");
+
+        // --------------------------------------------------------------
+        // Low-value/destructive navigation guards
+        // --------------------------------------------------------------
         builder.crawlRules().dontClick("a")
                 .withAttribute("href", "https://trello.com");
-        // diacode website
         builder.crawlRules().dontClick("a")
                 .withAttribute("href", "https://diacode.com");
-        // twitter handle
         builder.crawlRules().dontClick("a")
                 .withAttribute("href", "https://twitter.com/bigardone");
 
-//        builder.crawlRules().dontClick("a")
-//                .withAttribute("href","/sign_up");
+        builder.crawlRules().dontClick("a")
+                .withText("Trello");
+        builder.crawlRules().dontClick("a")
+                .withText("Diacode");
+        builder.crawlRules().dontClick("a")
+                .withText("@bigardone");
+        builder.crawlRules().dontClick("a")
+                .withText("Sign out");
+        builder.crawlRules().dontClick("a")
+                .withAttribute("class", "current-user");
+        builder.crawlRules().dontClick("a")
+                .underXPath(
+                        "/HTML[1]/BODY[1]/MAIN[1]/DIV[1]/DIV[1]/HEADER[1]");
+        builder.crawlRules().dontClick("a")
+                .withText("cancel");
 
         InputSpecification inputSpecification = new InputSpecification();
 
+        /*
+         * AUTH PROFILE:
+         * - Sign in as the seeded John account.
+         * - Explore existing boards and create board/list/card data.
+         * - Keep Add member disabled to avoid adding John to his own board.
+         */
+
+        // --------------------------------------------------------------
+        // Sign in
+        // --------------------------------------------------------------
         Form signInForm = new Form();
-        FormInput usernameInput = signInForm.inputField(FormInput.InputType.EMAIL,
-                new Identification(Identification.How.xpath,
-                        "/html[1]/body[1]/main[1]/div[1]/div[1]/main[1]/form[1]/div[1]/input[1]".toUpperCase()));
+
+        FormInput usernameInput = signInForm.inputField(
+                FormInput.InputType.EMAIL,
+                new Identification(
+                        Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/MAIN[1]/DIV[1]/DIV[1]/MAIN[1]/FORM[1]/DIV[1]/INPUT[1]"));
         usernameInput.inputValues("john@phoenix-trello.com");
-        FormInput passwordInput = signInForm.inputField(FormInput.InputType.PASSWORD,
-                new Identification(Identification.How.xpath,
-                        "/html[1]/body[1]/main[1]/div[1]/div[1]/main[1]/form[1]/div[2]/input[1]".toUpperCase()));
+
+        FormInput passwordInput = signInForm.inputField(
+                FormInput.InputType.PASSWORD,
+                new Identification(
+                        Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/MAIN[1]/DIV[1]/DIV[1]/MAIN[1]/FORM[1]/DIV[2]/INPUT[1]"));
         passwordInput.inputValues("12345678");
+
         inputSpecification.setValuesInForm(signInForm)
-                .beforeClickElement("button").withText("Sign in");
+                .beforeClickElement("button")
+                .withText("Sign in");
 
-        Form signUpForm = new Form();
-        FormInput firstNameInput = signUpForm.inputField(FormInput.InputType.TEXT,
-                new Identification(Identification.How.name, "crawljax_user_first_name"));
-        firstNameInput.inputValues("foo");
-        FormInput lastNameInput = signUpForm.inputField(FormInput.InputType.TEXT,
-                new Identification(Identification.How.name, "crawljax_user_last_name"));
-        lastNameInput.inputValues("bar");
-        FormInput usernameInputSignUp = signUpForm.inputField(FormInput.InputType.EMAIL,
-                new Identification(Identification.How.name, "crawljax_user_email"));
-        usernameInputSignUp.inputValues("foo@bar.com");
-        FormInput passwordInputSignUp = signUpForm.inputField(FormInput.InputType.PASSWORD,
-                new Identification(Identification.How.name, "crawljax_user_password"));
-        passwordInputSignUp.inputValues("foobar123");
-        FormInput passwordInputConfirmationSignUp = signUpForm.inputField(FormInput.InputType.PASSWORD,
-                new Identification(Identification.How.name, "crawljax_user_password_confirmation"));
-        passwordInputConfirmationSignUp.inputValues("foobar123");
-        inputSpecification.setValuesInForm(signUpForm)
-                .beforeClickElement("button").withText("Sign up");
-
+        // --------------------------------------------------------------
+        // Board
+        // --------------------------------------------------------------
         Form boardForm = new Form();
-        FormInput boardNameInput = boardForm.inputField(FormInput.InputType.TEXT,
-                new Identification(Identification.How.id, "board_name"));
-        boardNameInput.inputValues("board","new board","just a board","board name","delivering the goods");
+
+        FormInput boardNameInput = boardForm.inputField(
+                FormInput.InputType.TEXT,
+                new Identification(
+                        Identification.How.id,
+                        "board_name"));
+        boardNameInput.inputValues(
+                "TestCeption Board 1",
+                "TestCeption Board 2",
+                "TestCeption Board 3");
+
         inputSpecification.setValuesInForm(boardForm)
-                .beforeClickElement("button").withText("Create board");
+                .beforeClickElement("button")
+                .withText("Create board");
 
-        Form addNewMembersForm = new Form();
-        FormInput memberEmailInput = addNewMembersForm.inputField(FormInput.InputType.EMAIL,
-                new Identification(Identification.How.xpath,
-                        "/html[1]/body[1]/main[1]/div[1]/div[1]/div[1]/div[1]/header[1]/ul[1]/span[1]/li[2]/ul[1]/li[1]/form[1]/input[1]".toUpperCase()));
-        memberEmailInput.inputValues("john@phoenix-trello.com","foo@bar.com");
-        inputSpecification.setValuesInForm(addNewMembersForm)
-                .beforeClickElement("button").withText("Add member");
-
+        // --------------------------------------------------------------
+        // Create list
+        // --------------------------------------------------------------
         Form listForm = new Form();
-        FormInput listNameInput = listForm.inputField(FormInput.InputType.TEXT,
-                new Identification(Identification.How.id, "list_name"));
-        listNameInput.inputValues("list","new list","just a list","list name","standard tuning");
+
+        FormInput listNameInput = listForm.inputField(
+                FormInput.InputType.TEXT,
+                new Identification(
+                        Identification.How.id,
+                        "list_name"));
+        listNameInput.inputValues(
+                "RLM List 1",
+                "RLM List 2",
+                "RLM List 3");
+
         inputSpecification.setValuesInForm(listForm)
-                .beforeClickElement("button").withText("Save list");
+                .beforeClickElement("button")
+                .withText("Save list");
 
-        Form updateListForm = new Form();
-        FormInput updateListNameInput = updateListForm.inputField(FormInput.InputType.TEXT,
-                new Identification(Identification.How.id, "list_name"));
-        updateListNameInput.inputValues("updated list","updated new list","just updated a list","updated list name","phantom of the opera");
-        inputSpecification.setValuesInForm(updateListForm)
-                .beforeClickElement("button").withText("Update list");
-
+        // --------------------------------------------------------------
+        // Create card
+        // --------------------------------------------------------------
         Form addNewCardForm = new Form();
-        FormInput newCardInput = addNewCardForm.inputField(FormInput.InputType.TEXTAREA,
-                new Identification(Identification.How.id, "card_name"));
-        newCardInput.inputValues("card", "new card", "just a card", "card name", "surfing with the alien");
+
+        FormInput newCardInput = addNewCardForm.inputField(
+                FormInput.InputType.TEXTAREA,
+                new Identification(
+                        Identification.How.id,
+                        "card_name"));
+        newCardInput.inputValues(
+                "RLM Card 1",
+                "RLM Card 2",
+                "RLM Card 3");
+
         inputSpecification.setValuesInForm(addNewCardForm)
-                .beforeClickElement("button").withText("Add");
+                .beforeClickElement("button")
+                .withText("Add");
 
+        // --------------------------------------------------------------
+        // Edit card
+        // --------------------------------------------------------------
         Form editCardForm = new Form();
-        FormInput titleInput = editCardForm.inputField(FormInput.InputType.TEXT,
-                new Identification(Identification.How.xpath,
-                        "/html[1]/body[1]/main[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/header[1]/form[1]/input[1]".toUpperCase()));
-        titleInput.inputValues("updated card", "updated new card", "just updated a card", "updated card name", "if I could fly");
-        FormInput descriptionInput = editCardForm.inputField(FormInput.InputType.TEXTAREA,
-                new Identification(Identification.How.xpath,
-                        "/html[1]/body[1]/main[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/header[1]/form[1]/textarea[1]".toUpperCase()));
-        descriptionInput.inputValues("description", "new description", "just a description", "long description", "crowd chant");
-        inputSpecification.setValuesInForm(editCardForm)
-                .beforeClickElement("button").withText("Save card");
 
+        FormInput titleInput = editCardForm.inputField(
+                FormInput.InputType.TEXT,
+                new Identification(
+                        Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/MAIN[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/HEADER[1]/FORM[1]/INPUT[1]"));
+        titleInput.inputValues("RLM Card Updated");
+
+        FormInput descriptionInput = editCardForm.inputField(
+                FormInput.InputType.TEXTAREA,
+                new Identification(
+                        Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/MAIN[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/HEADER[1]/FORM[1]/TEXTAREA[1]"));
+        descriptionInput.inputValues("RLM card description");
+
+        inputSpecification.setValuesInForm(editCardForm)
+                .beforeClickElement("button")
+                .withText("Save card");
+
+        // --------------------------------------------------------------
+        // Card comment
+        // --------------------------------------------------------------
         Form cardCommentForm = new Form();
-        FormInput commentInput = cardCommentForm.inputField(FormInput.InputType.TEXTAREA,
-                new Identification(Identification.How.xpath,
-                        "/html[1]/body[1]/main[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/form[1]/div[2]/textarea[1]".toUpperCase()));
-        commentInput.inputValues("comment", "new comment", "just a comment", "long comment", "what happens next");
+
+        FormInput commentInput = cardCommentForm.inputField(
+                FormInput.InputType.TEXTAREA,
+                new Identification(
+                        Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/MAIN[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]"
+                                + "/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]"
+                                + "/FORM[1]/DIV[2]/TEXTAREA[1]"));
+        commentInput.inputValues("RLM test comment");
+
         inputSpecification.setValuesInForm(cardCommentForm)
-                .beforeClickElement("button").withText("Save comment");
+                .beforeClickElement("button")
+                .withText("Save comment");
 
         builder.crawlRules().setInputSpec(inputSpecification);
 
         builder.crawlRules().setDisableIdAndNameIdentification(true);
 
+        /*
+         * Prevent the same form from being submitted repeatedly while the
+         * crawler remains in an equivalent state.
+         */
         builder.setHandleSameFormInputsOncePerState(true);
 
-
-
         return builder;
-
     }
 
     @Override

@@ -119,7 +119,7 @@ PROJECT_CONFIGS = {
         "strategy": "Fired",
         "has_crawl0": True,
         "wait_time": 250,
-        "start_url": "http://localhost:3000/petclinic/welcome",
+        "start_url": "http://localhost:3000/",
         "strict_graph_guided_elements": True,
         "preserve_edge_input_values": True,
         "input_overrides": {
@@ -185,8 +185,12 @@ BASE_CRAWL_DIR = (
     / APP_NAME
     / "localhost"
     / "crawl-with-inputs"
-    / "crawl0"
 )
+
+if not BASE_CRAWL_DIR.exists():
+    raise FileNotFoundError(
+        f"Crawl directory bulunamadı: {BASE_CRAWL_DIR}"
+    )
 
 GENERATED_TEST_DIR = (
     DANTE_ROOT

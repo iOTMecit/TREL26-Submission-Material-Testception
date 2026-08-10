@@ -32,11 +32,50 @@ public class SplittypieConfig extends Config {
 
         builder.setStateVertexFactory(new DHashStateVertexFactory()); // this factory is able to handle modals
 
+        /*
+         * Keep generic BUTTON handling, but do not crawl every anchor.
+         * On the landing page the generic anchor rule spends actions on
+         * About/Events/Features/Home/Source links before opening the newly
+         * created event. Only business-flow anchors are registered below.
+         */
         builder.crawlRules().click("button");
-        builder.crawlRules().click("a");
 
         builder.crawlRules().click("input").withAttribute("type", "submit");
         builder.crawlRules().click("input").withAttribute("type", "button");
+
+        // Create the first event from the high-value landing-page CTA.
+        builder.crawlRules().click("a")
+                .withAttribute("class", "btn btn-lg btn-success ember-view");
+
+        // Open persisted events from the home page.
+        builder.crawlRules().click("a")
+                .withAttribute("class", "btn btn-default ember-view");
+        builder.crawlRules().click("a")
+                .underXPath(
+                        "/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/SECTION[2]/DIV[1]");
+
+        // Event detail navigation
+        builder.crawlRules().click("a").withText("EDIT");
+        builder.crawlRules().click("a").withText("OVERVIEW");
+        builder.crawlRules().click("a").withText("TRANSACTIONS");
+
+        // Transaction entry points and commits
+        builder.crawlRules().click("a")
+                .withAttribute("class", "btn btn-primary btn-circle btn-add-transaction");
+        builder.crawlRules().click("button")
+                .withAttribute("class", "btn btn-default pull-left btn-add-with-details");
+        builder.crawlRules().click("button")
+                .withAttribute("class", "btn btn-primary btn-add");
+        builder.crawlRules().click("button")
+                .withAttribute("class", "btn btn-success save-transaction");
+
+        // Event commits/dropdowns
+        builder.crawlRules().click("button")
+                .withAttribute("class", "btn btn-success save-event");
+        builder.crawlRules().click("button")
+                .withAttribute("id", "dropDownEvents");
+        builder.crawlRules().click("button")
+                .withAttribute("id", "dropDownUsers");
 
         // footer links
         builder.crawlRules().dontClick("a")
@@ -47,62 +86,160 @@ public class SplittypieConfig extends Config {
                 .withAttribute("title", "Facebook Page");
         builder.crawlRules().dontClick("a")
                 .withAttribute("title", "Twitter Page");
+        builder.crawlRules().dontClick("a")
+                .withAttribute("href", "https://github.com/cowbell/splittypie");
+        builder.crawlRules().dontClick("a")
+                .withText("Source");
+        builder.crawlRules().dontClick("a")
+                .withAttribute("href", "#about");
+        builder.crawlRules().dontClick("a")
+                .withAttribute("href", "#events");
+        builder.crawlRules().dontClick("a")
+                .withAttribute("href", "#features");
+        builder.crawlRules().dontClick("a")
+                .withAttribute("class", "navbar-brand ember-view");
+        builder.crawlRules().dontClick("a")
+                .withAttribute("class", "navbar-brand active ember-view");
+        builder.crawlRules().dontClick("a")
+                .withAttribute("href", "/");
+        builder.crawlRules().dontClick("a")
+                .withText("New Event");
 
-        // divide cost checkboxes
-        builder.crawlRules().dontClick("input")
+        // Hidden/mobile navigation entries seen with negative screen coordinates.
+        builder.crawlRules().dontClick("a")
+                .underXPath(
+                        "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/UL[1]");
+
+        /*
+         * Do not delete the only locally stored event before its board/detail
+         * page has been crawled. Destructive coverage can be tested later by
+         * the generated RLM suites.
+         */
+        builder.crawlRules().dontClick("button")
+                .withAttribute("aria-label", "Remove event reference locally");
+        builder.crawlRules().dontClick("button")
+                .withAttribute("class", "btn btn-danger remove-user");
+
+        // Transaction participant allocation checkboxes are meaningful.
+        builder.crawlRules().click("input")
                 .withAttribute("type", "checkbox");
 
         // transaction div
         builder.crawlRules().click("div")
                 .withAttribute("class", "list-group-item btn btn-default transaction-list-item ember-view");
+        builder.crawlRules().click("div")
+                .withAttribute("class", "transaction-list-item-description");
 //                .underXPath("/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[3]/div[1]/div[1]/div[3]".toUpperCase());
 
         InputSpecification inputSpecification = new InputSpecification();
 
-        Form eventForm = new Form();
+        /*
+         * Crawljax's DOM/XPath representation uses upper-case tag names in this fork.
+         * Lower-case //input and //select expressions can miss the fields and leave
+         * them to the default random form filler.
+         */
+
+        Form eventBeforeAddParticipantForm = new Form();
+
+        FormInput eventNameBeforeAdd = eventBeforeAddParticipantForm.inputField(
+                FormInput.InputType.TEXT,
+                new Identification(Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"));
+        eventNameBeforeAdd.inputValues("Trip to Paris");
+
+        FormInput currencyBeforeAdd = eventBeforeAddParticipantForm.inputField(
+                FormInput.InputType.SELECT,
+                new Identification(Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"));
+        currencyBeforeAdd.inputValues("Euro (EUR)");
+
+        FormInput ownerBeforeAdd = eventBeforeAddParticipantForm.inputField(
+                FormInput.InputType.TEXT,
+                new Identification(Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"));
+        ownerBeforeAdd.inputValues("Jhon");
+
+        FormInput friendBeforeAdd = eventBeforeAddParticipantForm.inputField(
+                FormInput.InputType.TEXT,
+                new Identification(Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"));
+        friendBeforeAdd.inputValues("Jane");
+
+        inputSpecification.setValuesInForm(eventBeforeAddParticipantForm)
+                .beforeClickElement("button")
+                .withAttribute("class", "btn btn-primary add-user");
+
+        Form eventSaveForm = new Form();
+
+        FormInput eventNameOnSave = eventSaveForm.inputField(
+                FormInput.InputType.TEXT,
+                new Identification(Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"));
+        eventNameOnSave.inputValues("Trip to Paris");
+
+        FormInput currencyOnSave = eventSaveForm.inputField(
+                FormInput.InputType.SELECT,
+                new Identification(Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"));
+        currencyOnSave.inputValues("Euro (EUR)");
+
+        FormInput ownerOnSave = eventSaveForm.inputField(
+                FormInput.InputType.TEXT,
+                new Identification(Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"));
+        ownerOnSave.inputValues("Jhon");
+
+        FormInput friendOnSave = eventSaveForm.inputField(
+                FormInput.InputType.TEXT,
+                new Identification(Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"));
+        friendOnSave.inputValues("Jane");
+
+        inputSpecification.setValuesInForm(eventSaveForm)
+                .beforeClickElement("button")
+                .withAttribute("class", "btn btn-success save-event");
+
         Form quickAddForm = new Form();
-        Form addWithDetailsForm = new Form();
-        Form transactionEditForm = new Form();
 
-        // With this form the crawler gets stuck when the application is asking for the identity of the user (blank pages with buttons)
-//        FormInput eventNameInput = eventForm.inputField(FormInput.InputType.TEXT, new Identification(Identification.How.xpath,
-//                "/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]".toUpperCase()));
-//        eventNameInput.inputValues("Trip to Barcelona", "Museum", "Ski tour", "Paris", "Restaurant");
-//        FormInput myNameInput = eventForm.inputField(FormInput.InputType.TEXT, new Identification(Identification.How.xpath,
-//                        "/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]".toUpperCase()));
-//        myNameInput.inputValues("Mark");
-//        FormInput myFriendInput = eventForm.inputField(FormInput.InputType.TEXT, new Identification(Identification.How.xpath,
-//                "/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]".toUpperCase()));
-//        myFriendInput.inputValues("Mark");
-        FormInput selectCurrencyInput = eventForm.inputField(FormInput.InputType.SELECT, new Identification(Identification.How.xpath,
-                "/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]".toUpperCase()));
-        selectCurrencyInput.inputValues("United States dollar (USD)","Euro (EUR)","Pound sterling (GBP)");
-        inputSpecification.setValuesInForm(eventForm)
-                .beforeClickElement("button").withAttribute("class","btn btn-success save-event");
+        FormInput quickAddInput = quickAddForm.inputField(
+                FormInput.InputType.TEXT,
+                new Identification(Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"));
+        quickAddInput.inputValues("3 ticket");
 
-        FormInput quickAddInput = quickAddForm.inputField(FormInput.InputType.TEXT,
-                new Identification(Identification.How.xpath, "/html[1]/body[1]/div[1]/div[4]/form[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/input[1]".toUpperCase()));
-        quickAddInput.inputValues("03/24 40 Museum Tickets", "12 20 shopping");
         inputSpecification.setValuesInForm(quickAddForm)
-                .beforeClickElement("button").withAttribute("class", "btn btn-primary btn-add");
+                .beforeClickElement("button")
+                .withAttribute("class", "btn btn-primary btn-add");
 
-        FormInput amountInput = addWithDetailsForm.inputField(FormInput.InputType.TEXT,
-                        new Identification(Identification.How.xpath, "/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/div[1]/input[1]".toUpperCase()));
-        amountInput.inputValues("100", "200", "400");
-        FormInput dateInput = addWithDetailsForm.inputField(FormInput.InputType.TEXT,
-                new Identification(Identification.How.xpath, "/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/input[1]".toUpperCase()));
-        dateInput.inputValues("2019-04-07", "2019-04-08", "2019-05-07");
-        inputSpecification.setValuesInForm(addWithDetailsForm)
-                .beforeClickElement("button").withAttribute("class","btn btn-success save-transaction");
+        Form transactionDetailsForm = new Form();
 
-        FormInput dateTransactionInput = transactionEditForm.inputField(FormInput.InputType.TEXT,
-                new Identification(Identification.How.xpath, "/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[4]/div[1]/input[1]".toUpperCase()));
-        dateTransactionInput.inputValues("2019-04-08","2019-04-09","2019-05-08");
-        FormInput amountTransactionInput = transactionEditForm.inputField(FormInput.InputType.TEXT,
-                new Identification(Identification.How.xpath, "/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/div[1]/input[1]".toUpperCase()));
-        amountTransactionInput.inputValues("100", "200", "400");
-        inputSpecification.setValuesInForm(transactionEditForm)
-                .beforeClickElement("button").withAttribute("class","btn btn-success save-transaction");
+        FormInput payerInput = transactionDetailsForm.inputField(
+                FormInput.InputType.SELECT,
+                new Identification(Identification.How.xpath,
+                        "//DIV[contains(@class, 'transaction-payer')]//SELECT[1]"));
+        payerInput.inputValues("Jhon");
+
+        FormInput transactionNameInput = transactionDetailsForm.inputField(
+                FormInput.InputType.TEXT,
+                new Identification(Identification.How.xpath,
+                        "//INPUT[contains(@class, 'transaction-name')]"));
+        transactionNameInput.inputValues("Ticket to Museum");
+
+        FormInput amountInput = transactionDetailsForm.inputField(
+                FormInput.InputType.TEXT,
+                new Identification(Identification.How.xpath,
+                        "//INPUT[contains(@class, 'transaction-amount')]"));
+        amountInput.inputValues("5");
+
+        FormInput dateInput = transactionDetailsForm.inputField(
+                FormInput.InputType.TEXT,
+                new Identification(Identification.How.xpath,
+                        "//INPUT[contains(@class, 'transaction-date')]"));
+        dateInput.inputValues("2026-07-21");
+
+        inputSpecification.setValuesInForm(transactionDetailsForm)
+                .beforeClickElement("button")
+                .withAttribute("class", "btn btn-success save-transaction");
 
         builder.crawlRules().setInputSpec(inputSpecification);
 

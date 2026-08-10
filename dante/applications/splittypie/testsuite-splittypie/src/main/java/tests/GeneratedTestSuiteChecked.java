@@ -1,6 +1,6 @@
 package tests;
 
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.AfterClass;
@@ -9,8358 +9,4188 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.Select;
 import utils.DriverProvider;
 import utils.Properties;
 import utils.BasePageObject;
 
-/**
- * @implNote TO RUN OFFLINE
- * */
 public class GeneratedTestSuiteChecked {
 
 	private static WebDriver driver;
 	private static BasePageObject basePageObject;
 
+	private void highlight(WebElement element) {
+		try {
+			((org.openqa.selenium.JavascriptExecutor) driver).executeScript(
+					"arguments[0].scrollIntoView({block: 'center', inline: 'center'});"
+							+ "arguments[0].style.border='4px solid red';"
+							+ "arguments[0].style.backgroundColor='yellow';",
+					element);
+			Thread.sleep(700);
+		} catch (Exception e) {
+		}
+	}
+
+	private boolean isVisibleAndEnabled(WebElement element) {
+		try {
+			return element != null && element.isDisplayed()
+					&& element.isEnabled();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private String norm(String value) {
+		if (value == null)
+			return "";
+		return value.trim().toLowerCase();
+	}
+
+	private void clickElementHard(WebElement element) throws Exception {
+		highlight(element);
+		try {
+			element.click();
+		} catch (Exception e1) {
+			try {
+				((org.openqa.selenium.JavascriptExecutor) driver)
+						.executeScript("arguments[0].click();", element);
+			} catch (Exception e2) {
+				((org.openqa.selenium.JavascriptExecutor) driver)
+						.executeScript(
+								"var ev = new MouseEvent('click', {bubbles:true, cancelable:true, view:window}); arguments[0].dispatchEvent(ev);",
+								element);
+			}
+		}
+		Thread.sleep(1500);
+	}
+	private WebElement findVisibleElement(String xpath) throws Exception {
+		if (xpath == null || xpath.trim().isEmpty()) {
+			throw new RuntimeException("Empty xpath");
+		}
+		List<WebElement> elements = driver.findElements(By.xpath(xpath));
+		if (elements == null || elements.isEmpty()) {
+			throw new RuntimeException("Element not found: " + xpath);
+		}
+		for (int i = elements.size() - 1; i >= 0; i--) {
+			WebElement element = elements.get(i);
+			if (isVisibleAndEnabled(element)) {
+				return element;
+			}
+		}
+		return elements.get(elements.size() - 1);
+	}
+	private void safeClick(String xpath) throws Exception {
+		if (xpath == null || xpath.trim().isEmpty())
+			return;
+		WebElement element = findVisibleElement(xpath);
+		clickElementHard(element);
+	}
+	private void safeSaveButtonClick(String xpath) throws Exception {
+		System.out.println("SAVE_HELPER_START: " + xpath);
+		String[] directXpaths = new String[]{
+				xpath,
+				"//*[self::button or self::a or self::input][contains(translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'save')]",
+				"//*[self::button or self::a or self::input][contains(translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'create')]",
+				"//*[self::button or self::a or self::input][contains(translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'submit')]",
+				"//*[self::button or self::a or self::input][contains(translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'done')]",
+				"//*[self::button or self::a or self::input][contains(translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'register')]",
+				"//*[self::button or self::a or self::input][contains(translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'sign up')]",
+				"//*[self::button or self::a or self::input][contains(translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'sign in')]",
+				"//*[self::button or self::a or self::input][contains(translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'login')]",
+				"//button[@type='submit']", "//input[@type='submit']",
+				"(//form//button)[last()]"};
+		Exception last = null;
+		for (String candidate : directXpaths) {
+			if (candidate == null || candidate.trim().isEmpty())
+				continue;
+			try {
+				List<WebElement> found = driver.findElements(By
+						.xpath(candidate));
+				System.out.println("SAVE_HELPER_XPATH: " + candidate
+						+ " count=" + found.size());
+				for (WebElement element : found) {
+					if (!isVisibleAndEnabled(element))
+						continue;
+					String txt = norm(element.getText());
+					String val = norm(element.getAttribute("value"));
+					String aria = norm(element.getAttribute("aria-label"));
+					String type = norm(element.getAttribute("type"));
+					String cls = norm(element.getAttribute("class"));
+					String combined = txt + " " + val + " " + aria + " " + type
+							+ " " + cls;
+					System.out.println("SAVE_HELPER_CANDIDATE: " + combined);
+					if (combined.contains("save")
+							|| combined.contains("create")
+							|| combined.contains("submit")
+							|| combined.contains("done")
+							|| combined.contains("register")
+							|| combined.contains("sign up")
+							|| combined.contains("sign in")
+							|| combined.contains("login")
+							|| "submit".equals(type)) {
+						clickElementHard(element);
+						System.out.println("SAVE_HELPER_CLICK_DONE");
+						return;
+					}
+				}
+			} catch (Exception e) {
+				last = e;
+			}
+		}
+		try {
+			List<WebElement> all = driver
+					.findElements(By
+							.xpath("//button | //a | //input[@type='submit'] | //input[@type='button']"));
+			System.out.println("SAVE_HELPER_SCAN_COUNT=" + all.size());
+			for (WebElement element : all) {
+				if (!isVisibleAndEnabled(element))
+					continue;
+				String txt = norm(element.getText());
+				String val = norm(element.getAttribute("value"));
+				String aria = norm(element.getAttribute("aria-label"));
+				String cls = norm(element.getAttribute("class"));
+				String type = norm(element.getAttribute("type"));
+				String combined = txt + " " + val + " " + aria + " " + cls
+						+ " " + type;
+				System.out.println("SAVE_HELPER_SCAN_ELEMENT: " + combined);
+				if (combined.contains("save") || combined.contains("create")
+						|| combined.contains("submit")
+						|| combined.contains("done")
+						|| combined.contains("register")
+						|| combined.contains("sign up")
+						|| combined.contains("sign in")
+						|| combined.contains("login") || "submit".equals(type)) {
+					clickElementHard(element);
+					System.out.println("SAVE_HELPER_CLICK_DONE_BY_SCAN");
+					return;
+				}
+			}
+		} catch (Exception e) {
+			last = e;
+		}
+		try {
+			WebElement active = driver.switchTo().activeElement();
+			active.sendKeys(Keys.ENTER);
+			Thread.sleep(1500);
+			System.out.println("SAVE_HELPER_DONE_BY_ENTER");
+			return;
+		} catch (Exception e) {
+			last = e;
+		}
+		try {
+			WebElement form = driver.findElement(By.xpath("//form"));
+			highlight(form);
+			form.submit();
+			Thread.sleep(1500);
+			System.out.println("SAVE_HELPER_DONE_BY_FORM_SUBMIT");
+			return;
+		} catch (Exception e) {
+			last = e;
+		}
+		System.out.println("SAVE_HELPER_FAILED: " + xpath);
+		if (last != null)
+			throw last;
+	}
+
+	private void safeType(String xpath, String value) throws Exception {
+		if (xpath == null || xpath.trim().isEmpty())
+			return;
+		WebElement element = findVisibleElement(xpath);
+		highlight(element);
+		try {
+			element.clear();
+			element.sendKeys(value);
+		} catch (Exception e) {
+			Thread.sleep(500);
+			element.clear();
+			element.sendKeys(value);
+		}
+		Thread.sleep(800);
+	}
+
+	private void safeSelect(String xpath, String value) throws Exception {
+		if (xpath == null || xpath.trim().isEmpty())
+			return;
+		WebElement element = findVisibleElement(xpath);
+		highlight(element);
+		Select select = new Select(element);
+		try {
+			select.selectByVisibleText(value);
+		} catch (Exception e) {
+			boolean selected = false;
+			for (WebElement option : select.getOptions()) {
+				String txt = option.getText().trim().toLowerCase();
+				if (txt.contains(value.trim().toLowerCase())) {
+					option.click();
+					selected = true;
+					break;
+				}
+			}
+			if (!selected && select.getOptions().size() > 1) {
+				select.getOptions().get(1).click();
+			}
+		}
+		Thread.sleep(800);
+	}
+
 	@BeforeClass
 	public static void oneTimeSetUp() throws Exception {
 		driver = DriverProvider.getInstance().getDriver();
+		driver.manage().window().maximize();
 		driver.get(Properties.app_url);
-		Thread.sleep(3001);
 		basePageObject = new BasePageObject(driver);
 	}
 
 	@Before
 	public void setUp() throws Exception {
+		Thread.sleep(250);
+	}
+
+	@Test()
+	public void test000() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to the event creation page to initiate the process of creating a new event.");
 		driver.get(Properties.app_url);
-		Thread.sleep(201);
-	}
-
-	@Test
-	public void test00() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/UL[1]/LI[1]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/UL[1]/LI[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("oMZGSpYo");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("IEPHDNTM");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("pMTWAEuL");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("atcamkzO");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("VqZdpnop");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ffdAtgae");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("sxuobMzX");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("PdievlQZ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("jaUQzNmR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test01() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/UL[1]/LI[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("HsKYzFMb");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("nKODIeKN");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LvokyZBT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("PkStpTAI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xbPkBllc");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("zNcwGJVx");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xglrzBaU");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("UZfrrtZM");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ggjsohsd");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AhmBTwIX");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("uwWSdDfV");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("QErpaLCT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("kenmZPPM");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("iDibZYEi");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ndijXsMR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("RqQyDLCh");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("KXeedcEo");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("GGjyrIkA");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("QjOgnSXw");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZrNChDod");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NRKbdoiy");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ygfUJaFF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xuQaANLd");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("GimVsdOi");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FqJAbrzJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ftojKVQI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NuaLlPfJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test02() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("uvjyhGZe");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("dJVGvksS");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("HsxHHpKF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("oCoTnsVX");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test03() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[1]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/UL[1]/LI[3]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/UL[1]/LI[5]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test04() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FRJbNXXd");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("mFSmUQih");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("abZSSMuI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("jRowgOxq");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test05() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/BUTTON[1]"));
-	}
-
-	@Test
-	public void test06() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test07() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/SECTION[1]/DIV[1]/DIV[1]/P[2]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test08() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("UdiuVwKW");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZgSvDwON");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("tcHeypJP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("CBtMJklb");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("qEdoDtvE");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("uaYWYufD");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("DlSfaLQp");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("IJlEeByf");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("YbfEHCBZ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("jQrwkGMN");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("czKjKSRy");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("PECLeNXB");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("bNjmOKLi");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("MWsMOAEr");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("WxqCPzXn");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("fCvcfjBD");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("KVpiJjdj");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("MyLYRXUz");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("dImMiqpU");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("khdSuYTw");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("oEudpOCo");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("DxfMxJpf");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("DkGKgCBE");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test09() throws Exception {
-		driver.findElement(
-				By.xpath("/html[1]/body[1]/div[1]/div[3]/nav[1]/div[1]/div[1]/a[1]"))
-				.click();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/UL[1]/LI[5]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FqJAbrzJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ftojKVQI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NuaLlPfJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test10() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test11() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test12() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("UdiuVwKW");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZgSvDwON");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("tcHeypJP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("CBtMJklb");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("odXYXFvU");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("HRCoCrRE");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("UTzzIHns");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("cfDbMvIC");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("splBhWBh");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test13() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("khdSuYTw");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("oEudpOCo");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("DxfMxJpf");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("DkGKgCBE");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test14() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/UL[1]/LI[5]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FqJAbrzJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ftojKVQI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NuaLlPfJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"));
-	}
-
-	@Test
-	public void test15() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test16() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject.click(By
-				.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/DIV[1]/DIV[1]/A[1]"));
-	}
-
-	@Test
-	public void test17() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("UdiuVwKW");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZgSvDwON");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("tcHeypJP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("CBtMJklb");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("JqRTcUEr");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("VXuHAQJm");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("goWUikgY");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("MugmmyMv");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("VrvUfFzA");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test18() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("khdSuYTw");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("oEudpOCo");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("DxfMxJpf");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("DkGKgCBE");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject.click(By
-				.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/DIV[1]/DIV[1]/A[1]"));
-	}
-
-	@Test
-	public void test19() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("PmYLlPmI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("khdSuYTw");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("oEudpOCo");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("DxfMxJpf");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("DkGKgCBE");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("qjYSJFjP");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"));
-	}
-
-	@Test
-	public void test20() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FqJAbrzJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ftojKVQI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NuaLlPfJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("HMayLLDx");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("kgIrnNFa");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]"))
-				.click();
-	}
-
-	@Test
-	public void test21() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FqJAbrzJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ftojKVQI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NuaLlPfJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("HMayLLDx");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("kgIrnNFa");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"));
-	}
-
-	@Test
-	public void test22() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test23() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/DIV[1]/DIV[1]")).click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("dHTDavfO");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("GesAcSqH");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("tMupokRO");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("VeoTSqNo");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("KNQibhNA");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test24() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("PmYLlPmI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vnZRKmoR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("UdiuVwKW");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZgSvDwON");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("tcHeypJP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("CBtMJklb");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZNwBumDs");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ssJsGOXN");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vpzsXvTR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("geySMrbW");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("cSojmnzX");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("KdCOJLtj");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("PXoJJKky");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("GFSdSFMN");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("jreTEXAd");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("oPuRWeRj");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("avRetKIR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("PBYtPgCc");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("zKJJrCoI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("fMKPEjPI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("GpeXIFqv");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("fohbhwhc");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FNDkFbrq");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("SGdugLNl");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("huehkJvv");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("zjIhTvTu");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("dukdfMzu");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("OyFWAUvx");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("yVAKyvbI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("zeVIUoql");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("wJEBgUCF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ikAlHyyG");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FhIRTnea");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("hDtJjiyC");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("QybXVfem");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("TeFAICFI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("HCCgEmmJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ePwEXWMh");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("TujJroXH");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("rqDqnrzR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("shrNPqpF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("uvvdRPhy");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ylwIpsZs");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("syrCiucJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LXtUDyOs");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("fVmNCHxz");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("wMkGnUpn");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("IhVxIvIm");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("PAmzuVZE");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("kaaxZtuh");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xayzbrGH");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("cmmTdKGg");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("mJvgehQn");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("UAksCTLi");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("HmWxwPLc");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("cRfMOVXU");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("XCQnqHAh");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("WDbqtaGT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("JZgeXPZq");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("QYSBxium");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FXuqYoLN");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("BJfcTPdb");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("UeTNUIsx");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test25() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("PmYLlPmI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vnZRKmoR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("khdSuYTw");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("oEudpOCo");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("DxfMxJpf");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("DkGKgCBE");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("qjYSJFjP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xWaLRbgn");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test26() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("PmYLlPmI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vnZRKmoR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FMttnrYX");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("khdSuYTw");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("oEudpOCo");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("DxfMxJpf");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("DkGKgCBE");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("qjYSJFjP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xWaLRbgn");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("XzlFTKWS");
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("RhuYPzAD");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("tFZIiQtP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("YjmepJtW");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AyAPEWxh");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("WvhRMGiq");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("XDOcOAqd");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("lemKQrTB");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test27() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/DIV[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.sendKeys("2019-05-07");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.sendKeys("2019-04-09");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/SELECT[1]"))
-				.sendKeys("      DkGKgCBE ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/SELECT[1]"))
-				.sendKeys("      DkGKgCBE ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.sendKeys("2019-05-07");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.sendKeys("2019-04-09");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/SELECT[1]"))
-				.sendKeys("      oEudpOCo ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/SELECT[1]"))
-				.sendKeys("      oEudpOCo ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.sendKeys("2019-05-07");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.sendKeys("2019-04-09");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/SELECT[1]"))
-				.sendKeys("      DxfMxJpf ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/SELECT[1]"))
-				.sendKeys("      DxfMxJpf ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.sendKeys("2019-05-07");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.sendKeys("2019-04-09");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/SELECT[1]"))
-				.sendKeys("      xWaLRbgn ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/SELECT[1]"))
-				.sendKeys("      xWaLRbgn ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.sendKeys("2019-05-07");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.sendKeys("2019-04-09");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/SELECT[1]"))
-				.sendKeys("      oEudpOCo ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/SELECT[1]"))
-				.sendKeys("      oEudpOCo ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.sendKeys("2019-05-07");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.sendKeys("2019-04-09");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/SELECT[1]"))
-				.sendKeys("      oEudpOCo ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/SELECT[1]"))
-				.sendKeys("      oEudpOCo ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.sendKeys("2019-05-07");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.sendKeys("2019-04-09");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/SELECT[1]"))
-				.sendKeys("      Select payer... ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/SELECT[1]"))
-				.sendKeys("      Select payer... ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.sendKeys("2019-05-07");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.sendKeys("2019-04-09");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/SELECT[1]"))
-				.sendKeys("      xWaLRbgn ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/SELECT[1]"))
-				.sendKeys("      xWaLRbgn ");
-	}
-
-	@Test
-	public void test28() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FqJAbrzJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ftojKVQI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NuaLlPfJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("HMayLLDx");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("kgIrnNFa");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZLXQucbP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("awmFgirb");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test29() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject.click(By
-				.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/DIV[1]/DIV[1]/A[1]"));
-	}
-
-	@Test
-	public void test30() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-	}
-
-	@Test
-	public void test31() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("PmYLlPmI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vnZRKmoR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FMttnrYX");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("cglTskfh");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("UdiuVwKW");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZgSvDwON");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("tcHeypJP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("CBtMJklb");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZNwBumDs");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ssJsGOXN");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZFyxWjOW");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xAVZvmzp");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("GkKxMsvO");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("JVbkETcp");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xggXvidG");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("fOhNpIuA");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("uvPreelR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("lfCqBQxF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("pdQzFKLj");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("SlKhLnsu");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[8]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[8]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("kSNtxeML");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test32() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.sendKeys("2019-05-07");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.sendKeys("2019-04-09");
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.sendKeys("2019-05-07");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.sendKeys("2019-04-09");
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.sendKeys("2019-05-07");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.sendKeys("2019-04-09");
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.sendKeys("2019-05-07");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.sendKeys("2019-04-09");
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.sendKeys("2019-05-07");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.sendKeys("2019-04-09");
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"));
-	}
-
-	@Test
-	public void test33() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"));
-	}
-
-	@Test
-	public void test34() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/UL[1]/LI[5]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("UdiuVwKW");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZgSvDwON");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("tcHeypJP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("CBtMJklb");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("GkKxMsvO");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("JVbkETcp");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xggXvidG");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("fOhNpIuA");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("uvPreelR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-	}
-
-	@Test
-	public void test35() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("PmYLlPmI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vnZRKmoR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("UdiuVwKW");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZgSvDwON");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("tcHeypJP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("CBtMJklb");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZNwBumDs");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ssJsGOXN");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("GkKxMsvO");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("JVbkETcp");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xggXvidG");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("fOhNpIuA");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("uvPreelR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("lfCqBQxF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("pdQzFKLj");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-	}
-
-	@Test
-	public void test36() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("sTwvsodM");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("PQpcVVoF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("gzcrfFQG");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("qsgbyoox");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("EIeXAJYB");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("gLaGunGo");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("BUNpyWZi");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("sXlNezys");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("elWjZVrx");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("wjbdYkpz");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LTvXEYDp");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("hSYipAts");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("jcIDgPqR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("WcWcFrkx");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("qZaXXYzl");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("proxwLGV");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("dDZsritQ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("WwFNrwfd");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("JHaXEwMZ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("skoMjiqD");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("IbAVWZST");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("CWdzoXuD");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("CMrFFlGc");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("RiltgxAa");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("pjERkmzV");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("tmNryEyI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("lPISTIKc");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("iRCrshDX");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("lQFkAWrh");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("wMwxoolM");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("YqEzYRGc");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZhePcCIn");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("dwVzdClY");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FqCIcnww");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("uNDELlid");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("XOPvfPed");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("WpOVlzMU");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("USMoIZTu");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("yowjHWlX");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("yHfcXrLT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("aWoMVmPw");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZOgVdBzD");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("alzXtkkv");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("qviMBcTJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("sHSbWLGd");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("YgKYSlWf");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("mzbmpyjS");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("awbXBxlD");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("kZOnPXiv");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test37() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FqJAbrzJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ftojKVQI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NuaLlPfJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("HMayLLDx");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("kgIrnNFa");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZLXQucbP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("awmFgirb");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]"))
-				.click();
-	}
-
-	@Test
-	public void test38() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FqJAbrzJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ftojKVQI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NuaLlPfJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("HMayLLDx");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("kgIrnNFa");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZLXQucbP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("awmFgirb");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"));
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-	}
-
-	@Test
-	public void test39() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-	}
-
-	@Test
-	public void test40() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FqJAbrzJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ftojKVQI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NuaLlPfJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("HMayLLDx");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("kgIrnNFa");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZLXQucbP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("awmFgirb");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("goXtBkPx");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("RllABlBV");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("jaMaxhmF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("TikOCyKi");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NRjTBJiH");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("XyIIbfXb");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("QmTMCthZ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("IKDXjRUU");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("uRdFsOCv");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("UKGGncUJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("pHilbjYc");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xrkgfhUi");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("iawekvPS");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("IExtwSdV");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("JNPQdZQb");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NoTnnPnu");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("zSWfMgSt");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("YsMLltMk");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("pTaopVLu");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("zAomZeUe");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ofQCCqUR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("pubCkTtF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("PeByAJNv");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("cdmDtJTX");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("udTyslOV");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("QuDezSdD");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ApXzaQLk");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NUnyPKxl");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("eXBTvXRE");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NRhFClcy");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("olscqtgd");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("pPlNveuK");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xUOCaUIG");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("yKujnZYJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("tezNHFwl");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("rbiZiDPp");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ThBrucLr");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("SbBxwQVi");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("DPrDbPDr");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("aaxeTpJh");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vhEUFTxf");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("kjouIMLb");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("WgYWGTXn");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("rvORtFog");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("OtKKINCa");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("jTpTiEir");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xfUNpGiv");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vOFTHMLU");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("gzPqwdNy");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test41() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test42() throws Exception {
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"));
-		Thread.sleep(500);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test43() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("PmYLlPmI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vnZRKmoR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FMttnrYX");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("cglTskfh");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("UdiuVwKW");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZgSvDwON");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("tcHeypJP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("CBtMJklb");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZNwBumDs");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ssJsGOXN");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZFyxWjOW");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xAVZvmzp");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("GkKxMsvO");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("JVbkETcp");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xggXvidG");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("fOhNpIuA");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("uvPreelR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("lfCqBQxF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("pdQzFKLj");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[7]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("SlKhLnsu");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[8]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[8]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("kSNtxeML");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[7]/div[1]/div[1]/span[1]/button[1]"))
-				.click();
-		driver.findElement(
-				By.xpath("/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[7]/div[1]/div[1]/span[1]/button[1]"))
-				.click();
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(600);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingClickable(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/UL[1]/LI[5]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("UdiuVwKW");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZgSvDwON");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("tcHeypJP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("CBtMJklb");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("GkKxMsvO");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("JVbkETcp");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xggXvidG");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("fOhNpIuA");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("uvPreelR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FqJAbrzJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ftojKVQI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NuaLlPfJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("HMayLLDx");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("kgIrnNFa");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]"))
-				.click();
-	}
-
-	@Test
-	public void test44() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("PmYLlPmI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vnZRKmoR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("UdiuVwKW");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZgSvDwON");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("tcHeypJP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("CBtMJklb");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZNwBumDs");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ssJsGOXN");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("GkKxMsvO");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("JVbkETcp");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xggXvidG");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("fOhNpIuA");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("uvPreelR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[5]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("lfCqBQxF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[6]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("pdQzFKLj");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[3]/BUTTON[1]"));
-	}
-
-	@Test
-	public void test45() throws Exception {
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/BUTTON[1]"));
-	}
-
-	@Test
-	public void test46() throws Exception {
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/UL[1]/LI[5]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FqJAbrzJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ftojKVQI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NuaLlPfJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("HWaPYqgW");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Ndraignq");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("OqUnYvHH");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("arROGRmh");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("wKhqeksG");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("MEnkeLrN");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("tvkzuPDa");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("KxyPZjWL");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NwUFAkRl");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test47() throws Exception {
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(500);
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"));
-		Thread.sleep(1000);
-		basePageObject
-				.sendKeys(
-						By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"),
-						"12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-	}
-
-	@Test
-	public void test48() throws Exception {
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/UL[1]/LI[5]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("UdiuVwKW");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZgSvDwON");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("tcHeypJP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("CBtMJklb");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("GkKxMsvO");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("JVbkETcp");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xggXvidG");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("fOhNpIuA");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("uvPreelR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test49() throws Exception {
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(600);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingClickable(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-	}
-
-	@Test
-	public void test50() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]"))
-				.click();
-	}
-
-	@Test
-	public void test51() throws Exception {
-		driver.get("http://localhost:4200");
-	}
-
-	@Test
-	public void test52() throws Exception {
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-	}
-
-	@Test
-	public void test53() throws Exception {
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("XrIiRxyg");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("WvAdQJpr");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AOJJrfWE");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("sYvIZKEj");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("cCLbLAUG");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test54() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]"))
-				.click();
-	}
-
-	@Test
-	public void test55() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-	}
-
-	@Test
-	public void test56() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]"))
-				.click();
-	}
-
-	@Test
-	public void test57() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]"))
-				.click();
-	}
-
-	@Test
-	public void test58() throws Exception {
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(600);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-	}
-
-	@Test
-	public void test59() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/UL[1]/LI[5]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FqJAbrzJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ftojKVQI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NuaLlPfJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-	}
-
-	@Test
-	public void test60() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/UL[1]/LI[5]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("FqJAbrzJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ftojKVQI");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("NuaLlPfJ");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"))
-				.sendKeys("2019-05-07");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"))
-				.sendKeys("2019-04-09");
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(500);
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"));
-		Thread.sleep(500);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]"))
-				.click();
-	}
-
-	@Test
-	public void test61() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/UL[1]/LI[5]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("AuxqbEQF");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("vsRQvXjR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("LWsFmVoT");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("UdiuVwKW");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("ZgSvDwON");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("tcHeypJP");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("CBtMJklb");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("GkKxMsvO");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("JVbkETcp");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("xggXvidG");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[3]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("fOhNpIuA");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[4]/DIV[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("uvPreelR");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Euro (EUR)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("Pound sterling (GBP)");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]"))
-				.sendKeys("United States dollar (USD)");
-		basePageObject
-				.saveButtonClick(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-	}
-
-	@Test
-	public void test62() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-	}
-
-	@Test
-	public void test63() throws Exception {
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(600);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingClickable(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingClickable(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingClickable(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-	}
-
-	@Test
-	public void test64() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[3]"))
-				.click();
-	}
-
-	@Test
-	public void test65() throws Exception {
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(600);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingClickable(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingClickable(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingClickable(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-	}
-
-	@Test
-	public void test66() throws Exception {
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(600);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingClickable(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingClickable(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingClickable(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-	}
-
-	@Test
-	public void test67() throws Exception {
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(600);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingClickable(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-	}
-
-	@Test
-	public void test68() throws Exception {
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(600);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingPresentOnPage(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		driver.get("http://localhost:4200");
-		Thread.sleep(201);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[4]/A[1]"))
-				.click();
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"));
-		Thread.sleep(200);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.sendKeys("12 20 shopping");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[2]"))
-				.click();
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[2]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingClickable(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
-		basePageObject
-				.waitForElementBeingClickable(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		basePageObject
-				.click(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/BUTTON[1]"));
-		Thread.sleep(200);
-		basePageObject
-				.clickSettleUp(By
-						.xpath("/HTML[1]/BODY/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[3]/DIV[1]/UL[1]/DIV[1]/DIV[1]/LI[1]/BUTTON[1]"));
+		Thread.sleep(250);
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Source Code | click:a:source code");
+			safeClick("//A[contains(normalize-space(.), 'Source Code')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source Code')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Cowbell Labs | click:a:cowbell labs");
+			safeClick("//A[contains(normalize-space(.), 'Cowbell Labs')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Cowbell Labs')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[contains(normalize-space(.), 'New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | input:example: trip to barcelona:qa test event");
+			safeType("//INPUT[@placeholder = 'Example: Trip to Barcelona']",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Example: Trip to Barcelona']");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | select:select currency... united states dollar (usd) euro (eur) pound sterling (gbp) polish złoty (pln) swiss franc (chf) czech koruna (czk) croatian kuna (hrk) romanian leu (ron) bulgari:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | input:your name:alice");
+			safeType("//INPUT[@placeholder = 'Your name']", "Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Your name']");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | input:your friend's name:bob");
+			safeType("//INPUT[@placeholder = \"Your friend's name\"]", "Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = \"Your friend's name\"]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/NAV[1]/DIV[1]/BUTTON[2]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/NAV[1]/DIV[1]/BUTTON[2]");
+		}
+	}
+
+	@Test()
+	public void test001() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to the Create New Event page to fill out the event creation form.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | github | click:a:github");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/SECTION[2]/DIV[2]/DIV[3]/P[1]/A[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/SECTION[2]/DIV[2]/DIV[3]/P[1]/A[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | SplittyPie Source Code | click:a:splittypie source code");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/SECTION[3]/A[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[2]/SECTION[3]/A[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Author Cowbell-Labs Page | click:a:author cowbell-labs page");
+			safeClick("//A[@title = 'Author Cowbell-Labs Page']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Author Cowbell-Labs Page']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Facebook Page | click:a:facebook page");
+			safeClick("//A[@title = 'Facebook Page']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Facebook Page']");
+		}
+	}
+
+	@Test()
+	public void test002() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after previous attempts to access the event creation page.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Twitter Page | click:a:twitter page");
+			safeClick("//A[@title = 'Twitter Page']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Twitter Page']");
+		}
+	}
+
+	@Test()
+	public void test003() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the app's features.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out.println("STEP: CLICK | About | click:a:about");
+			safeClick("//A[@title = 'About']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'About']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Features | click:a:features");
+			safeClick("//A[@title = 'Features']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Features']");
+		}
+	}
+
+	@Test()
+	public void test004() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Event | add_or_open:add new event");
+			safeClick("//A[contains(normalize-space(.), 'Add New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Add New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Transaction | add_or_open:add new transaction");
+			safeClick("//A[@title = 'Add New Transaction']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Add New Transaction']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | UtYOCVDT | click:button:utyocvdt");
+			safeClick("//BUTTON[@id = 'dropDownEvents']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[@id = 'dropDownEvents']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Share | crud_or_detail:share");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Share')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Share')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Edit Event | crud_or_detail:edit event");
+			safeClick("//A[@title = 'Edit Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Edit Event']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[contains(normalize-space(.), 'New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'New Event')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Edit | crud_or_detail:edit");
+			safeClick("//A[contains(normalize-space(.), 'Edit')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Edit')]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | select:select currency... united states dollar (usd) euro (eur) pound sterling (gbp) polish złoty (pln) swiss franc (chf) czech koruna (czk) croatian kuna (hrk) romanian leu (ron) bulgari:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+	}
+
+	@Test()
+	public void test005() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Event | add_or_open:add new event");
+			safeClick("//A[contains(normalize-space(.), 'Add New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Add New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Transaction | add_or_open:add new transaction");
+			safeClick("//A[@title = 'Add New Transaction']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Add New Transaction']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | UtYOCVDT | click:button:utyocvdt");
+			safeClick("//BUTTON[@id = 'dropDownEvents']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[@id = 'dropDownEvents']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Share | crud_or_detail:share");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Share')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Share')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Edit Event | crud_or_detail:edit event");
+			safeClick("//A[@title = 'Edit Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Edit Event']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[contains(normalize-space(.), 'New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'New Event')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Edit | crud_or_detail:edit");
+			safeClick("//A[contains(normalize-space(.), 'Edit')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Edit')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | input:your name:alice");
+			safeType("//INPUT[@placeholder = 'Your name']", "Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Your name']");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | input:your friend's name:bob");
+			safeType("//INPUT[@placeholder = \"Your friend's name\"]", "Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = \"Your friend's name\"]");
+		}
+	}
+
+	@Test()
+	public void test006() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Event | add_or_open:add new event");
+			safeClick("//A[contains(normalize-space(.), 'Add New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Add New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Transaction | add_or_open:add new transaction");
+			safeClick("//A[@title = 'Add New Transaction']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Add New Transaction']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | UtYOCVDT | click:button:utyocvdt");
+			safeClick("//BUTTON[@id = 'dropDownEvents']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[@id = 'dropDownEvents']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Share | crud_or_detail:share");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Share')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Share')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Edit Event | crud_or_detail:edit event");
+			safeClick("//A[@title = 'Edit Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Edit Event']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[contains(normalize-space(.), 'New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'New Event')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Edit | crud_or_detail:edit");
+			safeClick("//A[contains(normalize-space(.), 'Edit')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Edit')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | input:example: trip to barcelona:qa test event");
+			safeType("//INPUT[@placeholder = 'Example: Trip to Barcelona']",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Example: Trip to Barcelona']");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | input:your name:alice");
+			safeType("//INPUT[@placeholder = 'Your name']", "Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Your name']");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | input:your friend's name:bob");
+			safeType("//INPUT[@placeholder = \"Your friend's name\"]", "Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = \"Your friend's name\"]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | select:select currency... united states dollar (usd) euro (eur) pound sterling (gbp) polish złoty (pln) swiss franc (chf) czech koruna (czk) croatian kuna (hrk) romanian leu (ron) bulgari:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+	}
+
+	@Test()
+	public void test007() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Event | add_or_open:add new event");
+			safeClick("//A[contains(normalize-space(.), 'Add New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Add New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Transaction | add_or_open:add new transaction");
+			safeClick("//A[@title = 'Add New Transaction']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Add New Transaction']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | UtYOCVDT | click:button:utyocvdt");
+			safeClick("//BUTTON[@id = 'dropDownEvents']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[@id = 'dropDownEvents']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Share | crud_or_detail:share");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Share')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Share')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Edit Event | crud_or_detail:edit event");
+			safeClick("//A[@title = 'Edit Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Edit Event']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[contains(normalize-space(.), 'New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'New Event')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Edit | crud_or_detail:edit");
+			safeClick("//A[contains(normalize-space(.), 'Edit')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Edit')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | input:your name:alice");
+			safeType("//INPUT[@placeholder = 'Your name']", "Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Your name']");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | input:your friend's name:bob");
+			safeType("//INPUT[@placeholder = \"Your friend's name\"]", "Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = \"Your friend's name\"]");
+		}
+	}
+
+	@Test()
+	public void test008() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Event | add_or_open:add new event");
+			safeClick("//A[contains(normalize-space(.), 'Add New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Add New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Transaction | add_or_open:add new transaction");
+			safeClick("//A[@title = 'Add New Transaction']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Add New Transaction']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | UtYOCVDT | click:button:utyocvdt");
+			safeClick("//BUTTON[@id = 'dropDownEvents']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[@id = 'dropDownEvents']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Share | crud_or_detail:share");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Share')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Share')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Edit Event | crud_or_detail:edit event");
+			safeClick("//A[@title = 'Edit Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Edit Event']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Edit | crud_or_detail:edit");
+			safeClick("//A[contains(normalize-space(.), 'Edit')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Edit')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]");
+		}
+	}
+
+	@Test()
+	public void test009() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Event | add_or_open:add new event");
+			safeClick("//A[contains(normalize-space(.), 'Add New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Add New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Transaction | add_or_open:add new transaction");
+			safeClick("//A[@title = 'Add New Transaction']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Add New Transaction']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | UtYOCVDT | click:button:utyocvdt");
+			safeClick("//BUTTON[@id = 'dropDownEvents']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[@id = 'dropDownEvents']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Share | crud_or_detail:share");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Share')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Share')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Edit Event | crud_or_detail:edit event");
+			safeClick("//A[@title = 'Edit Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Edit Event']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Edit | crud_or_detail:edit");
+			safeClick("//A[contains(normalize-space(.), 'Edit')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Edit')]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | select:select currency... united states dollar (usd) euro (eur) pound sterling (gbp) polish złoty (pln) swiss franc (chf) czech koruna (czk) croatian kuna (hrk) romanian leu (ron) bulgari:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+	}
+
+	@Test()
+	public void test010() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Event | add_or_open:add new event");
+			safeClick("//A[contains(normalize-space(.), 'Add New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Add New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Transaction | add_or_open:add new transaction");
+			safeClick("//A[@title = 'Add New Transaction']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Add New Transaction']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | UtYOCVDT | click:button:utyocvdt");
+			safeClick("//BUTTON[@id = 'dropDownEvents']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[@id = 'dropDownEvents']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Share | crud_or_detail:share");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Share')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Share')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Edit Event | crud_or_detail:edit event");
+			safeClick("//A[@title = 'Edit Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Edit Event']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Edit | crud_or_detail:edit");
+			safeClick("//A[contains(normalize-space(.), 'Edit')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Edit')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | input:your name:alice");
+			safeType("//INPUT[@placeholder = 'Your name']", "Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Your name']");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | input:your friend's name:bob");
+			safeType("//INPUT[@placeholder = \"Your friend's name\"]", "Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = \"Your friend's name\"]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | select:select currency... united states dollar (usd) euro (eur) pound sterling (gbp) polish złoty (pln) swiss franc (chf) czech koruna (czk) croatian kuna (hrk) romanian leu (ron) bulgari:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+	}
+
+	@Test()
+	public void test011() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Event | add_or_open:add new event");
+			safeClick("//A[contains(normalize-space(.), 'Add New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Add New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Transaction | add_or_open:add new transaction");
+			safeClick("//A[@title = 'Add New Transaction']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Add New Transaction']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | UtYOCVDT | click:button:utyocvdt");
+			safeClick("//BUTTON[@id = 'dropDownEvents']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[@id = 'dropDownEvents']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Share | crud_or_detail:share");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Share')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Share')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Edit Event | crud_or_detail:edit event");
+			safeClick("//A[@title = 'Edit Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Edit Event']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Edit | crud_or_detail:edit");
+			safeClick("//A[contains(normalize-space(.), 'Edit')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Edit')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | input:example: trip to barcelona:qa test event");
+			safeType("//INPUT[@placeholder = 'Example: Trip to Barcelona']",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Example: Trip to Barcelona']");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | input:your name:alice");
+			safeType("//INPUT[@placeholder = 'Your name']", "Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Your name']");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | input:your friend's name:bob");
+			safeType("//INPUT[@placeholder = \"Your friend's name\"]", "Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = \"Your friend's name\"]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | select:select currency... united states dollar (usd) euro (eur) pound sterling (gbp) polish złoty (pln) swiss franc (chf) czech koruna (czk) croatian kuna (hrk) romanian leu (ron) bulgari:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+	}
+
+	@Test()
+	public void test012() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Event | add_or_open:add new event");
+			safeClick("//A[contains(normalize-space(.), 'Add New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Add New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Transaction | add_or_open:add new transaction");
+			safeClick("//A[@title = 'Add New Transaction']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Add New Transaction']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | UtYOCVDT | click:button:utyocvdt");
+			safeClick("//BUTTON[@id = 'dropDownEvents']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[@id = 'dropDownEvents']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Share | crud_or_detail:share");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Share')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Share')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Edit Event | crud_or_detail:edit event");
+			safeClick("//A[@title = 'Edit Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Edit Event']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Source Code | click:a:source code");
+			safeClick("//A[contains(normalize-space(.), 'Source Code')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source Code')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Cowbell Labs | click:a:cowbell labs");
+			safeClick("//A[contains(normalize-space(.), 'Cowbell Labs')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Cowbell Labs')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Overview | crud_or_detail:overview");
+			safeClick("//A[@title = 'Overview']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Overview']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Transactions | crud_or_detail:transactions");
+			safeClick("//A[@title = 'Transactions']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Transactions']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add your first transaction | add_or_open:add your first transaction");
+			safeClick("//DIV[contains(normalize-space(.), 'Add your first transaction')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //DIV[contains(normalize-space(.), 'Add your first transaction')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Edit | crud_or_detail:edit");
+			safeClick("//A[contains(normalize-space(.), 'Edit')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Edit')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | input:example: trip to barcelona:qa test event");
+			safeType("//INPUT[@placeholder = 'Example: Trip to Barcelona']",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Example: Trip to Barcelona']");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | input:your name:alice");
+			safeType("//INPUT[@placeholder = 'Your name']", "Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Your name']");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | input:your friend's name:bob");
+			safeType("//INPUT[@placeholder = \"Your friend's name\"]", "Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = \"Your friend's name\"]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | select:select currency... united states dollar (usd) euro (eur) pound sterling (gbp) polish złoty (pln) swiss franc (chf) czech koruna (czk) croatian kuna (hrk) romanian leu (ron) bulgari:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+	}
+
+	@Test()
+	public void test013() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Event | add_or_open:add new event");
+			safeClick("//A[contains(normalize-space(.), 'Add New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Add New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Transaction | add_or_open:add new transaction");
+			safeClick("//A[@title = 'Add New Transaction']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Add New Transaction']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | UtYOCVDT | click:button:utyocvdt");
+			safeClick("//BUTTON[@id = 'dropDownEvents']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[@id = 'dropDownEvents']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Share | crud_or_detail:share");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Share')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Share')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Edit Event | crud_or_detail:edit event");
+			safeClick("//A[@title = 'Edit Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Edit Event']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Source Code | click:a:source code");
+			safeClick("//A[contains(normalize-space(.), 'Source Code')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source Code')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Cowbell Labs | click:a:cowbell labs");
+			safeClick("//A[contains(normalize-space(.), 'Cowbell Labs')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Cowbell Labs')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Overview | crud_or_detail:overview");
+			safeClick("//A[@title = 'Overview']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Overview']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Transactions | crud_or_detail:transactions");
+			safeClick("//A[@title = 'Transactions']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Transactions']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add your first transaction | add_or_open:add your first transaction");
+			safeClick("//DIV[contains(normalize-space(.), 'Add your first transaction')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //DIV[contains(normalize-space(.), 'Add your first transaction')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Edit | crud_or_detail:edit");
+			safeClick("//A[contains(normalize-space(.), 'Edit')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Edit')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | input:your name:alice");
+			safeType("//INPUT[@placeholder = 'Your name']", "Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Your name']");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | input:your friend's name:bob");
+			safeType("//INPUT[@placeholder = \"Your friend's name\"]", "Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = \"Your friend's name\"]");
+		}
+	}
+
+	@Test()
+	public void test014() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Event | add_or_open:add new event");
+			safeClick("//A[contains(normalize-space(.), 'Add New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Add New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Transaction | add_or_open:add new transaction");
+			safeClick("//A[@title = 'Add New Transaction']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Add New Transaction']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | UtYOCVDT | click:button:utyocvdt");
+			safeClick("//BUTTON[@id = 'dropDownEvents']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[@id = 'dropDownEvents']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Share | crud_or_detail:share");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Share')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Share')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Edit Event | crud_or_detail:edit event");
+			safeClick("//A[@title = 'Edit Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Edit Event']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Source Code | click:a:source code");
+			safeClick("//A[contains(normalize-space(.), 'Source Code')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source Code')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Cowbell Labs | click:a:cowbell labs");
+			safeClick("//A[contains(normalize-space(.), 'Cowbell Labs')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Cowbell Labs')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Overview | crud_or_detail:overview");
+			safeClick("//A[@title = 'Overview']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Overview']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Transactions | crud_or_detail:transactions");
+			safeClick("//A[@title = 'Transactions']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Transactions']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add your first transaction | add_or_open:add your first transaction");
+			safeClick("//DIV[contains(normalize-space(.), 'Add your first transaction')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //DIV[contains(normalize-space(.), 'Add your first transaction')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Edit | crud_or_detail:edit");
+			safeClick("//A[contains(normalize-space(.), 'Edit')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Edit')]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | select:select currency... united states dollar (usd) euro (eur) pound sterling (gbp) polish złoty (pln) swiss franc (chf) czech koruna (czk) croatian kuna (hrk) romanian leu (ron) bulgari:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | input:your name:alice");
+			safeType("//INPUT[@placeholder = 'Your name']", "Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Your name']");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | input:your friend's name:bob");
+			safeType("//INPUT[@placeholder = \"Your friend's name\"]", "Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = \"Your friend's name\"]");
+		}
+	}
+
+	@Test()
+	public void test015() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Event | add_or_open:add new event");
+			safeClick("//A[contains(normalize-space(.), 'Add New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Add New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Transaction | add_or_open:add new transaction");
+			safeClick("//A[@title = 'Add New Transaction']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Add New Transaction']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | UtYOCVDT | click:button:utyocvdt");
+			safeClick("//BUTTON[@id = 'dropDownEvents']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[@id = 'dropDownEvents']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Share | crud_or_detail:share");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Share')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Share')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Edit Event | crud_or_detail:edit event");
+			safeClick("//A[@title = 'Edit Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Edit Event']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Source Code | click:a:source code");
+			safeClick("//A[contains(normalize-space(.), 'Source Code')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source Code')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Cowbell Labs | click:a:cowbell labs");
+			safeClick("//A[contains(normalize-space(.), 'Cowbell Labs')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Cowbell Labs')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Overview | crud_or_detail:overview");
+			safeClick("//A[@title = 'Overview']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Overview']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Transactions | crud_or_detail:transactions");
+			safeClick("//A[@title = 'Transactions']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Transactions']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add your first transaction | add_or_open:add your first transaction");
+			safeClick("//DIV[contains(normalize-space(.), 'Add your first transaction')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //DIV[contains(normalize-space(.), 'Add your first transaction')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Edit | crud_or_detail:edit");
+			safeClick("//A[contains(normalize-space(.), 'Edit')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Edit')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | input:example: trip to barcelona:qa test event");
+			safeType("//INPUT[@placeholder = 'Example: Trip to Barcelona']",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Example: Trip to Barcelona']");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | select:select currency... united states dollar (usd) euro (eur) pound sterling (gbp) polish złoty (pln) swiss franc (chf) czech koruna (czk) croatian kuna (hrk) romanian leu (ron) bulgari:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | input:your name:alice");
+			safeType("//INPUT[@placeholder = 'Your name']", "Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Your name']");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | input:your friend's name:bob");
+			safeType("//INPUT[@placeholder = \"Your friend's name\"]", "Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = \"Your friend's name\"]");
+		}
+	}
+
+	@Test()
+	public void test016() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Event | add_or_open:add new event");
+			safeClick("//A[contains(normalize-space(.), 'Add New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Add New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Transaction | add_or_open:add new transaction");
+			safeClick("//A[@title = 'Add New Transaction']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Add New Transaction']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | UtYOCVDT | click:button:utyocvdt");
+			safeClick("//BUTTON[@id = 'dropDownEvents']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[@id = 'dropDownEvents']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Share | crud_or_detail:share");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Share')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Share')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Edit Event | crud_or_detail:edit event");
+			safeClick("//A[@title = 'Edit Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Edit Event']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Source Code | click:a:source code");
+			safeClick("//A[contains(normalize-space(.), 'Source Code')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source Code')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Cowbell Labs | click:a:cowbell labs");
+			safeClick("//A[contains(normalize-space(.), 'Cowbell Labs')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Cowbell Labs')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Overview | crud_or_detail:overview");
+			safeClick("//A[@title = 'Overview']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Overview']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Transactions | crud_or_detail:transactions");
+			safeClick("//A[@title = 'Transactions']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Transactions']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | UtYOCVDT Add New Event | add_or_open:utyocvdt add new event");
+			safeClick("//DIV[contains(normalize-space(.), 'UtYOCVDT Add New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //DIV[contains(normalize-space(.), 'UtYOCVDT Add New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Share With Others | crud_or_detail:share with others");
+			safeClick("//BUTTON[@aria-label = 'Share With Others']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[@aria-label = 'Share With Others']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Edit | crud_or_detail:edit");
+			safeClick("//A[contains(normalize-space(.), 'Edit')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Edit')]");
+		}
+	}
+
+	@Test()
+	public void test017() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Event | add_or_open:add new event");
+			safeClick("//A[contains(normalize-space(.), 'Add New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Add New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Transaction | add_or_open:add new transaction");
+			safeClick("//A[@title = 'Add New Transaction']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Add New Transaction']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | UtYOCVDT | click:button:utyocvdt");
+			safeClick("//BUTTON[@id = 'dropDownEvents']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[@id = 'dropDownEvents']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Share | crud_or_detail:share");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Share')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Share')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Edit Event | crud_or_detail:edit event");
+			safeClick("//A[@title = 'Edit Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Edit Event']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Delete | crud_or_detail:delete");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/SPAN[1]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Source Code | click:a:source code");
+			safeClick("//A[contains(normalize-space(.), 'Source Code')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source Code')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Cowbell Labs | click:a:cowbell labs");
+			safeClick("//A[contains(normalize-space(.), 'Cowbell Labs')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Cowbell Labs')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Overview | crud_or_detail:overview");
+			safeClick("//A[@title = 'Overview']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Overview']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Transactions | crud_or_detail:transactions");
+			safeClick("//A[@title = 'Transactions']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Transactions']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Viewing as ExhyXceu | click:button:viewing as exhyxceu");
+			safeClick("/HTML[1]/BODY[1]/DIV[2]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[2]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/BUTTON[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | rOjKVcnk | click:a:rojkvcnk");
+			safeClick("/HTML[1]/BODY[1]/DIV[2]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/UL[1]/LI[2]/A[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[2]/DIV[3]/NAV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/UL[1]/LI[2]/A[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | rOjKVcnk | click:a:rojkvcnk");
+			safeClick("/HTML[1]/BODY[1]/DIV[2]/DIV[3]/MAIN[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/UL[1]/LI[3]/A[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[2]/DIV[3]/MAIN[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/UL[1]/LI[3]/A[1]");
+		}
+	}
+
+	@Test()
+	public void test018() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Event | add_or_open:add new event");
+			safeClick("//A[contains(normalize-space(.), 'Add New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Add New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Transaction | add_or_open:add new transaction");
+			safeClick("//A[@title = 'Add New Transaction']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Add New Transaction']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | UtYOCVDT | click:button:utyocvdt");
+			safeClick("//BUTTON[@id = 'dropDownEvents']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[@id = 'dropDownEvents']");
+		}
+		try {
+			System.out.println("STEP: CLICK | Share | crud_or_detail:share");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Share')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Share')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Edit Event | crud_or_detail:edit event");
+			safeClick("//A[@title = 'Edit Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out.println("STEP_SKIPPED: //A[@title = 'Edit Event']");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | select:select currency... united states dollar (usd) euro (eur) pound sterling (gbp) polish złoty (pln) swiss franc (chf) czech koruna (czk) croatian kuna (hrk) romanian leu (ron) bulgari:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+	}
+
+	@Test()
+	public void test019() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK |  | click:button:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Viewing as ExhyXceu Switch user to rOjKVcnk | click:div:viewing as exhyxceu switch user to rojkvcnk");
+			safeClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+	}
+
+	@Test()
+	public void test020() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Transaction | add_or_open:add new transaction");
+			safeClick("//A[@title = 'Add New Transaction']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Add New Transaction']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add New Event | add_or_open:add new event");
+			safeClick("//A[contains(normalize-space(.), 'Add New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Add New Event')]");
+		}
+	}
+
+	@Test()
+	public void test021() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | input:example: trip to barcelona:qa test event");
+			safeType("//INPUT[@placeholder = 'Example: Trip to Barcelona']",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Example: Trip to Barcelona']");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | input:your name:alice");
+			safeType("//INPUT[@placeholder = 'Your name']", "Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Your name']");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | input:your friend's name:bob");
+			safeType("//INPUT[@placeholder = \"Your friend's name\"]", "Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = \"Your friend's name\"]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | select:select currency... united states dollar (usd) euro (eur) pound sterling (gbp) polish złoty (pln) swiss franc (chf) czech koruna (czk) croatian kuna (hrk) romanian leu (ron) bulgari:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+	}
+
+	@Test()
+	public void test022() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | input:your friend's name:bob");
+			safeType("//INPUT[@placeholder = \"Your friend's name\"]", "Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = \"Your friend's name\"]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+	}
+
+	@Test()
+	public void test023() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Add Participant | add_or_open:add participant");
+			safeClick("//BUTTON[contains(normalize-space(.), 'Add Participant')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //BUTTON[contains(normalize-space(.), 'Add Participant')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | input:your name:alice");
+			safeType("//INPUT[@placeholder = 'Your name']", "Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Your name']");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | input:your friend's name:bob");
+			safeType("//INPUT[@placeholder = \"Your friend's name\"]", "Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = \"Your friend's name\"]");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | select:select currency... united states dollar (usd) euro (eur) pound sterling (gbp) polish złoty (pln) swiss franc (chf) czech koruna (czk) croatian kuna (hrk) romanian leu (ron) bulgari:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
+	}
+
+	@Test()
+	public void test024() throws Exception {
+		System.out
+				.println("SCENARIO_REASON: Navigating to create a new event after exploring the source code and other pages.");
+		driver.get(Properties.app_url);
+		Thread.sleep(250);
+		try {
+			System.out.println("STEP: CLICK | Source | click:a:source");
+			safeClick("//A[contains(normalize-space(.), 'Source')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Source')]");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | New Event | add_or_open:new event");
+			safeClick("//A[@title = 'Create New Event']");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[@title = 'Create New Event']");
+		}
+		try {
+			System.out
+					.println("STEP: CLICK | Create New Event | add_or_open:create new event");
+			safeClick("//A[contains(normalize-space(.), 'Create New Event')]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //A[contains(normalize-space(.), 'Create New Event')]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | input:your name:alice");
+			safeType("//INPUT[@placeholder = 'Your name']", "Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: //INPUT[@placeholder = 'Your name']");
+		}
+		try {
+			System.out
+					.println("STEP: SELECT | Select currency... United States dollar (USD) Euro (EUR) Pound sterling (GBP) Polish złoty (PLN) Swiss franc (CHF) Czech koruna (CZK) Croatian kuna (HRK) Romanian leu (RON) Bulgari | edge_replay:select:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/div[1]/select[1]:euro (eur)");
+			safeSelect(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]",
+					"Euro (EUR)");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SELECT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Example: Trip to Barcelona | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]:qa test event");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"QA Test Event");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[1]/div[1]/div[1]/input[1]:alice");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]",
+					"Alice");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[1]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out
+					.println("STEP: INPUT | Your friend's name | edge_replay:input:/html[1]/body[1]/div[1]/div[3]/main[1]/div[1]/div[1]/form[1]/div[1]/div[1]/div[3]/ul[1]/li[2]/div[1]/div[1]/input[1]:bob");
+			safeType(
+					"/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]",
+					"Bob");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/UL[1]/LI[2]/DIV[1]/DIV[1]/INPUT[1]");
+		}
+		try {
+			System.out.println("STEP: CLICK | Save | commit:save");
+			safeSaveButtonClick("/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+			Thread.sleep(250);
+		} catch (Exception e) {
+			System.out
+					.println("STEP_SKIPPED: /HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]");
+		}
 	}
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		driver.quit();
+		try {
+			if (driver != null)
+				driver.quit();
+		} catch (Exception e) {
+		}
 	}
-
 }

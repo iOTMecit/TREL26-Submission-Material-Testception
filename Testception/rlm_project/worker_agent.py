@@ -4,6 +4,17 @@ import instructor
 from pydantic import BaseModel, Field
 from litellm import completion
 
+LLM_MODEL = os.getenv(
+    "TESTCEPTION_LLM_MODEL",
+    "openrouter/openai/gpt-4o-mini",
+).strip()
+
+OPENROUTER_API_KEY = os.getenv(
+    "OPENROUTER_API_KEY",
+    "",
+).strip()
+
+
 PLACEHOLDER_RESPONSES = {
     "final_output",
     "final_response",
@@ -465,16 +476,22 @@ def ask_worker_llm(prompt_text, elements=None, visited_ids=None, preferred_xpath
         - no incomplete business form remains.
     """
 
+    if not OPENROUTER_API_KEY:
+        raise RuntimeError(
+            "OPENROUTER_API_KEY tanımlı değil. "
+            "Önce export OPENROUTER_API_KEY='...' çalıştırın."
+        )
+
     try:
         # Instructor response_model parametresiyle JSON'u garantiye alıyoruz
         decision = client.chat.completions.create(
-            model=LLM_MODEL = os.getenv("TESTCEPTION_LLM_MODEL","openrouter/openai/gpt-4o-mini"),
+            model=LLM_MODEL,
             response_model=TestDecision,
             messages=[
                 {"role": "system", "content": qa_master_prompt},
                 {"role": "user", "content": prompt_text}
             ],
-            api_key=os.environ.get("OPENROUTER_API_KEY", ""),
+            api_key=OPENROUTER_API_KEY,
             temperature=0.2,
             max_tokens=1000
         )

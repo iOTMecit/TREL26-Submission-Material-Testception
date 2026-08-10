@@ -1,6 +1,7 @@
 package tests;
 
 import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.AfterClass;
@@ -14,7 +15,6 @@ import org.openqa.selenium.Keys;
 import utils.DriverProvider;
 import utils.Properties;
 import utils.BasePageObject;
-import utils.ResetAppState;
 
 public class GeneratedTestSuiteFired {
 
@@ -25,34 +25,37 @@ public class GeneratedTestSuiteFired {
 	public static void oneTimeSetUp() throws Exception {
 		driver = DriverProvider.getInstance().getDriver();
 		driver.get(Properties.app_url);
-		Thread.sleep(250);
 		basePageObject = new BasePageObject(driver);
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		driver.get(Properties.app_url);
-		Thread.sleep(1000);
+		Thread.sleep(2500);
 	}
 
-	@Test
+	@Test()
 	public void test00() throws Exception {
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[2]/UL[1]/LI[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[2]/UL[1]/LI[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[2]/UL[1]/LI[6]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(By.id("input_login")).clear();
 		driver.findElement(By.id("input_login")).sendKeys("foo@bar.com");
 		driver.findElement(By.id("input_email")).clear();
@@ -76,9 +79,9 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(By.id("input_username")).clear();
-		driver.findElement(By.id("input_username")).sendKeys("asd@asd.com");
+		driver.findElement(By.id("input_username")).sendKeys("foo@bar.com");
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[2]/INPUT[1]"))
 				.clear();
@@ -86,7 +89,7 @@ public class GeneratedTestSuiteFired {
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[2]/INPUT[1]"))
 				.sendKeys("adminadmin");
 		driver.findElement(By.id("input_username")).clear();
-		driver.findElement(By.id("input_username")).sendKeys("asd@asd.com");
+		driver.findElement(By.id("input_username")).sendKeys("foo@bar.com");
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[2]/INPUT[1]"))
 				.clear();
@@ -96,7 +99,7 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(By.id("input_login")).clear();
 		driver.findElement(By.id("input_login")).sendKeys("foo@bar.com");
 		driver.findElement(By.id("input_email")).clear();
@@ -110,13 +113,13 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[2]/UL[1]/LI[7]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(By.id("input_username")).clear();
-		driver.findElement(By.id("input_username")).sendKeys("asd@asd.com");
+		driver.findElement(By.id("input_username")).sendKeys("foo@bar.com");
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[2]/INPUT[1]"))
 				.clear();
@@ -126,13 +129,13 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/A[2]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(By.id("input_email")).clear();
 		driver.findElement(By.id("input_email")).sendKeys("foo@bar.com");
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(By.id("input_login")).clear();
 		driver.findElement(By.id("input_login")).sendKeys("foo@bar.com");
 		driver.findElement(By.id("input_email")).clear();
@@ -146,43 +149,33 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[5]/INPUT[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[2]/UL[1]/LI[2]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[2]/UL[1]/LI[3]/A[1]"))
 				.click();
-		Thread.sleep(1000);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/UL[1]/LI[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/UL[1]/LI[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
 				.clear();
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
+				.sendKeys("Personal");
 		driver.findElement(By.id("input_currency")).sendKeys(
 				"United States Dollar");
 		driver.findElement(By.id("input_currency")).sendKeys(
@@ -192,7 +185,7 @@ public class GeneratedTestSuiteFired {
 				.clear();
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
+				.sendKeys("Personal");
 		driver.findElement(By.id("input_currency")).sendKeys(
 				"United States Dollar");
 		driver.findElement(By.id("input_currency")).sendKeys(
@@ -202,7 +195,7 @@ public class GeneratedTestSuiteFired {
 				.clear();
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
+				.sendKeys("Personal");
 		driver.findElement(By.id("input_currency")).sendKeys(
 				"United States Dollar");
 		driver.findElement(By.id("input_currency")).sendKeys(
@@ -212,7 +205,7 @@ public class GeneratedTestSuiteFired {
 				.clear();
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
+				.sendKeys("Personal");
 		driver.findElement(By.id("input_currency")).sendKeys(
 				"United States Dollar");
 		driver.findElement(By.id("input_currency")).sendKeys(
@@ -222,7 +215,7 @@ public class GeneratedTestSuiteFired {
 				.clear();
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
+				.sendKeys("Personal");
 		driver.findElement(By.id("input_currency")).sendKeys(
 				"United States Dollar");
 		driver.findElement(By.id("input_currency")).sendKeys(
@@ -232,7 +225,17 @@ public class GeneratedTestSuiteFired {
 				.clear();
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
+				.sendKeys("Personal");
+		driver.findElement(By.id("input_currency")).sendKeys(
+				"United States Dollar");
+		driver.findElement(By.id("input_currency")).sendKeys(
+				"United States Dollar");
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
+				.clear();
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
+				.sendKeys("Personal");
 		driver.findElement(By.id("input_currency")).sendKeys(
 				"United States Dollar");
 		driver.findElement(By.id("input_currency")).sendKeys(
@@ -240,11 +243,11 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(By.id("add_transaction_text")).clear();
 		driver.findElement(By.id("add_transaction_text")).sendKeys(
 				"transaction");
@@ -253,31 +256,20 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
 		driver.findElement(By.id("add_transaction_amount"))
 				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/UL[1]/LI[2]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
 				.clear();
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
+				.sendKeys("Personal");
 		driver.findElement(By.id("input_currency")).sendKeys(
 				"United States Dollar");
 		driver.findElement(By.id("input_currency")).sendKeys(
@@ -287,7 +279,7 @@ public class GeneratedTestSuiteFired {
 				.clear();
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
+				.sendKeys("Personal");
 		driver.findElement(By.id("input_currency")).sendKeys(
 				"United States Dollar");
 		driver.findElement(By.id("input_currency")).sendKeys(
@@ -297,7 +289,7 @@ public class GeneratedTestSuiteFired {
 				.clear();
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
+				.sendKeys("Personal");
 		driver.findElement(By.id("input_currency")).sendKeys(
 				"United States Dollar");
 		driver.findElement(By.id("input_currency")).sendKeys(
@@ -307,7 +299,7 @@ public class GeneratedTestSuiteFired {
 				.clear();
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
+				.sendKeys("Personal");
 		driver.findElement(By.id("input_currency")).sendKeys(
 				"United States Dollar");
 		driver.findElement(By.id("input_currency")).sendKeys(
@@ -317,7 +309,7 @@ public class GeneratedTestSuiteFired {
 				.clear();
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
+				.sendKeys("Personal");
 		driver.findElement(By.id("input_currency")).sendKeys(
 				"United States Dollar");
 		driver.findElement(By.id("input_currency")).sendKeys(
@@ -327,7 +319,7 @@ public class GeneratedTestSuiteFired {
 				.clear();
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
+				.sendKeys("Personal");
 		driver.findElement(By.id("input_currency")).sendKeys(
 				"United States Dollar");
 		driver.findElement(By.id("input_currency")).sendKeys(
@@ -337,7 +329,7 @@ public class GeneratedTestSuiteFired {
 				.clear();
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
+				.sendKeys("Personal");
 		driver.findElement(By.id("input_currency")).sendKeys(
 				"United States Dollar");
 		driver.findElement(By.id("input_currency")).sendKeys(
@@ -347,428 +339,124 @@ public class GeneratedTestSuiteFired {
 				.clear();
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
+				.sendKeys("Personal");
 		driver.findElement(By.id("input_currency")).sendKeys(
 				"United States Dollar");
 		driver.findElement(By.id("input_currency")).sendKeys(
 				"United States Dollar");
 	}
 
-	@Test
+	@Test()
 	public void test01() throws Exception {
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
+		Thread.sleep(2500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
+		Thread.sleep(2500);
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
+		Thread.sleep(2500);
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
+		Thread.sleep(2500);
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
+		Thread.sleep(2500);
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
+		Thread.sleep(2500);
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
+		Thread.sleep(2500);
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
+		Thread.sleep(2500);
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
+		Thread.sleep(2500);
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
+		Thread.sleep(2500);
 		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
+		Thread.sleep(2500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[2]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[3]/A[1]"))
 				.click();
 	}
 
-	@Test
+	@Test()
 	public void test02() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/DIV[1]/INPUT[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("input_email")).clear();
-		driver.findElement(By.id("input_email")).sendKeys("foo@bar.com");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/FIELDSET[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("input_email")).clear();
-		driver.findElement(By.id("input_email")).sendKeys("foo@bar.com");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/FIELDSET[1]/DIV[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[4]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/FIELDSET[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/FIELDSET[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.click();
-	}
-
-	@Test
-	public void test03() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[3]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test04() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[3]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test05() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[3]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test06() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test07() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
 		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/DIV[1]/INPUT[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[3]"))
-				.click();
-	}
-
-	@Test
-	public void test08() throws Exception {
+		Thread.sleep(2500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(By.id("add_transaction_text")).clear();
 		driver.findElement(By.id("add_transaction_text")).sendKeys(
 				"transaction");
@@ -777,731 +465,22 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
 		driver.findElement(By.id("add_transaction_amount"))
 				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-	}
-
-	@Test
-	public void test09() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("input_email")).clear();
-		driver.findElement(By.id("input_email")).sendKeys("foo@bar.com");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/FIELDSET[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("input_email")).clear();
-		driver.findElement(By.id("input_email")).sendKeys("foo@bar.com");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/FIELDSET[1]/DIV[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[4]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.click();
-	}
-
-	@Test
-	public void test10() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test11() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-	}
-
-	@Test
-	public void test12() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-	}
-
-	@Test
-	public void test13() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/DIV[1]/INPUT[1]"))
-				.click();
-	}
-
-	@Test
-	public void test14() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test15() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
+		Thread.sleep(1500);
 		driver.findElement(By.id("input_total")).clear();
-		driver.findElement(By.id("input_total")).sendKeys("1000");
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
+		driver.findElement(By.id("input_total")).sendKeys("500");
 		driver.findElement(By.id("input_total")).clear();
-		driver.findElement(By.id("input_total")).sendKeys("1000");
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
+		driver.findElement(By.id("input_total")).sendKeys("500");
 		driver.findElement(By.id("input_total")).clear();
-		driver.findElement(By.id("input_total")).sendKeys("1000");
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
+		driver.findElement(By.id("input_total")).sendKeys("500");
 		driver.findElement(By.id("input_total")).clear();
-		driver.findElement(By.id("input_total")).sendKeys("1000");
+		driver.findElement(By.id("input_total")).sendKeys("500");
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[3]/INPUT[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(By.id("add_transaction_text")).clear();
 		driver.findElement(By.id("add_transaction_text")).sendKeys(
 				"transaction");
@@ -1510,28 +489,51 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
 		driver.findElement(By.id("add_transaction_amount"))
 				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/A[1]"))
 				.click();
 	}
 
-	@Test
-	public void test16() throws Exception {
+	@Test()
+	public void test03() throws Exception {
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[1]/A[1]"))
+				.click();
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[1]"))
+				.click();
+		Thread.sleep(1500);
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/DIV[1]/INPUT[2]"))
+				.click();
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
 				.clear();
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
+				.sendKeys("Personal");
+		driver.findElement(By.id("input_currency")).sendKeys(
+				"United States Dollar");
+		driver.findElement(By.id("input_currency")).sendKeys(
+				"United States Dollar");
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
+				.clear();
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
+				.sendKeys("Personal");
 		driver.findElement(By.id("input_currency")).sendKeys(
 				"United States Dollar");
 		driver.findElement(By.id("input_currency")).sendKeys(
@@ -1539,11 +541,49 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]"))
+				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[3]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
+		driver.findElement(By.id("input_email")).clear();
+		driver.findElement(By.id("input_email")).sendKeys("foo@bar.com");
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/FIELDSET[1]/DIV[2]/DIV[1]/INPUT[1]"))
+				.click();
+		Thread.sleep(1500);
+		driver.findElement(By.id("input_email")).clear();
+		driver.findElement(By.id("input_email")).sendKeys("foo@bar.com");
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/FIELDSET[1]/DIV[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[4]/DIV[1]/A[1]"))
+				.click();
+		Thread.sleep(1500);
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/DIV[1]/INPUT[1]"))
+				.click();
+	}
+
+	@Test()
+	public void test04() throws Exception {
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[2]/A[1]"))
+				.click();
+		Thread.sleep(1500);
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[3]/A[1]"))
+				.click();
+	}
+
+	@Test()
+	public void test05() throws Exception {
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
+				.click();
+		Thread.sleep(1500);
 		driver.findElement(By.id("add_transaction_text")).clear();
 		driver.findElement(By.id("add_transaction_text")).sendKeys(
 				"transaction");
@@ -1552,33 +592,61 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
 		driver.findElement(By.id("add_transaction_amount"))
 				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/A[1]"))
+				.click();
+	}
+
+	@Test()
+	public void test06() throws Exception {
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
+				.click();
+		Thread.sleep(1500);
+		driver.findElement(By.id("add_transaction_text")).clear();
+		driver.findElement(By.id("add_transaction_text")).sendKeys(
+				"transaction");
+		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
+		driver.findElement(By.id("add_transaction_amount")).clear();
+		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
+		driver.findElement(By.id("add_transaction_amount"))
+				.sendKeys(Keys.ENTER);
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/A[1]"))
+				.click();
+		Thread.sleep(1500);
+		driver.findElement(By.id("add_transaction_text")).clear();
+		driver.findElement(By.id("add_transaction_text")).sendKeys(
+				"transaction");
+		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
+		driver.findElement(By.id("add_transaction_amount")).clear();
+		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
+		driver.findElement(By.id("add_transaction_amount"))
+				.sendKeys(Keys.ENTER);
+		driver.findElement(By.id("input_total")).clear();
+		driver.findElement(By.id("input_total")).sendKeys("500");
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[3]/INPUT[1]"))
+				.click();
+		Thread.sleep(1500);
+		driver.findElement(By.id("add_transaction_text")).clear();
+		driver.findElement(By.id("add_transaction_text")).sendKeys(
+				"transaction");
+		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
+		driver.findElement(By.id("add_transaction_amount")).clear();
+		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
+		driver.findElement(By.id("add_transaction_amount"))
+				.sendKeys(Keys.ENTER);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/BUTTON[1]"))
 				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
+		Thread.sleep(1500);
 		driver.findElement(By.id("input_amount")).clear();
 		driver.findElement(By.id("input_amount")).sendKeys("10");
 		driver.findElement(By.id("input_description")).clear();
 		driver.findElement(By.id("input_description")).sendKeys("description");
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
 		driver.findElement(By.id("input_amount")).clear();
 		driver.findElement(By.id("input_amount")).sendKeys("10");
 		driver.findElement(By.id("input_description")).clear();
@@ -1586,7 +654,7 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(By.id("add_transaction_text")).clear();
 		driver.findElement(By.id("add_transaction_text")).sendKeys(
 				"transaction");
@@ -1595,11 +663,10 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
 		driver.findElement(By.id("add_transaction_amount"))
 				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[12]/BUTTON[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(By.id("add_transaction_text")).clear();
 		driver.findElement(By.id("add_transaction_text")).sendKeys(
 				"transaction");
@@ -1608,11 +675,10 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
 		driver.findElement(By.id("add_transaction_amount"))
 				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/BUTTON[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(By.id("add_transaction_text")).clear();
 		driver.findElement(By.id("add_transaction_text")).sendKeys(
 				"transaction");
@@ -1621,11 +687,10 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
 		driver.findElement(By.id("add_transaction_amount"))
 				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[14]/BUTTON[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(By.id("add_transaction_text")).clear();
 		driver.findElement(By.id("add_transaction_text")).sendKeys(
 				"transaction");
@@ -1634,392 +699,55 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
 		driver.findElement(By.id("add_transaction_amount"))
 				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[3]/BUTTON[1]"))
 				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[17]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[19]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/BUTTON[1]"))
-				.click();
 	}
 
-	@Test
-	public void test17() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/A[1]"))
-				.click();
-	}
-
-	@Test
-	public void test18() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
+	@Test()
+	public void test07() throws Exception {
 		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
+		Thread.sleep(2500);
 		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
+				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[3]/A[1]"))
 				.click();
 	}
 
-	@Test
-	public void test19() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
+	@Test()
+	public void test08() throws Exception {
 		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
+		Thread.sleep(2500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
+				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
+				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/FORM[1]/DIV[2]/DIV[1]/INPUT[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[4]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("input_amount")).clear();
-		driver.findElement(By.id("input_amount")).sendKeys("10");
-		driver.findElement(By.id("input_description")).clear();
-		driver.findElement(By.id("input_description")).sendKeys("description");
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("input_amount")).clear();
-		driver.findElement(By.id("input_amount")).sendKeys("10");
-		driver.findElement(By.id("input_description")).clear();
-		driver.findElement(By.id("input_description")).sendKeys("description");
-	}
-
-	@Test
-	public void test20() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[4]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("input_total")).clear();
-		driver.findElement(By.id("input_total")).sendKeys("1000");
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("input_total")).clear();
-		driver.findElement(By.id("input_total")).sendKeys("1000");
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("input_total")).clear();
-		driver.findElement(By.id("input_total")).sendKeys("1000");
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("input_total")).clear();
-		driver.findElement(By.id("input_total")).sendKeys("1000");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[3]/INPUT[1]"))
+				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
 	}
 
-	@Test
-	public void test21() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
+	@Test()
+	public void test09() throws Exception {
 		driver.get("http://localhost:3000");
-		Thread.sleep(1000);
+		Thread.sleep(2500);
 		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
+				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
 				.clear();
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
+				.sendKeys("Personal");
 		driver.findElement(By.id("input_currency")).sendKeys(
 				"United States Dollar");
 		driver.findElement(By.id("input_currency")).sendKeys(
@@ -2027,11 +755,41 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[4]"))
+				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
+				.clear();
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
+				.sendKeys("Personal");
+		driver.findElement(By.id("input_currency")).sendKeys(
+				"United States Dollar");
+		driver.findElement(By.id("input_currency")).sendKeys(
+				"United States Dollar");
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
+				.clear();
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
+				.sendKeys("Personal");
+		driver.findElement(By.id("input_currency")).sendKeys(
+				"United States Dollar");
+		driver.findElement(By.id("input_currency")).sendKeys(
+				"United States Dollar");
+	}
+
+	@Test()
+	public void test10() throws Exception {
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
+		driver.findElement(
+				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]"))
+				.click();
+		Thread.sleep(1500);
 		driver.findElement(By.id("add_transaction_text")).clear();
 		driver.findElement(By.id("add_transaction_text")).sendKeys(
 				"transaction");
@@ -2040,11 +798,10 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
 		driver.findElement(By.id("add_transaction_amount"))
 				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/A[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(By.id("add_transaction_text")).clear();
 		driver.findElement(By.id("add_transaction_text")).sendKeys(
 				"transaction");
@@ -2053,13 +810,12 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
 		driver.findElement(By.id("add_transaction_amount"))
 				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
 		driver.findElement(By.id("input_total")).clear();
-		driver.findElement(By.id("input_total")).sendKeys("1000");
+		driver.findElement(By.id("input_total")).sendKeys("500");
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[3]/INPUT[1]"))
 				.click();
-		Thread.sleep(250);
+		Thread.sleep(1500);
 		driver.findElement(By.id("add_transaction_text")).clear();
 		driver.findElement(By.id("add_transaction_text")).sendKeys(
 				"transaction");
@@ -2068,2140 +824,26 @@ public class GeneratedTestSuiteFired {
 		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
 		driver.findElement(By.id("add_transaction_amount"))
 				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
 		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/BUTTON[1]"))
+				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[5]/BUTTON[1]"))
 				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("input_amount")).clear();
-		driver.findElement(By.id("input_amount")).sendKeys("10");
-		driver.findElement(By.id("input_description")).clear();
-		driver.findElement(By.id("input_description")).sendKeys("description");
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("input_amount")).clear();
-		driver.findElement(By.id("input_amount")).sendKeys("10");
-		driver.findElement(By.id("input_description")).clear();
-		driver.findElement(By.id("input_description")).sendKeys("description");
 	}
 
-	@Test
-	public void test22() throws Exception {
+	@Test()
+	public void test11() throws Exception {
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
 		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
+				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[1]"))
 				.click();
-		Thread.sleep(250);
+	}
+
+	@Test()
+	public void test12() throws Exception {
+		driver.get("http://localhost:3000");
+		Thread.sleep(2500);
 		driver.findElement(
 				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[11]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test23() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[4]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[20]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test24() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[24]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test25() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("input_amount")).clear();
-		driver.findElement(By.id("input_amount")).sendKeys("10");
-		driver.findElement(By.id("input_description")).clear();
-		driver.findElement(By.id("input_description")).sendKeys("description");
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("input_amount")).clear();
-		driver.findElement(By.id("input_amount")).sendKeys("10");
-		driver.findElement(By.id("input_description")).clear();
-		driver.findElement(By.id("input_description")).sendKeys("description");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[29]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test26() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("input_amount")).clear();
-		driver.findElement(By.id("input_amount")).sendKeys("10");
-		driver.findElement(By.id("input_description")).clear();
-		driver.findElement(By.id("input_description")).sendKeys("description");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[33]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test27() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[34]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[36]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test28() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[37]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[40]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test29() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[41]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[44]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test30() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[45]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[47]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test31() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]/DIV[2]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test32() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[4]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[21]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test33() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[4]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("input_total")).clear();
-		driver.findElement(By.id("input_total")).sendKeys("1000");
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[3]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[25]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test34() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[4]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("input_total")).clear();
-		driver.findElement(By.id("input_total")).sendKeys("1000");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[3]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[29]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test35() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]"))
-				.click();
-	}
-
-	@Test
-	public void test36() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[48]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test37() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[4]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[30]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test38() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[12]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test39() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[5]"))
-				.click();
-	}
-
-	@Test
-	public void test40() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[4]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[31]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test41() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("input_amount")).clear();
-		driver.findElement(By.id("input_amount")).sendKeys("10");
-		driver.findElement(By.id("input_description")).clear();
-		driver.findElement(By.id("input_description")).sendKeys("description");
-		driver.findElement(By.id("input_amount")).clear();
-		driver.findElement(By.id("input_amount")).sendKeys("10");
-		driver.findElement(By.id("input_description")).clear();
-		driver.findElement(By.id("input_description")).sendKeys("description");
-	}
-
-	@Test
-	public void test42() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("input_amount")).clear();
-		driver.findElement(By.id("input_amount")).sendKeys("10");
-		driver.findElement(By.id("input_description")).clear();
-		driver.findElement(By.id("input_description")).sendKeys("description");
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[53]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test43() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("input_amount")).clear();
-		driver.findElement(By.id("input_amount")).sendKeys("10");
-		driver.findElement(By.id("input_description")).clear();
-		driver.findElement(By.id("input_description")).sendKeys("description");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[57]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test44() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[58]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test45() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[61]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[3]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[64]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test46() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-	}
-
-	@Test
-	public void test47() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[4]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("input_amount")).clear();
-		driver.findElement(By.id("input_amount")).sendKeys("10");
-		driver.findElement(By.id("input_description")).clear();
-		driver.findElement(By.id("input_description")).sendKeys("description");
-		driver.findElement(By.id("input_amount")).clear();
-		driver.findElement(By.id("input_amount")).sendKeys("10");
-		driver.findElement(By.id("input_description")).clear();
-		driver.findElement(By.id("input_description")).sendKeys("description");
-	}
-
-	@Test
-	public void test48() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[4]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("input_total")).clear();
-		driver.findElement(By.id("input_total")).sendKeys("1000");
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[3]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[36]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test49() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[4]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("input_total")).clear();
-		driver.findElement(By.id("input_total")).sendKeys("1000");
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[3]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[40]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test50() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[4]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(By.id("input_total")).clear();
-		driver.findElement(By.id("input_total")).sendKeys("1000");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[3]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/BUTTON[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("input_amount")).clear();
-		driver.findElement(By.id("input_amount")).sendKeys("10");
-		driver.findElement(By.id("input_description")).clear();
-		driver.findElement(By.id("input_description")).sendKeys("description");
-		driver.findElement(By.id("input_amount")).clear();
-		driver.findElement(By.id("input_amount")).sendKeys("10");
-		driver.findElement(By.id("input_description")).clear();
-		driver.findElement(By.id("input_description")).sendKeys("description");
-	}
-
-	@Test
-	public void test51() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[65]/BUTTON[1]"))
-				.click();
-	}
-
-	@Test
-	public void test52() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[5]"))
-				.click();
-	}
-
-	@Test
-	public void test53() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-	}
-
-	@Test
-	public void test54() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[6]"))
-				.click();
-	}
-
-	@Test
-	public void test55() throws Exception {
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[2]/UL[1]/LI[2]/A[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]/DIV[2]/BUTTON[2]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.clear();
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[1]/INPUT[1]"))
-				.sendKeys("Others");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(By.id("input_currency")).sendKeys(
-				"United States Dollar");
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/FORM[1]/FIELDSET[1]/DIV[4]/INPUT[1]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]"))
-				.click();
-		Thread.sleep(250);
-		driver.findElement(By.id("add_transaction_text")).clear();
-		driver.findElement(By.id("add_transaction_text")).sendKeys(
-				"transaction");
-		driver.findElement(By.id("add_transaction_text")).sendKeys(Keys.ENTER);
-		driver.findElement(By.id("add_transaction_amount")).clear();
-		driver.findElement(By.id("add_transaction_amount")).sendKeys("20");
-		driver.findElement(By.id("add_transaction_amount"))
-				.sendKeys(Keys.ENTER);
-		Thread.sleep(700);
-		driver.findElement(
-				By.xpath("/HTML[1]/BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[66]/BUTTON[1]"))
 				.click();
 	}
 

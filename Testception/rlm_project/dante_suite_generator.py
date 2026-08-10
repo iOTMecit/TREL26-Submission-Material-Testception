@@ -461,6 +461,21 @@ def generate_dante_suites(
 \t\tif (xpath == null || xpath.trim().isEmpty()) return;
 
 \t\tWebElement element = findVisibleElement(xpath);
+\t\tString readOnly = element.getAttribute("readonly");
+\t\tString disabled = element.getAttribute("disabled");
+\t\tString ariaReadOnly = element.getAttribute("aria-readonly");
+
+\t\tif (
+\t\t\t!element.isDisplayed()
+\t\t\t|| !element.isEnabled()
+\t\t\t|| readOnly != null
+\t\t\t|| disabled != null
+\t\t\t|| "true".equalsIgnoreCase(ariaReadOnly)
+\t\t) {
+\t\t\tthrow new org.openqa.selenium.InvalidElementStateException(
+\t\t\t\t"Element is not editable: " + xpath
+\t\t\t);
+\t\t}
 \t\thighlight(element);
 
 \t\ttry {

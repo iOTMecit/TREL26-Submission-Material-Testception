@@ -47,21 +47,57 @@ public class PerceptualImageHashStateVertexImpl extends StateVertexImpl {
 		this.hashMat = hashMat;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(hashMat);
-	}
+/**
+ * Two states are exact clones only when:
+ *
+ * 1. Their perceptual image hashes are considered visually equivalent.
+ * 2. Their normalized/stripped DOMs are identical.
+ *
+ * Visual distance is still used for near-duplicate calculations through
+ * getDist() and inThreshold().
+ */
+  @Override
+  public int hashCode() {
+      /*
+       * The visual comparison is threshold based. Two different hash matrices
+       * may therefore be considered equal. Using hashMat here could violate
+       * the equals/hashCode contract.
+       *
+       * Since equals() also requires equal stripped DOMs, stripped DOM alone
+       * is a safe hash-code source.
+       */
+      return Objects.hashCode(getStrippedDom());
+  }
 
-	@Override
-	public boolean equals(Object object) {
-		if (object instanceof PerceptualImageHashStateVertexImpl) {
-			PerceptualImageHashStateVertexImpl that = (PerceptualImageHashStateVertexImpl) object;
-			double distance = hash.compare(this.hashMat, that.hashMat);
-			return (distance >= hash.minThreshold && distance <= hash.maxThreshold)
-					|| (distance == 0.0);
-		}
-		return false;
-	}
+  @Override
+  public boolean equals(Object object) {
+      if (this == object) {
+          return true;
+      }
+
+      if (!(object instanceof PerceptualImageHashStateVertexImpl)) {
+          return false;
+      }
+
+      PerceptualImageHashStateVertexImpl that =
+              (PerceptualImageHashStateVertexImpl) object;
+
+      double distance =
+              hash.compare(this.hashMat, that.hashMat);
+
+      boolean sameVisualState =
+              distance == 0.0
+              || (distance >= hash.minThreshold
+                  && distance <= hash.maxThreshold);
+
+      boolean sameStrippedDom =
+              Objects.equal(
+                      this.getStrippedDom(),
+                      that.getStrippedDom()
+              );
+
+      return sameVisualState && sameStrippedDom;
+  }
 
 	@Override
 	public String toString() {

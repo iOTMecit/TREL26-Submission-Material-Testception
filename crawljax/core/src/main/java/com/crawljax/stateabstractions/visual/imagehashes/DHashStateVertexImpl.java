@@ -41,19 +41,44 @@ public class DHashStateVertexImpl extends StateVertexImpl {
 		this.dHash = dHashVisual;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(dHash);
-	}
+/**
+ * Two states are clones only when both their visual hash and
+ * normalized DOM are equal.
+ *
+ * The visual hash captures the general page layout, while the
+ * stripped DOM preserves meaningful differences such as visible
+ * text, created entities and form values.
+ */
+  @Override
+  public int hashCode() {
+      return Objects.hashCode(
+              dHash,
+              getStrippedDom()
+      );
+  }
 
-	@Override
-	public boolean equals(Object object) {
-		if (object instanceof DHashStateVertexImpl) {
-			DHashStateVertexImpl that = (DHashStateVertexImpl) object;
-			return Objects.equal(this.dHash, that.getDHashVisual());
-		}
-		return false;
-	}
+  @Override
+  public boolean equals(Object object) {
+      if (this == object) {
+          return true;
+      }
+
+      if (!(object instanceof DHashStateVertexImpl)) {
+          return false;
+      }
+
+      DHashStateVertexImpl that =
+              (DHashStateVertexImpl) object;
+
+      return Objects.equal(
+                  this.dHash,
+                  that.getDHashVisual()
+              )
+              && Objects.equal(
+                  this.getStrippedDom(),
+                  that.getStrippedDom()
+              );
+  }
 
 	@Override
 	public String toString() {

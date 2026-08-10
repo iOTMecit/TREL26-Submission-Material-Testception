@@ -1,79 +1,77 @@
-.project
-.classpath
-.settings/
-target/
-.DS_Store
-.idea
-*.iml
-app.properties
-app.copy.properties
-log4j.properties
-applications/*/localhost/crawl*
-dependency-graph-*.txt
-dependency-graph-*.png
-FUN.tsv
-VAR.tsv
-*.log
-*coverage-reports
-*.png
-*.js
-*.js.map
-network-logs# Eclipse
-.classpath
-.project
-.settings/
+# Secrets
+.env
+*.key
+*.pem
 
-# Intellij
-.idea/
-*.iml
-*.iws
-*.ipr
-
-# Maven
-*.log
-target/
-release.properties
-pom.xml.releaseBackup
-git.properties
-output/
-out/
-
-# Mac
-.DS_Store# Python
+# Python
 __pycache__/
 *.py[cod]
-*.pyo
-
-# Virtual environments
-venv/
 .venv/
-env/
-rlm_env/
+venv/
+**/.venv-selenium4/
 
-# Secrets and local configuration
-.env
-.env.*
-!.env.example
+# Maven / Java
+**/target/
+*.class
 
-# Generated Testception output
-GeneratedTestSuite*.java
+# Experiment outputs
+coverage-results/
+logs/
+**/coverage-run-logs/
+**/coverage-reports/
+**/all-coverage-reports/
 
-# Crawljax runtime results
-**/crawl0/
-**/crawl-with-inputs/crawl*/
-**/screenshots/
-**/doms/
+# Local Maven repositories
+.m2-selenium4/
 
-# Logs and reports
-*.log
-logs_*.txt
-coverage-reports/
-target/
+# Node
+node_modules/
 
 # IDE
 .idea/
 .vscode/
+*.iml
 
 # OS
 .DS_Store
 Thumbs.db
+
+# Runtime
+*.log
+*.pid
+chromedriver.log
+
+# ============================================================
+# Testception generated/runtime artifacts
+# ============================================================
+
+# Crawljax runtime outputs
+dante/applications/*/localhost/crawl-with-inputs/crawl0/
+dante/applications/*/localhost/crawl0/
+dante/applications/*/localhost/crawl-with-inputs/screenshots/
+dante/applications/*/localhost/crawl-with-inputs/doms/
+dante/applications/*/localhost/crawl-with-inputs/states/
+dante/applications/*/localhost/crawl-with-inputs/css/
+dante/applications/*/localhost/crawl-with-inputs/src/
+
+# Generated coverage/network artifacts
+**/crawljax-coverage-reports/
+**/network-logs/
+**/coverage-reports/
+**/all-coverage-reports/
+
+# Downloaded JS resources used during coverage runs
+**/src/main/resources/scripts/
+
+# Generated Selenium action traces
+dante/applications/*/selenium-actions-*.txt
+
+# Local Selenium4 backups / smoke-test copies
+dante/applications/* resources used during coverage runs
+**/src/main/resources/scripts/
+
+# Generated Selenium action traces/testsuite-*-selenium4.cdp-smoke-ok-*/
+
+# Runtime output
+coverage-results/
+logs/
