@@ -1,1 +1,4 @@
--r Testception/rlm_project/requirements.txt
+beautifulsoup4==4.15.0
+instructor==1.15.4
+litellm==1.94.1
+pydantic==2.13.4
