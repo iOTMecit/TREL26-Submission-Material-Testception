@@ -74,7 +74,7 @@ public final class Selenium4JsCoverage {
         }
     }
 
-    private final HasCdp cdp;
+    private HasCdp cdp;
     private final Path outputDirectory;
     private final Pattern includePattern;
     private final Pattern excludePattern;
@@ -90,6 +90,7 @@ public final class Selenium4JsCoverage {
     private boolean started;
     private boolean closed;
     private boolean preciseCoverageRunning;
+    private boolean cdpUsable = true;
     private String activeTestName;
 
     private Selenium4JsCoverage(
@@ -164,9 +165,15 @@ public final class Selenium4JsCoverage {
             return;
         }
 
-        cdp.executeCdpCommand(
-                "Profiler.enable",
-                Collections.emptyMap());
+        try {
+            cdp.executeCdpCommand(
+                    "Profiler.enable",
+                    Collections.emptyMap());
+            cdpUsable = true;
+        } catch (RuntimeException exception) {
+            markCdpUnusable();
+            throw exception;
+        }
 
         if (mode == Mode.MODERN_RAW) {
             startPreciseCoverage();
@@ -183,6 +190,8 @@ public final class Selenium4JsCoverage {
     }
 
     private void startPreciseCoverage() {
+        ensureCdpUsable();
+
         if (preciseCoverageRunning) {
             return;
         }
@@ -192,10 +201,15 @@ public final class Selenium4JsCoverage {
         parameters.put("detailed", mode == Mode.MODERN_RAW);
         parameters.put("allowTriggeredUpdates", false);
 
-        cdp.executeCdpCommand(
-                "Profiler.startPreciseCoverage",
-                parameters);
-        preciseCoverageRunning = true;
+        try {
+            cdp.executeCdpCommand(
+                    "Profiler.startPreciseCoverage",
+                    parameters);
+            preciseCoverageRunning = true;
+        } catch (RuntimeException exception) {
+            markCdpUnusable();
+            throw exception;
+        }
     }
 
     private void stopPreciseCoverage() {
@@ -203,10 +217,150 @@ public final class Selenium4JsCoverage {
             return;
         }
 
-        cdp.executeCdpCommand(
-                "Profiler.stopPreciseCoverage",
-                Collections.emptyMap());
+        if (!cdpUsable) {
+            preciseCoverageRunning = false;
+            return;
+        }
+
+        try {
+            cdp.executeCdpCommand(
+                    "Profiler.stopPreciseCoverage",
+                    Collections.emptyMap());
+        } catch (RuntimeException exception) {
+            markCdpUnusable();
+            throw exception;
+        } finally {
+            preciseCoverageRunning = false;
+        }
+    }
+
+    private void ensureCdpUsable() {
+        if (!cdpUsable) {
+            throw new IllegalStateException(
+                    "Coverage CDP driver is not usable; browser recycle required");
+        }
+    }
+
+    private void markCdpUnusable() {
+        cdpUsable = false;
         preciseCoverageRunning = false;
+    }
+
+    /**
+     * Called between tests before a planned browser recycle. The accumulated
+     * suite/test coverage stays in this collector; only the current CDP
+     * transport is detached.
+     */
+    public synchronized void prepareForBrowserRecycle() {
+        ensureStarted();
+
+        if (activeTestName != null) {
+            throw new IllegalStateException(
+                    "Cannot recycle browser while coverage test is active: "
+                            + activeTestName);
+        }
+
+        RuntimeException cleanupFailure = null;
+
+        if (cdpUsable) {
+            try {
+                stopPreciseCoverage();
+            } catch (RuntimeException exception) {
+                cleanupFailure = exception;
+            }
+
+            if (cdpUsable) {
+                try {
+                    cdp.executeCdpCommand(
+                            "Profiler.disable",
+                            Collections.emptyMap());
+                } catch (RuntimeException exception) {
+                    cleanupFailure = combine(cleanupFailure, exception);
+                }
+            }
+        }
+
+        markCdpUnusable();
+
+        if (cleanupFailure != null) {
+            System.out.println(
+                    "SELENIUM4_COVERAGE_RECYCLE_CLEANUP_WARNING: "
+                            + cleanupFailure.getClass().getSimpleName()
+                            + " | "
+                            + String.valueOf(cleanupFailure.getMessage()));
+        }
+    }
+
+    /**
+     * Bind the same aggregate collector to a fresh ChromeDriver/HasCdp.
+     * WebDriver actions and CDP commands for the following tests therefore use
+     * exactly the same new Chrome instance.
+     */
+    public synchronized void rebindToNewDriver(HasCdp newCdp) {
+        ensureStarted();
+
+        if (activeTestName != null) {
+            throw new IllegalStateException(
+                    "Cannot rebind CDP while coverage test is active: "
+                            + activeTestName);
+        }
+
+        cdp = Objects.requireNonNull(newCdp, "newCdp");
+        cdpUsable = true;
+        preciseCoverageRunning = false;
+
+        try {
+            cdp.executeCdpCommand(
+                    "Profiler.enable",
+                    Collections.emptyMap());
+
+            if (mode == Mode.MODERN_RAW) {
+                startPreciseCoverage();
+            }
+        } catch (RuntimeException exception) {
+            markCdpUnusable();
+            throw exception;
+        }
+
+        System.out.println(
+                "SELENIUM4_COVERAGE_REBOUND_TO_NEW_DRIVER"
+                        + " | mode=" + mode);
+    }
+
+    /**
+     * Recovery path for a WebDriver/Chrome transport failure inside a test.
+     * No command is sent to the broken driver. The affected test contributes
+     * no coverage sample and the next test can safely bind a fresh browser.
+     */
+    public synchronized void abandonTestAfterDriverFailure(
+            String testName,
+            String status) {
+
+        if (!started) {
+            return;
+        }
+
+        activeTestName = null;
+        markCdpUnusable();
+
+        testResults.add(new TestResult(
+                testName,
+                status,
+                0L,
+                0L));
+
+        if (mode == Mode.DANTE) {
+            rawTestResults.add(new TestRawResult(
+                    testName,
+                    status,
+                    Collections.emptyMap()));
+        }
+
+        System.out.println(
+                "SELENIUM4_COVERAGE_TEST_ABANDONED: "
+                        + testName
+                        + " | status=" + status
+                        + " | reason=DRIVER_UNUSABLE");
     }
 
     /**
@@ -242,48 +396,69 @@ public final class Selenium4JsCoverage {
         ensureStarted();
         ensureActiveTest(testName);
 
-        Snapshot snapshot = takeSnapshot();
+        RuntimeException failure = null;
 
-        if (mode == Mode.DANTE) {
-            stopPreciseCoverage();
-        }
+        try {
+            Snapshot snapshot = takeSnapshot();
 
-        mergeKnownRanges(snapshot);
-        if (successful) {
-            mergeCoveredRanges(snapshot);
-        }
+            if (mode == Mode.DANTE) {
+                stopPreciseCoverage();
+            }
 
-        long totalBytes = snapshot.totalKnownBytes();
-        long coveredBytes = snapshot.totalCoveredBytes();
-        String status = successful ? "PASSED" : "FAILED";
+            mergeKnownRanges(snapshot);
+            if (successful) {
+                mergeCoveredRanges(snapshot);
+            }
 
-        testResults.add(new TestResult(
-                testName,
-                status,
-                totalBytes,
-                coveredBytes));
+            long totalBytes = snapshot.totalKnownBytes();
+            long coveredBytes = snapshot.totalCoveredBytes();
+            String status = successful ? "PASSED" : "FAILED";
 
-        if (mode == Mode.DANTE) {
-            rawTestResults.add(new TestRawResult(
+            testResults.add(new TestResult(
                     testName,
                     status,
-                    snapshot.rawScripts));
+                    totalBytes,
+                    coveredBytes));
+
+            if (mode == Mode.DANTE) {
+                rawTestResults.add(new TestRawResult(
+                        testName,
+                        status,
+                        snapshot.rawScripts));
+            }
+
+            System.out.printf(
+                    Locale.ROOT,
+                    "SELENIUM4_COVERAGE_TEST_END: %s"
+                            + " | status=%s"
+                            + " | covered=%d"
+                            + " | total=%d"
+                            + " | percent=%.4f%n",
+                    testName,
+                    status,
+                    coveredBytes,
+                    totalBytes,
+                    percentage(coveredBytes, totalBytes));
+
+        } catch (RuntimeException exception) {
+            failure = exception;
+            markCdpUnusable();
+
+            System.out.println(
+                    "SELENIUM4_COVERAGE_TEST_END_ERROR: "
+                            + testName
+                            + " | "
+                            + exception.getClass().getSimpleName()
+                            + " | "
+                            + String.valueOf(exception.getMessage()));
+
+        } finally {
+            activeTestName = null;
         }
 
-        System.out.printf(
-                Locale.ROOT,
-                "SELENIUM4_COVERAGE_TEST_END: %s"
-                        + " | status=%s"
-                        + " | covered=%d"
-                        + " | total=%d"
-                        + " | percent=%.4f%n",
-                testName,
-                status,
-                coveredBytes,
-                totalBytes,
-                percentage(coveredBytes, totalBytes));
-
-        activeTestName = null;
+        if (failure != null) {
+            throw failure;
+        }
     }
 
     public synchronized void abortTest(
@@ -294,36 +469,41 @@ public final class Selenium4JsCoverage {
             return;
         }
 
-        Snapshot snapshot = preciseCoverageRunning
-                ? takeSnapshot()
-                : new Snapshot();
+        String abortedTestName = activeTestName;
+        activeTestName = null;
 
-        if (mode == Mode.DANTE) {
-            stopPreciseCoverage();
+        if (mode == Mode.DANTE && preciseCoverageRunning && cdpUsable) {
+            try {
+                stopPreciseCoverage();
+            } catch (RuntimeException exception) {
+                System.out.println(
+                        "SELENIUM4_COVERAGE_ABORT_CLEANUP_WARNING: "
+                                + abortedTestName
+                                + " | "
+                                + exception.getClass().getSimpleName()
+                                + " | "
+                                + String.valueOf(exception.getMessage()));
+            }
         }
 
-        mergeKnownRanges(snapshot);
-
         testResults.add(new TestResult(
-                testName,
+                abortedTestName,
                 status,
-                snapshot.totalKnownBytes(),
-                snapshot.totalCoveredBytes()));
+                0L,
+                0L));
 
         if (mode == Mode.DANTE) {
             rawTestResults.add(new TestRawResult(
-                    testName,
+                    abortedTestName,
                     status,
-                    snapshot.rawScripts));
+                    Collections.emptyMap()));
         }
 
         System.out.println(
                 "SELENIUM4_COVERAGE_TEST_ABORT: "
-                        + testName
-                        + " | status="
-                        + status);
-
-        activeTestName = null;
+                        + abortedTestName
+                        + " | status=" + status
+                        + " | snapshot=SKIPPED");
     }
 
     public synchronized void closeAndWrite() {
@@ -336,27 +516,39 @@ public final class Selenium4JsCoverage {
         try {
             if (started) {
                 if (activeTestName != null) {
-                    abortTest(activeTestName, "ABORTED");
+                    if (cdpUsable) {
+                        abortTest(activeTestName, "ABORTED");
+                    } else {
+                        abandonTestAfterDriverFailure(
+                                activeTestName,
+                                "ABORTED_DRIVER_UNUSABLE");
+                    }
                 }
                 writeReports();
             }
         } catch (RuntimeException exception) {
             failure = exception;
         } finally {
-            try {
-                stopPreciseCoverage();
-            } catch (RuntimeException exception) {
-                failure = combine(failure, exception);
-            }
-
-            if (started) {
+            if (cdpUsable) {
                 try {
-                    cdp.executeCdpCommand(
-                            "Profiler.disable",
-                            Collections.emptyMap());
+                    stopPreciseCoverage();
                 } catch (RuntimeException exception) {
                     failure = combine(failure, exception);
                 }
+
+                if (cdpUsable && started) {
+                    try {
+                        cdp.executeCdpCommand(
+                                "Profiler.disable",
+                                Collections.emptyMap());
+                    } catch (RuntimeException exception) {
+                        failure = combine(failure, exception);
+                    }
+                }
+            } else {
+                System.out.println(
+                        "SELENIUM4_COVERAGE_CLOSE: CDP cleanup skipped "
+                                + "because the driver was marked unusable");
             }
 
             closed = true;
@@ -396,9 +588,17 @@ public final class Selenium4JsCoverage {
             return new Snapshot();
         }
 
-        Map<String, Object> response = cdp.executeCdpCommand(
-                "Profiler.takePreciseCoverage",
-                Collections.emptyMap());
+        ensureCdpUsable();
+
+        Map<String, Object> response;
+        try {
+            response = cdp.executeCdpCommand(
+                    "Profiler.takePreciseCoverage",
+                    Collections.emptyMap());
+        } catch (RuntimeException exception) {
+            markCdpUnusable();
+            throw exception;
+        }
 
         Object rawResult = response.get("result");
         if (!(rawResult instanceof List<?>)) {

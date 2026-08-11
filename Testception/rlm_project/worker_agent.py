@@ -6,7 +6,7 @@ from litellm import completion
 
 LLM_MODEL = os.getenv(
     "TESTCEPTION_LLM_MODEL",
-    "openrouter/openai/gpt-4o-mini",
+    "",
 ).strip()
 
 OPENROUTER_API_KEY = os.getenv(
@@ -476,10 +476,16 @@ def ask_worker_llm(prompt_text, elements=None, visited_ids=None, preferred_xpath
         - no incomplete business form remains.
     """
 
+    if not LLM_MODEL:
+        raise RuntimeError(
+            "TESTCEPTION_LLM_MODEL tanımlı değil. "
+            "Modeli terminal oturumunda export edin."
+        )
+
     if not OPENROUTER_API_KEY:
         raise RuntimeError(
             "OPENROUTER_API_KEY tanımlı değil. "
-            "Önce export OPENROUTER_API_KEY='...' çalıştırın."
+            "API key'i terminal oturumunda export edin."
         )
 
     try:

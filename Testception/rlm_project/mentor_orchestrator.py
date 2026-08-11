@@ -2479,13 +2479,13 @@ if __name__ == "__main__":
 
 
     generate_dante_suites(
-        all_test_scenarios,
-        app_name=APP_NAME,
-        login_config=config.get("login"),
-        wait_time=config.get(
-            "wait_time",
-            1000,
-        ),
-        start_url=config.get("start_url"),
-        output_dir=GENERATED_TEST_DIR,
-    )
+            all_test_scenarios,
+            app_name=APP_NAME,
+            login_config=config.get("login"),
+            wait_time=config.get(
+                "wait_time",
+                1000,
+            ),
+            start_url=config.get("start_url"),
+            output_dir=GENERATED_TEST_DIR,
+)

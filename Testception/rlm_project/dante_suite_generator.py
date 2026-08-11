@@ -225,6 +225,12 @@ def generate_dante_suites(
     start_url=None,
     output_dir=None,
 ):
+    """
+    Generate the legacy DANTE-compatible Java suite from RLM scenarios.
+
+    The root --full runner converts this canonical generated suite into the
+    Selenium4 coverage-aware test class after RLM generation completes.
+    """
 
     output_path = (
         Path(output_dir).resolve()
@@ -786,4 +792,3 @@ public class {class_name_coverage} {{
         f"Valid scenarios: {len(valid_scenarios)}"
     )
 
-    print(f"✅ SUCCESS! LLM-centric Dante-compatible Java tests generated. Valid scenarios: {len(valid_scenarios)}")
