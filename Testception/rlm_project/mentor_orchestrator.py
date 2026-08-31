@@ -209,6 +209,187 @@ STATE_CANDIDATE_XPATHS = {}
 STATE_EDGES = {}
 AVAILABLE_DOM_STATES = set()
 
+# ---------------------------------------------------------------------------
+# Crawljax input semantics preserved for generated replay
+# ---------------------------------------------------------------------------
+# Crawljax supports fields that must press ENTER after typing through
+# crawlRules().setInputFieldIdsWithEnterClick(...). result.json preserves the
+# values but loses this extra keyboard semantic, so Testception recovers it
+# once from the existing subject Config.java and carries it as step metadata.
+ENTER_AFTER_INPUT_LOCATORS = set()
+ENTER_SEMANTICS_SOURCE = None
+
+
+def _strip_java_comments(text):
+    # Preserve comment-like text inside Java string literals (for example
+    # http:// URLs and //INPUT XPath strings).
+    token_pattern = re.compile(
+        r'"(?:\\.|[^"\\])*"|//[^\n]*|/\*.*?\*/',
+        re.DOTALL,
+    )
+
+    def replace_token(match):
+        token = match.group(0)
+        return token if token.startswith('"') else ""
+
+    return token_pattern.sub(replace_token, text)
+
+
+def _decode_java_string_literal(literal):
+    try:
+        return json.loads(literal)
+    except Exception:
+        return literal[1:-1] if len(literal) >= 2 else literal
+
+
+def _find_subject_config_java(app_name):
+    expected = f"{app_name}config.java".lower()
+    exact = []
+    fallback = []
+
+    for candidate in DANTE_ROOT.rglob("*Config.java"):
+        if candidate.name.lower() == expected:
+            exact.append(candidate)
+            continue
+        try:
+            head = candidate.read_text(encoding="utf-8", errors="ignore")[:12000]
+        except Exception:
+            continue
+        app_token = re.escape(app_name.upper())
+        if re.search(rf"ApplicationNames\.Name\.{app_token}\b", head):
+            fallback.append(candidate)
+
+    candidates = exact or fallback
+    if not candidates:
+        return None
+    return sorted(candidates, key=lambda path: (len(path.parts), str(path)))[0]
+
+
+def _resolve_java_locator_expression(expression, constants):
+    expression = str(expression or "").strip()
+    upper = ".toUpperCase()" in expression
+    expression = expression.replace(".toUpperCase()", "").strip()
+
+    literal_match = re.search(r'"(?:\\.|[^"\\])*"', expression)
+    if literal_match:
+        value = _decode_java_string_literal(literal_match.group(0))
+    else:
+        identifier_match = re.fullmatch(r"[A-Za-z_$][A-Za-z0-9_$]*", expression)
+        if not identifier_match:
+            return None
+        value = constants.get(identifier_match.group(0))
+
+    if value is None:
+        return None
+    value = str(value)
+    return value.upper() if upper else value
+
+
+def load_enter_after_input_locators(app_name):
+    config_path = _find_subject_config_java(app_name)
+    if config_path is None:
+        print("⌨️ Enter-after-input metadata: subject Config.java bulunamadı; 0 field.")
+        return set(), None
+
+    try:
+        raw = config_path.read_text(encoding="utf-8", errors="ignore")
+    except Exception as exc:
+        print(f"⚠️ Enter-after-input metadata okunamadı: {config_path} | {exc}")
+        return set(), config_path
+
+    text = _strip_java_comments(raw)
+
+    constants = {}
+    constant_pattern = re.compile(
+        r'(?:public\s+|private\s+|protected\s+)?'
+        r'(?:static\s+)?(?:final\s+)?String\s+'
+        r'([A-Za-z_$][A-Za-z0-9_$]*)\s*=\s*'
+        r'("(?:\\.|[^"\\])*")'
+        r'(\.toUpperCase\(\))?\s*;',
+        re.DOTALL,
+    )
+    for match in constant_pattern.finditer(text):
+        value = _decode_java_string_literal(match.group(2))
+        if match.group(3):
+            value = value.upper()
+        constants[match.group(1)] = value
+
+    identifications = {}
+    identification_pattern = re.compile(
+        r'Identification\s+([A-Za-z_$][A-Za-z0-9_$]*)\s*=\s*'
+        r'new\s+Identification\s*\(\s*'
+        r'Identification\.How\.(xpath|id|name)\s*,\s*'
+        r'(.*?)\)\s*;',
+        re.DOTALL | re.IGNORECASE,
+    )
+    for match in identification_pattern.finditer(text):
+        variable = match.group(1)
+        kind = match.group(2).lower()
+        value = _resolve_java_locator_expression(match.group(3), constants)
+        if value:
+            identifications[variable] = (kind, value)
+
+    set_names = set(re.findall(
+        r'setInputFieldIdsWithEnterClick\s*\(\s*'
+        r'([A-Za-z_$][A-Za-z0-9_$]*)\s*\)',
+        text,
+    ))
+
+    locator_set = set()
+    for set_name in set_names:
+        add_pattern = re.compile(
+            rf'\b{re.escape(set_name)}\s*\.add\s*\(\s*'
+            r'([A-Za-z_$][A-Za-z0-9_$]*)\s*\)\s*;'
+        )
+        for variable in add_pattern.findall(text):
+            locator = identifications.get(variable)
+            if locator:
+                kind, value = locator
+                if kind == "xpath":
+                    value = normalize_xpath(value)
+                locator_set.add((kind, value))
+
+    print(
+        "⌨️ Enter-after-input metadata: "
+        f"{len(locator_set)} field(s) | source={config_path}"
+    )
+    return locator_set, config_path
+
+
+def should_press_enter_after_input(element=None, xpath="", identification_type="", identifier=""):
+    if not ENTER_AFTER_INPUT_LOCATORS:
+        return False
+
+    element = element or {}
+    candidates = set()
+
+    if xpath:
+        candidates.add(("xpath", normalize_xpath(xpath)))
+
+    for candidate_xpath in (
+        element.get("xpath", ""),
+        element.get("absolute_xpath", ""),
+    ):
+        if candidate_xpath:
+            candidates.add(("xpath", normalize_xpath(candidate_xpath)))
+
+    id_attr = str(element.get("id_attr", "") or "").strip()
+    name_attr = str(element.get("name_attr", "") or "").strip()
+    if id_attr:
+        candidates.add(("id", id_attr))
+    if name_attr:
+        candidates.add(("name", name_attr))
+
+    identification_type = normalize_text(identification_type)
+    identifier = str(identifier or "").strip()
+    if identification_type in {"id", "name"} and identifier:
+        candidates.add((identification_type, identifier))
+    elif identification_type == "xpath" and identifier:
+        candidates.add(("xpath", normalize_xpath(identifier)))
+
+    return bool(candidates & ENTER_AFTER_INPUT_LOCATORS)
+
+
 memory_visited_ids = {}
 state_action_memory = {}
 state_feature_memory = {}
@@ -218,6 +399,11 @@ dead_end_click_memory = {}
 same_state_continue_memory = {}
 explored_transition_edges = set()
 dom_only_attempted_actions = set()
+
+# result.json state metadata used for sequential graph-gap recovery.
+STATE_METADATA = {}
+STATE_ORDER = []
+consumed_graph_gap_bridges = set()
 
 def make_transition_key(edge_info):
     if not edge_info:
@@ -361,17 +547,29 @@ def looks_invalid_xpath(xpath):
 
 
 def choose_replay_value_for_xpath(xpath, raw_value, input_index=None):
+    """
+    Choose one value that Crawljax actually recorded for this field.
+
+    result.json often serializes an InputSpecification value pool as a
+    comma-separated list. Replaying values by *field position* (1=QA Test
+    Event, 2=Alice, ...) corrupts typed fields such as transaction dates and
+    amounts. Prefer one recorded candidate instead.
+    """
     value = str(raw_value or "").strip()
     if not value:
         return ""
 
-    # Crawljax stores SELECT values as a comma-separated candidate list.
-    # Selenium Select.selectByVisibleText needs exactly one visible option.
-    if "/SELECT" in str(xpath).upper():
-        options = [opt.strip() for opt in value.split(",") if opt.strip()]
-        if not options:
-            return value
+    candidates = [
+        item.strip()
+        for item in value.split(",")
+        if item.strip()
+    ]
 
+    if not candidates:
+        return value
+
+    # SELECT needs one visible option, never the full candidate list.
+    if "/SELECT" in str(xpath).upper():
         preferred_options = [
             "Euro (EUR)",
             "United States dollar (USD)",
@@ -379,25 +577,20 @@ def choose_replay_value_for_xpath(xpath, raw_value, input_index=None):
         ]
 
         for preferred in preferred_options:
-            if preferred in options:
+            if preferred in candidates:
                 return preferred
 
-        return options[0]
+        # Avoid a placeholder when a real option is also present.
+        usable = [
+            item for item in candidates
+            if not normalize_text(item).startswith(("select ", "choose "))
+        ]
+        return usable[0] if usable else candidates[0]
 
-    # Do not replay Crawljax's random strings directly. They make generated
-    # scenarios look different even when the tested behavior is identical.
-    deterministic_inputs = {
-        1: "QA Test Event",
-        2: "Alice",
-        3: "Bob",
-        4: "Charlie",
-        5: "Delta",
-    }
-
-    if input_index in deterministic_inputs:
-        return deterministic_inputs[input_index]
-
-    return "QA Test Value"
+    # Text/date/number fields: use one value Crawljax really used. This is
+    # semantically valid for the recorded transition and remains deterministic
+    # because result.json order is stable for the crawl artifact.
+    return candidates[0]
 
 
 def replay_value_for_identifier(
@@ -582,11 +775,27 @@ def edge_replay_steps(edge_info, current_state, elements, scenario_reason):
             elif matched_tag in {"input", "textarea"}:
                 action = "input"
 
-            stable_xpath = (
-                matched.get("xpath")
-                or matched.get("absolute_xpath")
-                or replay_xpath
+            replay_xpath_candidates = [
+                matched.get("absolute_xpath", ""),
+                matched.get("xpath", ""),
+                replay_xpath,
+            ]
+
+            stable_xpath = next(
+                (
+                    candidate
+                    for candidate in replay_xpath_candidates
+                    if candidate
+                    and not looks_invalid_xpath(candidate)
+                ),
+                "",
             )
+
+            if not stable_xpath:
+                # Do not append a replay input that the Java generator will
+                # necessarily discard (for example //INPUT[@id='ember123']).
+                continue
+
             input_value = apply_configured_input_override(
                 matched,
                 input_value,
@@ -637,6 +846,15 @@ def edge_replay_steps(edge_info, current_state, elements, scenario_reason):
                 or "Crawljax result.json inputValues replay before edge click."
             ),
             "edge_replay": True,
+            "press_enter_after_input": (
+                action == "input"
+                and should_press_enter_after_input(
+                    matched,
+                    xpath=stable_xpath,
+                    identification_type=identification_type,
+                    identifier=identifier,
+                )
+            ),
         })
 
     return steps
@@ -862,12 +1080,183 @@ def _state_numeric_id(state_name):
     return int(match.group(1)) if match else 10**9
 
 
+
+def _state_html_name(state_id):
+    state_id = str(state_id or "").strip()
+    if not state_id:
+        return ""
+    return state_id if state_id.endswith(".html") else f"{state_id}.html"
+
+
+def find_graph_gap_resume_state(current_state):
+    """
+    Recover a Crawljax recording gap without inventing a click edge.
+
+    Primary rule:
+      current state has no recorded outgoing edge AND
+      a later fanIn=0 state points to current via nearestState.
+
+    Fallback rule:
+      the numerically next *existing* recorded state is fanIn=0.
+
+    This matches gaps such as:
+      state6  -> state7
+      state14 -> state15
+      state80 -> state82   (state81 was not emitted)
+
+    The returned state is NOT treated as a real graph edge. The generated test
+    receives a synthetic NAVIGATE step to the target state's recorded URL.
+    """
+    current_id = str(current_state or "").replace(".html", "")
+    current_info = STATE_METADATA.get(current_id, {}) or {}
+
+    # A gap resume is only valid at a true recorded dead-end.
+    recorded_fan_out = int(current_info.get("fanOut", 0) or 0)
+    if recorded_fan_out > 0 or STATE_EDGES.get(current_id):
+        return None
+
+    # index is not a numeric state. Treat every recorded state as later than
+    # index so index -> state1/stateN bootstrap gaps can be recovered too.
+    if current_id == "index":
+        later = [
+            state_id
+            for state_id in STATE_ORDER
+            if state_id in AVAILABLE_DOM_STATES
+        ]
+    else:
+        current_num = _state_numeric_id(current_id)
+        later = [
+            state_id
+            for state_id in STATE_ORDER
+            if _state_numeric_id(state_id) > current_num
+            and state_id in AVAILABLE_DOM_STATES
+        ]
+
+    # Strongest evidence: Crawljax itself says the orphan's nearestState is
+    # exactly the dead-end we just reached.
+    for candidate in later:
+        info = STATE_METADATA.get(candidate, {}) or {}
+        if int(info.get("fanIn", 0) or 0) != 0:
+            continue
+        if str(info.get("nearestState", "") or "") == current_id:
+            return _state_html_name(candidate)
+
+    # Conservative fallback requested by the experiment design:
+    # only the immediately next existing state may be used, and only when it is
+    # an orphan root (fanIn=0).
+    if later:
+        candidate = later[0]
+        info = STATE_METADATA.get(candidate, {}) or {}
+        if int(info.get("fanIn", 0) or 0) == 0:
+            return _state_html_name(candidate)
+
+    return None
+
+
+def build_graph_gap_navigation_step(current_state, next_state, reason=""):
+    next_id = str(next_state or "").replace(".html", "")
+    target_url = str(
+        (STATE_METADATA.get(next_id, {}) or {}).get("url", "")
+        or ""
+    ).strip()
+
+    if not target_url:
+        return None
+
+    return {
+        "selected_id": f"graph_gap_{current_state}_{next_state}",
+        "element": f"GRAPH GAP RESUME {current_state} -> {next_state}",
+        "tag": "navigation",
+        "type_attr": "",
+        "xpath": "",
+        "action": "navigate",
+        "input_value": target_url,
+        "options": [],
+        "state": current_state,
+        "state_type": "GRAPH_GAP_RESUME",
+        "feature_bucket": "graph_gap_resume",
+        "feature_signature": (
+            f"graph_gap_resume:{current_state}->{next_state}"
+        ),
+        "scenario_reason": (
+            reason
+            or "Resume exploration after a Crawljax fanOut=0 recording gap."
+        ),
+        "synthetic_graph_gap": True,
+        "target_state": next_state,
+    }
+
+
+def try_resume_after_graph_gap(
+    current_state,
+    current_path,
+    depth,
+    max_depth,
+    reason="",
+):
+    next_state = find_graph_gap_resume_state(current_state)
+
+    if not next_state:
+        return False
+
+    bridge_key = (current_state, next_state)
+
+    if bridge_key in consumed_graph_gap_bridges:
+        return False
+
+    if depth_guard_reached(depth, max_depth):
+        print(
+            "🏁 Graph-gap bulundu ancak emergency max-depth guard "
+            f"nedeniyle atlanıyor: {current_state} -> {next_state}"
+        )
+        return False
+
+    bridge_step = build_graph_gap_navigation_step(
+        current_state,
+        next_state,
+        reason=reason,
+    )
+
+    if not bridge_step:
+        print(
+            "⚠️ Graph-gap hedef state URL'i bulunamadı; "
+            f"resume yapılamadı: {current_state} -> {next_state}"
+        )
+        return False
+
+    consumed_graph_gap_bridges.add(bridge_key)
+
+    bridged_path = current_path.copy()
+    bridged_path.append(bridge_step)
+
+    print(
+        "🌉 CRAWL GRAPH GAP RESUME: "
+        f"{current_state} --NAVIGATE({bridge_step['input_value']})--> "
+        f"{next_state}"
+    )
+
+    recursive_explore(
+        next_state,
+        bridged_path,
+        depth + 1,
+        max_depth,
+    )
+    return True
+
+
 def choose_effective_start_state(states_data):
     """
     Use index when it owns transitions. When index is only an isolated
     bootstrap snapshot, select the closest same-page state that has edges.
     """
-    if "index" in AVAILABLE_DOM_STATES and STATE_EDGES.get("index"):
+    if "index" in AVAILABLE_DOM_STATES:
+        if STATE_EDGES.get("index"):
+            print("🚦 index state'i doğrudan graph başlangıcı olarak kullanılacak.")
+        else:
+            print(
+                "🚦 index state'i geçişsiz; yine de index'ten başlanacak. "
+                "fanOut=0 olduğunda sequential graph-gap recovery devreye girecek."
+            )
         return "index.html"
 
     index_info = states_data.get("index", {}) or {}
@@ -954,6 +1343,7 @@ def choose_effective_start_state(states_data):
 
 def load_transition_map(base_crawl_dir):
     global TRANSITION_MAP, TRANSITION_EDGE_MAP, STATE_CANDIDATE_XPATHS, STATE_EDGES, AVAILABLE_DOM_STATES
+    global STATE_METADATA, STATE_ORDER
 
     TRANSITION_MAP = {}
     TRANSITION_EDGE_MAP = {}
@@ -973,6 +1363,16 @@ def load_transition_map(base_crawl_dir):
 
     states_data = data.get("states", {})
     edges = data.get("edges", [])
+
+    STATE_METADATA = dict(states_data)
+    STATE_ORDER = sorted(
+        [
+            state_id
+            for state_id in states_data
+            if re.fullmatch(r"state\d+", str(state_id))
+        ],
+        key=_state_numeric_id,
+    )
     loaded_count = 0
     missing_target_count = 0
     redirected_target_count = 0
@@ -1524,6 +1924,17 @@ def add_scenario_if_new(path):
     cleaned = []
 
     for step in path:
+        action = normalize_text(step.get("action", ""))
+
+        # Synthetic graph-gap resume is a real executable test step:
+        # keep the same browser/session and navigate to the next Crawljax
+        # state's recorded URL. It intentionally has no XPath.
+        if action == "navigate":
+            target_url = str(step.get("input_value", "") or "").strip()
+            if target_url:
+                cleaned.append(step)
+            continue
+
         xp = (step.get("xpath") or "").strip()
         if looks_invalid_xpath(xp):
             continue
@@ -1541,6 +1952,7 @@ def add_scenario_if_new(path):
 
     signature = tuple(
         (
+            s.get("state", ""),
             s.get("action", ""),
             normalize_xpath(s.get("xpath", "")),
             canonical_signature_value(s),
@@ -1664,6 +2076,131 @@ def find_recorded_edge_for_element(current_state, element):
         return text_matches[0]
 
     return None
+
+
+def infer_tag_from_recorded_xpath(xpath):
+    value = str(xpath or "").strip()
+    if not value:
+        return "div"
+
+    match = re.search(r"/([A-Za-z][A-Za-z0-9_-]*)\[\d+\]\s*$", value)
+    if match:
+        return match.group(1).lower()
+
+    return "div"
+
+
+def inject_unmatched_recorded_edges_as_elements(
+    current_state,
+    elements,
+    unexplored_recorded_edges,
+):
+    """
+    Make every still-untried result.json edge visible/executable even when the
+    DOM skeleton parser filtered its element out.
+
+    This is important for controls implemented as semantic DIV/SPAN nodes.
+    Phoenix, for example, records:
+
+        state5 -- DIV[class='list add-new'] / 'Add new list...' --> state6
+
+    The generic DOM parser may omit that DIV because it has no role/onclick
+    and its class is not one of the generic interactive classes. The graph
+    still contains an exact XPath, so inject a synthetic actionable element
+    backed by that recorded transition.
+
+    The synthetic element is not an invented transition. Its text, XPath and
+    destination all come directly from result.json.
+    """
+    if not unexplored_recorded_edges:
+        return elements
+
+    existing_ids = {
+        str(element.get("llm_id", ""))
+        for element in elements
+    }
+
+    injected = 0
+
+    for edge_index, edge in enumerate(unexplored_recorded_edges):
+        already_present = any(
+            find_recorded_edge_for_element(
+                current_state,
+                element,
+            ) == edge
+            for element in elements
+        )
+
+        if already_present:
+            continue
+
+        raw_xpath = str(
+            edge.get("raw_xpath", "")
+            or edge.get("xpath", "")
+            or ""
+        ).strip()
+
+        if not raw_xpath or looks_invalid_xpath(raw_xpath):
+            continue
+
+        state_id = str(current_state).replace(".html", "")
+        synthetic_id = f"recorded_edge_{state_id}_{edge_index}"
+
+        suffix = 1
+        while synthetic_id in existing_ids:
+            synthetic_id = (
+                f"recorded_edge_{state_id}_{edge_index}_{suffix}"
+            )
+            suffix += 1
+
+        raw_text = str(
+            edge.get("raw_text", "")
+            or edge.get("text", "")
+            or ""
+        ).strip()
+
+        synthetic = {
+            "llm_id": synthetic_id,
+            "tag": infer_tag_from_recorded_xpath(raw_xpath),
+            "type_attr": "",
+            "text": raw_text or (
+                "Recorded transition to "
+                + str(edge.get("to", "next state"))
+            ),
+            "id_attr": "",
+            "name_attr": "",
+            "title_attr": "",
+            "placeholder": "",
+            "aria_label": "",
+            "label_text": "",
+            "role": "",
+            "class_attr": "",
+            "options": [],
+            "xpath": raw_xpath,
+            "absolute_xpath": raw_xpath,
+            "synthetic_recorded_edge": True,
+        }
+
+        elements.append(synthetic)
+        existing_ids.add(synthetic_id)
+        injected += 1
+
+        print(
+            "🧩 Recorded edge DOM skeleton'da yoktu; "
+            "result.json'dan actionable element enjekte edildi: "
+            f"state={state_id}, "
+            f"text={raw_text!r}, "
+            f"xpath={raw_xpath}, "
+            f"next={edge.get('to', '')}"
+        )
+
+    if injected:
+        print(
+            f"🧩 Synthetic recorded-edge elements injected: {injected}"
+        )
+
+    return elements
+
 
 
 def annotate_elements_for_hybrid_exploration(
@@ -1855,6 +2392,128 @@ def ensure_unique_recorded_commit_action(
     return completed
 
 
+
+def ensure_graph_first_transition_action(
+    current_state,
+    elements,
+    actions_list,
+    unexplored_recorded_edges,
+):
+    """
+    Guarantee forward progress in GRAPH_FIRST mode.
+
+    The Worker still chooses/fills contextual form actions first. If it fails
+    to select any of the currently untried result.json click transitions, append
+    exactly one matching recorded click from the current DOM. This prevents a
+    known edge from being permanently blocked by repeated DOM-only choices.
+
+    Example:
+      state45 has one recorded edge: Edit -> state46
+      Worker repeatedly proposes DOM-only Save
+      -> keep useful input/select actions
+      -> append recorded Edit
+      -> recurse to state46
+    """
+    completed = ensure_unique_recorded_commit_action(
+        current_state,
+        elements,
+        actions_list,
+    )
+
+    unexplored_keys = {
+        make_transition_key(edge)
+        for edge in unexplored_recorded_edges
+        if make_transition_key(edge) is not None
+    }
+
+    # If the Worker already selected an untried recorded click, keep its plan.
+    for action in completed:
+        if normalize_text(action.get("action", "")) != "click":
+            continue
+
+        selected = next(
+            (
+                element
+                for element in elements
+                if element.get("llm_id") == action.get("selected_id")
+            ),
+            None,
+        )
+
+        if not selected:
+            continue
+
+        matched_edge = find_recorded_edge_for_element(
+            current_state,
+            selected,
+        )
+
+        if (
+            matched_edge
+            and make_transition_key(matched_edge) in unexplored_keys
+        ):
+            return completed
+
+    # Otherwise force exactly one real result.json edge that can be mapped
+    # back to a current DOM element. Remaining graph edges will be explored
+    # when recursion/backtracking returns to this state.
+    for edge in unexplored_recorded_edges:
+        edge_key = make_transition_key(edge)
+
+        matched_element = next(
+            (
+                element
+                for element in elements
+                if (
+                    (matched := find_recorded_edge_for_element(
+                        current_state,
+                        element,
+                    ))
+                    and make_transition_key(matched) == edge_key
+                )
+            ),
+            None,
+        )
+
+        if not matched_element:
+            continue
+
+        robust_xpath = build_stable_xpath(
+            matched_element,
+            proposed_xpath=(
+                matched_element.get("xpath")
+                or matched_element.get("absolute_xpath")
+                or edge.get("raw_xpath", "")
+            ),
+        )
+
+        if not robust_xpath:
+            robust_xpath = edge.get("raw_xpath", "")
+
+        forced = list(completed)
+        forced.append({
+            "selected_id": matched_element.get("llm_id"),
+            "action": "click",
+            "input_value": "",
+            "robust_xpath": robust_xpath,
+        })
+
+        print(
+            "🧭 GRAPH_FIRST recorded-edge fallback eklendi: "
+            f"state={current_state}, "
+            f"text={edge.get('raw_text', '')!r}, "
+            f"next={edge.get('to', '')}"
+        )
+
+        return forced
+
+    print(
+        "⚠️ GRAPH_FIRST: unexplored result.json edge var ancak "
+        "current DOM'da eşleşen element bulunamadı."
+    )
+    return completed
+
+
 def build_context_prompt(
     current_state,
     depth,
@@ -1961,10 +2620,57 @@ def build_context_prompt(
     return prompt
 
 
-def recursive_explore(current_state, current_path, depth, max_depth=30):
-    if depth > max_depth:
+# 0 means unlimited recursion depth. Normal termination is driven by
+# result.json edge exhaustion + DOM discovery exhaustion, not by an arbitrary
+# state depth. Set TESTCEPTION_MAX_DEPTH to a positive value only as an
+# emergency/debug guard.
+DEFAULT_MAX_DEPTH = max(
+    0,
+    min(
+        int(os.getenv("TESTCEPTION_MAX_DEPTH", "0")),
+        10000,
+    ),
+)
+
+
+def depth_guard_reached(depth, max_depth):
+    return bool(max_depth and depth >= max_depth)
+
+
+def count_unexplored_recorded_edges():
+    unique = {}
+
+    for state_id, edges in STATE_EDGES.items():
+        for edge in edges:
+            key = make_transition_key(edge)
+            if key is None:
+                continue
+            if key in explored_transition_edges:
+                continue
+            unique[key] = edge
+
+    return len(unique)
+
+
+
+def recursive_explore(
+    current_state,
+    current_path,
+    depth,
+    max_depth=DEFAULT_MAX_DEPTH,
+):
+    if max_depth and depth > max_depth:
+        print(
+            f"🏁 Emergency max-depth guard reached: depth={depth}, "
+            f"limit={max_depth}"
+        )
         add_scenario_if_new(current_path.copy())
         return
+
+    # Stable prefix for this recorded state. DOM-only clicks have unknown
+    # destinations, so they are generated as sibling leaf scenarios from this
+    # prefix instead of being chained into one another.
+    state_entry_path = current_path.copy()
 
     doms_folder = os.path.join(BASE_CRAWL_DIR, "doms")
     current_dom_path = os.path.join(doms_folder, current_state)
@@ -1994,7 +2700,13 @@ def recursive_explore(current_state, current_path, depth, max_depth=30):
         memory_visited_ids[current_state] = []
 
     local_iterations = 0
-    max_local_iterations = 16
+    max_local_iterations = max(
+        1,
+        min(
+            int(os.getenv("TESTCEPTION_STATE_ITERATIONS", "20")),
+            50,
+        ),
+    )
 
     while local_iterations < max_local_iterations:
         local_iterations += 1
@@ -2017,6 +2729,19 @@ def recursive_explore(current_state, current_path, depth, max_depth=30):
         if not elements:
             print("⚠️ Bu sayfada etkileşebilir element bulunamadı.")
             add_scenario_if_new(current_path.copy())
+
+            if try_resume_after_graph_gap(
+                current_state,
+                state_entry_path,
+                depth,
+                max_depth,
+                reason=(
+                    "The recorded state has no actionable DOM element and "
+                    "fanOut=0; continue from the next orphan Crawljax state."
+                ),
+            ):
+                return
+
             break
 
         state_id = current_state.replace(".html", "")
@@ -2043,6 +2768,16 @@ def recursive_explore(current_state, current_path, depth, max_depth=30):
         }
 
         preferred_xpaths.discard("")
+
+        # Some result.json transitions are attached to semantic DIV/SPAN
+        # controls that the generic DOM skeleton intentionally filters out.
+        # Re-inject only the still-untried recorded edges so GRAPH_FIRST can
+        # always expose and execute the actual crawl transition.
+        elements = inject_unmatched_recorded_edges_as_elements(
+            current_state,
+            elements,
+            unexplored_recorded_edges,
+        )
 
         elements = (
             annotate_elements_for_hybrid_exploration(
@@ -2106,10 +2841,11 @@ def recursive_explore(current_state, current_path, depth, max_depth=30):
 
         if exploration_mode == "GRAPH_FIRST":
             actions_list = (
-                ensure_unique_recorded_commit_action(
+                ensure_graph_first_transition_action(
                     current_state,
                     elements,
                     decision.get("actions", []),
+                    unexplored_recorded_edges,
                 )
             )
         else:
@@ -2126,6 +2862,19 @@ def recursive_explore(current_state, current_path, depth, max_depth=30):
         if first_action.get("selected_id") == "NONE" or first_action.get("action") == "BACKTRACK":
             print(f"🔙 Worker LLM backtrack istedi: {decision.get('scenario_reason', '')}")
             add_scenario_if_new(current_path.copy())
+
+            if try_resume_after_graph_gap(
+                current_state,
+                state_entry_path,
+                depth,
+                max_depth,
+                reason=(
+                    "Worker exhausted the current fanOut=0 state; resume from "
+                    "the next orphan state recorded by Crawljax."
+                ),
+            ):
+                return
+
             break
 
         scenario_reason = decision.get("scenario_reason", "")
@@ -2252,6 +3001,13 @@ def recursive_explore(current_state, current_path, depth, max_depth=30):
                 "options": el.get("options", []),
                 "state": current_state,
                 "scenario_reason": scenario_reason,
+                "press_enter_after_input": (
+                    action == "input"
+                    and should_press_enter_after_input(
+                        el,
+                        xpath=stable_xpath,
+                    )
+                ),
             }
 
             edge_info = None
@@ -2347,6 +3103,12 @@ def recursive_explore(current_state, current_path, depth, max_depth=30):
             })
             state_features.add(feature)
 
+            if step.get("press_enter_after_input"):
+                print(
+                    "   ⌨️ INPUT+ENTER semantiği korundu: "
+                    f"{stable_xpath}"
+                )
+
             temp_path.append(step)
             applied_any_action = True
             if (
@@ -2401,14 +3163,41 @@ def recursive_explore(current_state, current_path, depth, max_depth=30):
             )
 
             print(
-                "🏁 DOM-only aksiyon JSON state'i "
-                "bilinmediği için dal burada bitirildi."
+                "🏁 DOM-only aksiyon JSON state'i bilinmediği için "
+                "bağımsız yaprak senaryo olarak kaydedildi."
             )
 
-            break
+            # IMPORTANT: do not leave this recorded state after the first
+            # DOM-only click. The attempted click is already remembered in
+            # dom_only_attempted_actions, so the next Worker call is forced to
+            # consider another untried DOM discovery candidate.
+            #
+            # Reset to the recorded state's executable entry prefix so an
+            # unknown DOM-only click never becomes a prerequisite of its
+            # sibling scenarios.
+            current_path[:] = state_entry_path
+
+            print(
+                "🔎 Aynı state üzerinde başka DOM-only business "
+                "aksiyonları aranıyor..."
+            )
+            continue
         if not applied_any_action:
             print("⚠️ Uygulanabilir yeni LLM aksiyonu kalmadı.")
             add_scenario_if_new(temp_path.copy())
+
+            if try_resume_after_graph_gap(
+                current_state,
+                state_entry_path,
+                depth,
+                max_depth,
+                reason=(
+                    "No further executable action remained on this fanOut=0 "
+                    "state; continue with the next orphan Crawljax state."
+                ),
+            ):
+                return
+
             break
 
         if should_continue_same_state(last_action):
@@ -2431,10 +3220,11 @@ def recursive_explore(current_state, current_path, depth, max_depth=30):
                 )
                 add_scenario_if_new(temp_path.copy())
                 break
-            if depth >= max_depth:
+            if depth_guard_reached(depth, max_depth):
                 print(
-                    f"🏁 Max depth sınırına ulaşıldı: depth={depth}, "
-                    f"next={next_st}. Dal yaprak senaryo olarak kaydediliyor."
+                    f"🏁 Emergency max-depth guard reached: depth={depth}, "
+                    f"limit={max_depth}, next={next_st}. "
+                    "Dal yaprak senaryo olarak kaydediliyor."
                 )
                 add_scenario_if_new(temp_path.copy())
                 break
@@ -2454,25 +3244,99 @@ def recursive_explore(current_state, current_path, depth, max_depth=30):
                 remember_dead_end_click(current_state, last_xpath, last_text)
                 print("🏁 Aynı high-value click tekrar yeni JSON state üretmedi; dead-end kabul edilip yaprak senaryo kaydediliyor.")
                 add_scenario_if_new(temp_path.copy())
+
+                if try_resume_after_graph_gap(
+                    current_state,
+                    state_entry_path,
+                    depth,
+                    max_depth,
+                    reason=(
+                        "High-value DOM-only retry exhausted on a fanOut=0 "
+                        "state; continue from the next orphan Crawljax state."
+                    ),
+                ):
+                    return
+
                 break
 
             print("🏁 Test Tamamlandı (Yaprak).")
             add_scenario_if_new(temp_path.copy())
 
+            if try_resume_after_graph_gap(
+                current_state,
+                state_entry_path,
+                depth,
+                max_depth,
+                reason=(
+                    "Recorded state ended with fanOut=0; continue from the "
+                    "next orphan state recorded later in the crawl."
+                ),
+            ):
+                return
+
     if local_iterations >= max_local_iterations:
         print(f"⚠️ State iteration limiti doldu: {current_state}")
         add_scenario_if_new(current_path.copy())
+
+        if try_resume_after_graph_gap(
+            current_state,
+            current_path,
+            depth,
+            max_depth,
+            reason=(
+                "Per-state LLM iteration budget was exhausted on a fanOut=0 "
+                "state; continue from the next orphan Crawljax state."
+            ),
+        ):
+            return
 
 
 if __name__ == "__main__":
     print("\n" + "🚀" * 10 + " LLM-CENTRIC RLM TEST MOTORU BAŞLATILDI " + "🚀" * 10)
 
+    ENTER_AFTER_INPUT_LOCATORS, ENTER_SEMANTICS_SOURCE = (
+        load_enter_after_input_locators(APP_NAME)
+    )
     start_state = load_transition_map(BASE_CRAWL_DIR)
     print(f"🚀 Mentor başlangıç state'i: {start_state}")
+
+    if DEFAULT_MAX_DEPTH:
+        print(
+            f"🛡️ Emergency max-depth guard: {DEFAULT_MAX_DEPTH}"
+        )
+    else:
+        print(
+            "♾️ Depth mode: UNLIMITED — traversal stops on graph/DOM "
+            "exploration exhaustion."
+        )
+
+    initial_unexplored = count_unexplored_recorded_edges()
+    print(
+        f"🧭 Initial unique unexplored result.json edges: "
+        f"{initial_unexplored}"
+    )
+
     recursive_explore(start_state, [], 1)
+
+    remaining_unexplored = count_unexplored_recorded_edges()
 
     print("\n" + "=" * 50)
     print(f"🏆 TOPLAM {len(all_test_scenarios)} LLM-TABANLI SENARYO ÜRETİLDİ!")
+    print(
+        "🧭 RESULT.JSON EDGE EXHAUSTION: "
+        f"explored={initial_unexplored - remaining_unexplored}/"
+        f"{initial_unexplored}, remaining={remaining_unexplored}"
+    )
+
+    if remaining_unexplored == 0:
+        print("✅ Recorded result.json edge'lerinin tamamı tüketildi.")
+    else:
+        print(
+            "⚠️ Bazı recorded edge'ler tüketilemedi. "
+            "Bunlar DOM eşleşmesi/erişilebilirlik nedeniyle ayrıca "
+            "incelenmeli."
+        )
+
     print("=" * 50)
 
 

@@ -1,0 +1,948 @@
+{
+  "url" : "http://localhost:4000",
+  "basicAuthUrl" : null,
+  "browserConfig" : {
+    "browserType" : "CHROME",
+    "numberOfBrowsers" : 1,
+    "browserBuilder" : { },
+    "remoteHubUrl" : null,
+    "browserOptions" : {
+      "headless" : false,
+      "pixelDensity" : 2
+    },
+    "defaultBuilder" : true,
+    "langOrNull" : null
+  },
+  "plugins" : [ "CrawlOverview", "TestSuiteGenerator" ],
+  "proxyConfiguration" : {
+    "port" : -1,
+    "hostname" : "none",
+    "type" : "NOTHING"
+  },
+  "crawlRules" : {
+    "crawlEvents" : [ "click" ],
+    "invariants" : [ ],
+    "oracleComparators" : [ {
+      "preConditions" : [ ],
+      "id" : "SimpleComparator",
+      "oracle" : { }
+    } ],
+    "ignoredFrameIdentifiers" : [ ],
+    "preCrawlConfig" : {
+      "waitConditions" : [ ],
+      "crawlConditions" : [ ],
+      "includedElements" : [ {
+        "tagName" : "A",
+        "attributeName" : "",
+        "attributeValue" : "",
+        "text" : "",
+        "id" : "id2047526627",
+        "eventType" : "click",
+        "eventableCondition" : null,
+        "withXpathExpression" : null
+      }, {
+        "tagName" : "BUTTON",
+        "attributeName" : "",
+        "attributeValue" : "",
+        "text" : "",
+        "id" : "id1908316405",
+        "eventType" : "click",
+        "eventableCondition" : null,
+        "withXpathExpression" : null
+      }, {
+        "tagName" : "INPUT",
+        "attributeName" : "type",
+        "attributeValue" : "submit",
+        "text" : "",
+        "id" : "id1873653341",
+        "eventType" : "click",
+        "eventableCondition" : {
+          "id" : "id1873653341",
+          "conditions" : [ ],
+          "inXPath" : "//INPUT[@type='submit']",
+          "linkedInputFields" : [ ]
+        },
+        "withXpathExpression" : "//INPUT[@type='submit']"
+      }, {
+        "tagName" : "INPUT",
+        "attributeName" : "type",
+        "attributeValue" : "button",
+        "text" : "",
+        "id" : "id25126016",
+        "eventType" : "click",
+        "eventableCondition" : {
+          "id" : "id25126016",
+          "conditions" : [ ],
+          "inXPath" : "//INPUT[@type='button']",
+          "linkedInputFields" : [ ]
+        },
+        "withXpathExpression" : "//INPUT[@type='button']"
+      }, {
+        "tagName" : "A",
+        "attributeName" : "",
+        "attributeValue" : "",
+        "text" : "",
+        "id" : "id66233253",
+        "eventType" : "click",
+        "eventableCondition" : null,
+        "withXpathExpression" : null
+      }, {
+        "tagName" : "BUTTON",
+        "attributeName" : "",
+        "attributeValue" : "",
+        "text" : "",
+        "id" : "id1286783232",
+        "eventType" : "click",
+        "eventableCondition" : null,
+        "withXpathExpression" : null
+      }, {
+        "tagName" : "LABEL",
+        "attributeName" : "",
+        "attributeValue" : "",
+        "text" : "Create",
+        "id" : "id1874154700",
+        "eventType" : "click",
+        "eventableCondition" : {
+          "id" : "id1874154700",
+          "conditions" : [ ],
+          "inXPath" : "//LABEL[text()='Create']",
+          "linkedInputFields" : [ ]
+        },
+        "withXpathExpression" : "//LABEL[text()='Create']"
+      }, {
+        "tagName" : "LABEL",
+        "attributeName" : "",
+        "attributeValue" : "",
+        "text" : "Previous",
+        "id" : "id1632392469",
+        "eventType" : "click",
+        "eventableCondition" : {
+          "id" : "id1632392469",
+          "conditions" : [ ],
+          "inXPath" : "//LABEL[text()='Previous']",
+          "linkedInputFields" : [ ]
+        },
+        "withXpathExpression" : "//LABEL[text()='Previous']"
+      }, {
+        "tagName" : "LABEL",
+        "attributeName" : "",
+        "attributeValue" : "",
+        "text" : "Advanced",
+        "id" : "id2008362258",
+        "eventType" : "click",
+        "eventableCondition" : {
+          "id" : "id2008362258",
+          "conditions" : [ ],
+          "inXPath" : "//LABEL[text()='Advanced']",
+          "linkedInputFields" : [ ]
+        },
+        "withXpathExpression" : "//LABEL[text()='Advanced']"
+      }, {
+        "tagName" : "DIV",
+        "attributeName" : "class",
+        "attributeValue" : "theme__templateValue___3if5o theme__value___mflIw",
+        "text" : "",
+        "id" : "id760563749",
+        "eventType" : "click",
+        "eventableCondition" : {
+          "id" : "id760563749",
+          "conditions" : [ ],
+          "inXPath" : "//DIV[@class='theme__templateValue___3if5o theme__value___mflIw']",
+          "linkedInputFields" : [ ]
+        },
+        "withXpathExpression" : "//DIV[@class='theme__templateValue___3if5o theme__value___mflIw']"
+      }, {
+        "tagName" : "SPAN",
+        "attributeName" : "class",
+        "attributeValue" : "SessionName__name___3g4PI",
+        "text" : "",
+        "id" : "id1753447031",
+        "eventType" : "click",
+        "eventableCondition" : {
+          "id" : "id1753447031",
+          "conditions" : [ ],
+          "inXPath" : "//SPAN[@class='SessionName__name___3g4PI']",
+          "linkedInputFields" : [ ]
+        },
+        "withXpathExpression" : "//SPAN[@class='SessionName__name___3g4PI']"
+      }, {
+        "tagName" : "SPAN",
+        "attributeName" : "class",
+        "attributeValue" : "theme__off___Ih3qa",
+        "text" : "",
+        "id" : "id1810132623",
+        "eventType" : "click",
+        "eventableCondition" : {
+          "id" : "id1810132623",
+          "conditions" : [ ],
+          "inXPath" : "//SPAN[@class='theme__off___Ih3qa']",
+          "linkedInputFields" : [ ]
+        },
+        "withXpathExpression" : "//SPAN[@class='theme__off___Ih3qa']"
+      }, {
+        "tagName" : "SPAN",
+        "attributeName" : "class",
+        "attributeValue" : "theme__item___QgVrb theme__selectable___pSlvM",
+        "text" : "",
+        "id" : "id895947612",
+        "eventType" : "click",
+        "eventableCondition" : {
+          "id" : "id895947612",
+          "conditions" : [ ],
+          "inXPath" : "//SPAN[@class='theme__item___QgVrb theme__selectable___pSlvM']",
+          "linkedInputFields" : [ ]
+        },
+        "withXpathExpression" : "//SPAN[@class='theme__item___QgVrb theme__selectable___pSlvM']"
+      } ],
+      "excludedElements" : [ {
+        "tagName" : "A",
+        "attributeName" : "href",
+        "attributeValue" : "https://github.com/antoinejaussoin/retro-board",
+        "text" : "",
+        "id" : "id846492085",
+        "eventType" : "click",
+        "eventableCondition" : {
+          "id" : "id846492085",
+          "conditions" : [ ],
+          "inXPath" : "//A[@href='https://github.com/ANTOINEJAUSSOIN/retro-board']",
+          "linkedInputFields" : [ ]
+        },
+        "withXpathExpression" : "//A[@href='https://github.com/antoinejaussoin/retro-board']"
+      } ],
+      "filterAttributeNames" : [ "closure_hashcode_(\\w)*", "jquery[0-9]+" ]
+    },
+    "formFillMode" : "RANDOM",
+    "inputSpecification" : {
+      "formInputs" : {
+        "xpath /HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]" : {
+          "type" : "INPUT",
+          "identification" : {
+            "how" : "xpath",
+            "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+            "webDriverBy" : { },
+            "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]\")"
+          },
+          "inputValues" : [ {
+            "value" : "Work remotely",
+            "checked" : true
+          }, {
+            "value" : "Brilliant idea",
+            "checked" : true
+          } ],
+          "eventable" : null
+        },
+        "xpath /HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]" : {
+          "type" : "INPUT",
+          "identification" : {
+            "how" : "xpath",
+            "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+            "webDriverBy" : { },
+            "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]\")"
+          },
+          "inputValues" : [ {
+            "value" : "Time off",
+            "checked" : true
+          }, {
+            "value" : "Social life",
+            "checked" : true
+          } ],
+          "eventable" : null
+        },
+        "xpath /HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]" : {
+          "type" : "INPUT",
+          "identification" : {
+            "how" : "xpath",
+            "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+            "webDriverBy" : { },
+            "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]\")"
+          },
+          "inputValues" : [ {
+            "value" : "Work",
+            "checked" : true
+          }, {
+            "value" : "All the rest",
+            "checked" : true
+          } ],
+          "eventable" : null
+        },
+        "xpath /HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]" : {
+          "type" : "INPUT",
+          "identification" : {
+            "how" : "xpath",
+            "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+            "webDriverBy" : { },
+            "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+          },
+          "inputValues" : [ {
+            "value" : "user",
+            "checked" : true
+          }, {
+            "value" : "admin",
+            "checked" : true
+          } ],
+          "eventable" : null
+        }
+      },
+      "forms" : [ {
+        "formInputs" : [ {
+          "type" : "INPUT",
+          "identification" : {
+            "how" : "xpath",
+            "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+            "webDriverBy" : { },
+            "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+          },
+          "inputValues" : [ {
+            "value" : "user",
+            "checked" : true
+          }, {
+            "value" : "admin",
+            "checked" : true
+          } ],
+          "eventable" : null
+        } ],
+        "crawlElement" : {
+          "tagName" : "BUTTON",
+          "attributeName" : "",
+          "attributeValue" : "",
+          "text" : "\"Let's start\"",
+          "id" : "id1018937824",
+          "eventType" : "click",
+          "eventableCondition" : {
+            "id" : "id1018937824",
+            "conditions" : [ ],
+            "inXPath" : "//BUTTON[text()=concat('\"Let',\"'\",'s start\"')]",
+            "linkedInputFields" : [ {
+              "type" : "INPUT",
+              "identification" : {
+                "how" : "xpath",
+                "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+                "webDriverBy" : { },
+                "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+              },
+              "inputValues" : [ {
+                "value" : "user",
+                "checked" : true
+              }, {
+                "value" : "admin",
+                "checked" : true
+              } ],
+              "eventable" : null
+            }, {
+              "type" : "INPUT",
+              "identification" : {
+                "how" : "xpath",
+                "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+                "webDriverBy" : { },
+                "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+              },
+              "inputValues" : [ {
+                "value" : "user",
+                "checked" : true
+              }, {
+                "value" : "admin",
+                "checked" : true
+              } ],
+              "eventable" : null
+            }, {
+              "type" : "INPUT",
+              "identification" : {
+                "how" : "xpath",
+                "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+                "webDriverBy" : { },
+                "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+              },
+              "inputValues" : [ {
+                "value" : "user",
+                "checked" : true
+              }, {
+                "value" : "admin",
+                "checked" : true
+              } ],
+              "eventable" : null
+            }, {
+              "type" : "INPUT",
+              "identification" : {
+                "how" : "xpath",
+                "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+                "webDriverBy" : { },
+                "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+              },
+              "inputValues" : [ {
+                "value" : "user",
+                "checked" : true
+              }, {
+                "value" : "admin",
+                "checked" : true
+              } ],
+              "eventable" : null
+            }, {
+              "type" : "INPUT",
+              "identification" : {
+                "how" : "xpath",
+                "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+                "webDriverBy" : { },
+                "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+              },
+              "inputValues" : [ {
+                "value" : "user",
+                "checked" : true
+              }, {
+                "value" : "admin",
+                "checked" : true
+              } ],
+              "eventable" : null
+            }, {
+              "type" : "INPUT",
+              "identification" : {
+                "how" : "xpath",
+                "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+                "webDriverBy" : { },
+                "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+              },
+              "inputValues" : [ {
+                "value" : "user",
+                "checked" : true
+              }, {
+                "value" : "admin",
+                "checked" : true
+              } ],
+              "eventable" : null
+            }, {
+              "type" : "INPUT",
+              "identification" : {
+                "how" : "xpath",
+                "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+                "webDriverBy" : { },
+                "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+              },
+              "inputValues" : [ {
+                "value" : "user",
+                "checked" : true
+              }, {
+                "value" : "admin",
+                "checked" : true
+              } ],
+              "eventable" : null
+            } ]
+          },
+          "withXpathExpression" : "//BUTTON[text()=concat('\"Let',\"'\",'s start\"')]"
+        }
+      } ],
+      "crawlElements" : [ {
+        "tagName" : "BUTTON",
+        "attributeName" : "",
+        "attributeValue" : "",
+        "text" : "\"Let's start\"",
+        "id" : "id1018937824",
+        "eventType" : "click",
+        "eventableCondition" : {
+          "id" : "id1018937824",
+          "conditions" : [ ],
+          "inXPath" : "//BUTTON[text()=concat('\"Let',\"'\",'s start\"')]",
+          "linkedInputFields" : [ {
+            "type" : "INPUT",
+            "identification" : {
+              "how" : "xpath",
+              "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+              "webDriverBy" : { },
+              "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+            },
+            "inputValues" : [ {
+              "value" : "user",
+              "checked" : true
+            }, {
+              "value" : "admin",
+              "checked" : true
+            } ],
+            "eventable" : null
+          }, {
+            "type" : "INPUT",
+            "identification" : {
+              "how" : "xpath",
+              "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+              "webDriverBy" : { },
+              "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+            },
+            "inputValues" : [ {
+              "value" : "user",
+              "checked" : true
+            }, {
+              "value" : "admin",
+              "checked" : true
+            } ],
+            "eventable" : null
+          }, {
+            "type" : "INPUT",
+            "identification" : {
+              "how" : "xpath",
+              "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+              "webDriverBy" : { },
+              "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+            },
+            "inputValues" : [ {
+              "value" : "user",
+              "checked" : true
+            }, {
+              "value" : "admin",
+              "checked" : true
+            } ],
+            "eventable" : null
+          }, {
+            "type" : "INPUT",
+            "identification" : {
+              "how" : "xpath",
+              "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+              "webDriverBy" : { },
+              "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+            },
+            "inputValues" : [ {
+              "value" : "user",
+              "checked" : true
+            }, {
+              "value" : "admin",
+              "checked" : true
+            } ],
+            "eventable" : null
+          }, {
+            "type" : "INPUT",
+            "identification" : {
+              "how" : "xpath",
+              "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+              "webDriverBy" : { },
+              "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+            },
+            "inputValues" : [ {
+              "value" : "user",
+              "checked" : true
+            }, {
+              "value" : "admin",
+              "checked" : true
+            } ],
+            "eventable" : null
+          }, {
+            "type" : "INPUT",
+            "identification" : {
+              "how" : "xpath",
+              "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+              "webDriverBy" : { },
+              "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+            },
+            "inputValues" : [ {
+              "value" : "user",
+              "checked" : true
+            }, {
+              "value" : "admin",
+              "checked" : true
+            } ],
+            "eventable" : null
+          }, {
+            "type" : "INPUT",
+            "identification" : {
+              "how" : "xpath",
+              "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+              "webDriverBy" : { },
+              "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+            },
+            "inputValues" : [ {
+              "value" : "user",
+              "checked" : true
+            }, {
+              "value" : "admin",
+              "checked" : true
+            } ],
+            "eventable" : null
+          }, {
+            "type" : "INPUT",
+            "identification" : {
+              "how" : "xpath",
+              "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+              "webDriverBy" : { },
+              "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+            },
+            "inputValues" : [ {
+              "value" : "user",
+              "checked" : true
+            }, {
+              "value" : "admin",
+              "checked" : true
+            } ],
+            "eventable" : null
+          } ]
+        },
+        "withXpathExpression" : "//BUTTON[text()=concat('\"Let',\"'\",'s start\"')]"
+      } ]
+    },
+    "testInvariantsWhileCrawling" : true,
+    "clickOnce" : true,
+    "randomizeCandidateElements" : false,
+    "crawlHiddenAnchors" : false,
+    "waitAfterReloadUrl" : 1000,
+    "waitAfterEvent" : 1000,
+    "disableIdAndNameIdentification" : false,
+    "inputFieldIdsWithEnterClick" : [ {
+      "how" : "xpath",
+      "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+      "webDriverBy" : { },
+      "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]\")"
+    }, {
+      "how" : "xpath",
+      "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+      "webDriverBy" : { },
+      "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]\")"
+    }, {
+      "how" : "xpath",
+      "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]",
+      "webDriverBy" : { },
+      "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]\")"
+    } ],
+    "crawlPriorityMode" : "NORMAL",
+    "crawlNearDuplicates" : true,
+    "delayNearDuplicateCrawling" : true,
+    "allCrawlElements" : [ {
+      "tagName" : "A",
+      "attributeName" : "",
+      "attributeValue" : "",
+      "text" : "",
+      "id" : "id2047526627",
+      "eventType" : "click",
+      "eventableCondition" : null,
+      "withXpathExpression" : null
+    }, {
+      "tagName" : "BUTTON",
+      "attributeName" : "",
+      "attributeValue" : "",
+      "text" : "",
+      "id" : "id1908316405",
+      "eventType" : "click",
+      "eventableCondition" : null,
+      "withXpathExpression" : null
+    }, {
+      "tagName" : "INPUT",
+      "attributeName" : "type",
+      "attributeValue" : "submit",
+      "text" : "",
+      "id" : "id1873653341",
+      "eventType" : "click",
+      "eventableCondition" : {
+        "id" : "id1873653341",
+        "conditions" : [ ],
+        "inXPath" : "//INPUT[@type='submit']",
+        "linkedInputFields" : [ ]
+      },
+      "withXpathExpression" : "//INPUT[@type='submit']"
+    }, {
+      "tagName" : "INPUT",
+      "attributeName" : "type",
+      "attributeValue" : "button",
+      "text" : "",
+      "id" : "id25126016",
+      "eventType" : "click",
+      "eventableCondition" : {
+        "id" : "id25126016",
+        "conditions" : [ ],
+        "inXPath" : "//INPUT[@type='button']",
+        "linkedInputFields" : [ ]
+      },
+      "withXpathExpression" : "//INPUT[@type='button']"
+    }, {
+      "tagName" : "A",
+      "attributeName" : "",
+      "attributeValue" : "",
+      "text" : "",
+      "id" : "id66233253",
+      "eventType" : "click",
+      "eventableCondition" : null,
+      "withXpathExpression" : null
+    }, {
+      "tagName" : "BUTTON",
+      "attributeName" : "",
+      "attributeValue" : "",
+      "text" : "",
+      "id" : "id1286783232",
+      "eventType" : "click",
+      "eventableCondition" : null,
+      "withXpathExpression" : null
+    }, {
+      "tagName" : "LABEL",
+      "attributeName" : "",
+      "attributeValue" : "",
+      "text" : "Create",
+      "id" : "id1874154700",
+      "eventType" : "click",
+      "eventableCondition" : {
+        "id" : "id1874154700",
+        "conditions" : [ ],
+        "inXPath" : "//LABEL[text()='Create']",
+        "linkedInputFields" : [ ]
+      },
+      "withXpathExpression" : "//LABEL[text()='Create']"
+    }, {
+      "tagName" : "LABEL",
+      "attributeName" : "",
+      "attributeValue" : "",
+      "text" : "Previous",
+      "id" : "id1632392469",
+      "eventType" : "click",
+      "eventableCondition" : {
+        "id" : "id1632392469",
+        "conditions" : [ ],
+        "inXPath" : "//LABEL[text()='Previous']",
+        "linkedInputFields" : [ ]
+      },
+      "withXpathExpression" : "//LABEL[text()='Previous']"
+    }, {
+      "tagName" : "LABEL",
+      "attributeName" : "",
+      "attributeValue" : "",
+      "text" : "Advanced",
+      "id" : "id2008362258",
+      "eventType" : "click",
+      "eventableCondition" : {
+        "id" : "id2008362258",
+        "conditions" : [ ],
+        "inXPath" : "//LABEL[text()='Advanced']",
+        "linkedInputFields" : [ ]
+      },
+      "withXpathExpression" : "//LABEL[text()='Advanced']"
+    }, {
+      "tagName" : "DIV",
+      "attributeName" : "class",
+      "attributeValue" : "theme__templateValue___3if5o theme__value___mflIw",
+      "text" : "",
+      "id" : "id760563749",
+      "eventType" : "click",
+      "eventableCondition" : {
+        "id" : "id760563749",
+        "conditions" : [ ],
+        "inXPath" : "//DIV[@class='theme__templateValue___3if5o theme__value___mflIw']",
+        "linkedInputFields" : [ ]
+      },
+      "withXpathExpression" : "//DIV[@class='theme__templateValue___3if5o theme__value___mflIw']"
+    }, {
+      "tagName" : "SPAN",
+      "attributeName" : "class",
+      "attributeValue" : "SessionName__name___3g4PI",
+      "text" : "",
+      "id" : "id1753447031",
+      "eventType" : "click",
+      "eventableCondition" : {
+        "id" : "id1753447031",
+        "conditions" : [ ],
+        "inXPath" : "//SPAN[@class='SessionName__name___3g4PI']",
+        "linkedInputFields" : [ ]
+      },
+      "withXpathExpression" : "//SPAN[@class='SessionName__name___3g4PI']"
+    }, {
+      "tagName" : "SPAN",
+      "attributeName" : "class",
+      "attributeValue" : "theme__off___Ih3qa",
+      "text" : "",
+      "id" : "id1810132623",
+      "eventType" : "click",
+      "eventableCondition" : {
+        "id" : "id1810132623",
+        "conditions" : [ ],
+        "inXPath" : "//SPAN[@class='theme__off___Ih3qa']",
+        "linkedInputFields" : [ ]
+      },
+      "withXpathExpression" : "//SPAN[@class='theme__off___Ih3qa']"
+    }, {
+      "tagName" : "SPAN",
+      "attributeName" : "class",
+      "attributeValue" : "theme__item___QgVrb theme__selectable___pSlvM",
+      "text" : "",
+      "id" : "id895947612",
+      "eventType" : "click",
+      "eventableCondition" : {
+        "id" : "id895947612",
+        "conditions" : [ ],
+        "inXPath" : "//SPAN[@class='theme__item___QgVrb theme__selectable___pSlvM']",
+        "linkedInputFields" : [ ]
+      },
+      "withXpathExpression" : "//SPAN[@class='theme__item___QgVrb theme__selectable___pSlvM']"
+    }, {
+      "tagName" : "A",
+      "attributeName" : "href",
+      "attributeValue" : "https://github.com/antoinejaussoin/retro-board",
+      "text" : "",
+      "id" : "id846492085",
+      "eventType" : "click",
+      "eventableCondition" : {
+        "id" : "id846492085",
+        "conditions" : [ ],
+        "inXPath" : "//A[@href='https://github.com/ANTOINEJAUSSOIN/retro-board']",
+        "linkedInputFields" : [ ]
+      },
+      "withXpathExpression" : "//A[@href='https://github.com/antoinejaussoin/retro-board']"
+    }, {
+      "tagName" : "BUTTON",
+      "attributeName" : "",
+      "attributeValue" : "",
+      "text" : "\"Let's start\"",
+      "id" : "id1018937824",
+      "eventType" : "click",
+      "eventableCondition" : {
+        "id" : "id1018937824",
+        "conditions" : [ ],
+        "inXPath" : "//BUTTON[text()=concat('\"Let',\"'\",'s start\"')]",
+        "linkedInputFields" : [ {
+          "type" : "INPUT",
+          "identification" : {
+            "how" : "xpath",
+            "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+            "webDriverBy" : { },
+            "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+          },
+          "inputValues" : [ {
+            "value" : "user",
+            "checked" : true
+          }, {
+            "value" : "admin",
+            "checked" : true
+          } ],
+          "eventable" : null
+        }, {
+          "type" : "INPUT",
+          "identification" : {
+            "how" : "xpath",
+            "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+            "webDriverBy" : { },
+            "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+          },
+          "inputValues" : [ {
+            "value" : "user",
+            "checked" : true
+          }, {
+            "value" : "admin",
+            "checked" : true
+          } ],
+          "eventable" : null
+        }, {
+          "type" : "INPUT",
+          "identification" : {
+            "how" : "xpath",
+            "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+            "webDriverBy" : { },
+            "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+          },
+          "inputValues" : [ {
+            "value" : "user",
+            "checked" : true
+          }, {
+            "value" : "admin",
+            "checked" : true
+          } ],
+          "eventable" : null
+        }, {
+          "type" : "INPUT",
+          "identification" : {
+            "how" : "xpath",
+            "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+            "webDriverBy" : { },
+            "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+          },
+          "inputValues" : [ {
+            "value" : "user",
+            "checked" : true
+          }, {
+            "value" : "admin",
+            "checked" : true
+          } ],
+          "eventable" : null
+        }, {
+          "type" : "INPUT",
+          "identification" : {
+            "how" : "xpath",
+            "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+            "webDriverBy" : { },
+            "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+          },
+          "inputValues" : [ {
+            "value" : "user",
+            "checked" : true
+          }, {
+            "value" : "admin",
+            "checked" : true
+          } ],
+          "eventable" : null
+        }, {
+          "type" : "INPUT",
+          "identification" : {
+            "how" : "xpath",
+            "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+            "webDriverBy" : { },
+            "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+          },
+          "inputValues" : [ {
+            "value" : "user",
+            "checked" : true
+          }, {
+            "value" : "admin",
+            "checked" : true
+          } ],
+          "eventable" : null
+        }, {
+          "type" : "INPUT",
+          "identification" : {
+            "how" : "xpath",
+            "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+            "webDriverBy" : { },
+            "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+          },
+          "inputValues" : [ {
+            "value" : "user",
+            "checked" : true
+          }, {
+            "value" : "admin",
+            "checked" : true
+          } ],
+          "eventable" : null
+        }, {
+          "type" : "INPUT",
+          "identification" : {
+            "how" : "xpath",
+            "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+            "webDriverBy" : { },
+            "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+          },
+          "inputValues" : [ {
+            "value" : "user",
+            "checked" : true
+          }, {
+            "value" : "admin",
+            "checked" : true
+          } ],
+          "eventable" : null
+        }, {
+          "type" : "INPUT",
+          "identification" : {
+            "how" : "xpath",
+            "value" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]",
+            "webDriverBy" : { },
+            "webDriverByString" : "By.xpath(\"/HTML[1]/BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/INPUT[1]\")"
+          },
+          "inputValues" : [ {
+            "value" : "user",
+            "checked" : true
+          }, {
+            "value" : "admin",
+            "checked" : true
+          } ],
+          "eventable" : null
+        } ]
+      },
+      "withXpathExpression" : "//BUTTON[text()=concat('\"Let',\"'\",'s start\"')]"
+    } ]
+  },
+  "maximumStates" : 0,
+  "maximumRuntime" : 600000,
+  "maximumDepth" : 0,
+  "considerCandidateElementsOnce" : "fired",
+  "crawlPathSeparator" : "-----",
+  "seleniumActionsFileName" : "selenium-actions-retroboard-fired.txt",
+  "handleSameFormInputsOncePerState" : true,
+  "stateVertexFactory" : { },
+  "siteDir" : "/home/mecit/workspace/Testception-github/dante/applications/retroboard/localhost",
+  "outputDir" : "/home/mecit/workspace/Testception-github/dante/applications/retroboard/localhost/crawl0"
+}

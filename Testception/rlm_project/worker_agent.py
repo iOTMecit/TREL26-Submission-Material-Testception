@@ -215,7 +215,9 @@ def build_fallback_decision(elements, visited_ids=None, preferred_xpaths=None):
 
     type_attr = normalize_text(best.get("type_attr", ""))
 
-    if tag == "input" and type_attr in {"submit", "button", "reset"}:
+    if tag == "input" and type_attr in {
+        "submit", "button", "reset", "checkbox", "radio"
+    }:
         action = "click"
         input_value = ""
 
@@ -318,6 +320,8 @@ def validate_llm_decision(decision, elements):
             "submit",
             "button",
             "reset",
+            "checkbox",
+            "radio",
         }:
             action = "click"
             input_value = ""
@@ -384,7 +388,17 @@ def ask_worker_llm(prompt_text, elements=None, visited_ids=None, preferred_xpath
     elements = elements or []
     visited_ids = visited_ids or []
     preferred_xpaths = preferred_xpaths or set()
-    max_actions = max(1, min(int(max_actions), 6))
+    # The orchestrator already asks for 15 actions. The old hard clamp of 6
+    # silently prevented the Worker from using that budget on larger forms.
+    max_actions = max(1, min(int(max_actions), 20))
+
+    worker_max_tokens = max(
+        1000,
+        min(
+            int(os.getenv("TESTCEPTION_WORKER_MAX_TOKENS", "2200")),
+            6000,
+        ),
+    )
 
     # Dev JSON kurallarını sildik, prompt %60 küçüldü.
     qa_master_prompt = f"""
@@ -446,8 +460,15 @@ def ask_worker_llm(prompt_text, elements=None, visited_ids=None, preferred_xpath
          current state have already been explored.
        - Choose a meaningful untried element marked
          [DOM_DISCOVERY_CANDIDATE].
+       - DOM_FALLBACK is iterative: the Mentor may call you again on the same
+         recorded state after the selected DOM-only click is saved as a leaf.
+         Therefore do NOT BACKTRACK while another meaningful untried business
+         candidate is still present.
+       - Prefer distinct business controls such as Transactions, Add
+         Transaction, Share, Edit, Delete, Save, tabs, dropdowns and modal
+         actions over repeated New Event/Add Participant actions.
        - Prefer business controls over Home, logo,
-         footer, social, About or external links.
+         footer, social, About, Source or external links.
        - A DOM-only form must still be completed:
          fill its visible fields and click its submit
          control last.
@@ -499,7 +520,7 @@ def ask_worker_llm(prompt_text, elements=None, visited_ids=None, preferred_xpath
             ],
             api_key=OPENROUTER_API_KEY,
             temperature=0.2,
-            max_tokens=1000
+            max_tokens=worker_max_tokens
         )
 
         # Gelen Pydantic objesini doğrudan dict olarak orkestratöre geri yolluyoruz

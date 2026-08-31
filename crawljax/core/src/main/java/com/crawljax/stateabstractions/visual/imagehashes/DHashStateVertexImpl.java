@@ -51,33 +51,34 @@ public class DHashStateVertexImpl extends StateVertexImpl {
  */
   @Override
   public int hashCode() {
-      return Objects.hashCode(
-              dHash,
-              getStrippedDom()
-      );
+	  return Objects.hashCode(
+	  		dHash,
+	  		getStrippedDom()
+  	);
   }
 
   @Override
   public boolean equals(Object object) {
-      if (this == object) {
-          return true;
-      }
 
-      if (!(object instanceof DHashStateVertexImpl)) {
-          return false;
-      }
+  	if (this == object) {
+	  	return true;
+	  }
 
-      DHashStateVertexImpl that =
-              (DHashStateVertexImpl) object;
+  	if (!(object instanceof DHashStateVertexImpl)) {
+  		return false;
+	  }
 
-      return Objects.equal(
-                  this.dHash,
-                  that.getDHashVisual()
-              )
-              && Objects.equal(
-                  this.getStrippedDom(),
-                  that.getStrippedDom()
-              );
+	  DHashStateVertexImpl that =
+		  	(DHashStateVertexImpl) object;
+
+	  return Objects.equal(
+	  		this.dHash,
+		  	that.getDHashVisual()
+	  	)
+	  	&& Objects.equal(
+	  		this.getStrippedDom(),
+	  		that.getStrippedDom()
+		  );
   }
 
 	@Override

@@ -1,0 +1,661 @@
+GLOBAL_PROJECT_CONTEXT
+APPLICATION: petclinic
+START_STATE: index.html
+
+You are the SINGLE global planner baseline.
+You see ALL saved states, ALL DOM actions and ALL recorded transitions at once.
+Create the complete project-level test suite in ONE response.
+
+STRICT GRAPH RULES:
+- Every scenario MUST declare start_state=START_STATE.
+- You MAY choose the first semantic action from any saved state that is reachable from START_STATE. The harness materializes ONLY that initial recorded navigation prefix.
+- After the first selected state, NEVER teleport between states. Every later state change must be caused by your own preceding recorded click.
+- input/select keep the current state.
+- A DOM-only click with no recorded transition is allowed. Its target is unknown to the crawl graph, so the executable scenario will terminate at that click.
+- Later invalid state jumps are NOT repaired. The already valid executable prefix is kept as a truncated scenario.
+- Use only provided GLOBAL_ID values.
+- Prefer meaningful business CRUD/form/search/filter flows over static links.
+- For happy-path forms, fill required-looking fields before the final commit.
+- One negative validation flow is useful; do not repeat it endlessly.
+
+SCENARIO_BUDGET: no artificial fixed count; return as many distinct high-value executable scenarios as needed.
+
+APP_HINTS:
+- Petclinic is a veterinary clinic CRUD app. There is no login precondition.
+- Pet Type and Specialty must exist before Pet and Veterinarian creation.
+- Prioritize business flows under Owners, Veterinarians, Pet Types, and Specialties.
+- For happy-path owner forms, fill all visible required-looking fields before clicking Add Owner or Update Owner.
+- Important pet flows: add/edit pet, fill pet name, birth date, type, owner-related fields if present, then submit.
+- Important visit flows: add visit, fill date and description, then submit.
+- Important veterinarian/specialty/pet-type flows: Add, Edit, Delete, update name/type fields, then submit.
+- Keep one negative validation scenario for owner/pet/specialty forms if required-looking fields are visible.
+
+FULL_GRAPH_AND_DOM_CONTEXT
+==========================
+
+=== STATE index.html ===
+FORM_SUMMARY: {"fields":[],"submit_like_controls":[{"global_id":"g0_el_4","tag":"a","text":"Add New"},{"global_id":"g0_el_7","tag":"a","text":"Add New"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":0,"text":"Owners","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/A[1]","target_state":"state4.html","target_dom_available":true,"input_values":[]}
+- {"edge_index":2,"text":"Veterinarians","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/A[1]","target_state":"state6.html","target_dom_available":true,"input_values":[]}
+- {"edge_index":4,"text":"Pet Types","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[4]/A[1]","target_state":"state8.html","target_dom_available":true,"input_values":[]}
+- {"edge_index":13,"text":"Specialties","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[5]/A[1]","target_state":"state21.html","target_dom_available":true,"input_values":[]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g0_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g0_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g0_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g0_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g0_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g0_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g0_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g0_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g0_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g0_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+
+=== STATE state10.html ===
+FORM_SUMMARY: {"fields":[{"global_id":"g1_el_10","tag":"input","type":"text","label":"","placeholder":"","options":[]}],"submit_like_controls":[{"global_id":"g1_el_4","tag":"a","text":"Add New"},{"global_id":"g1_el_7","tag":"a","text":"Add New"},{"global_id":"g1_el_14","tag":"button","text":"Add"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":6,"text":"Pet Types","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[4]/A[1]","target_state":"state11.html","target_dom_available":true,"input_values":[{"xpath":"//*[@id = '0']","action":"input","input_value":"peOPFhyQ","identification_type":"id","identifier":"0"}]}
+- {"edge_index":8,"text":"Edit","click_xpath":"xpath //TABLE[@id = 'specialties']/TBODY[1]/TR[1]/TD[2]/BUTTON[1]","target_state":"state14.html","target_dom_available":true,"input_values":[{"xpath":"//*[@id = '0']","action":"input","input_value":"jEnalLdZ","identification_type":"id","identifier":"0"}]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g1_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g1_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g1_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g1_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g1_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g1_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g1_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g1_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g1_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g1_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g1_el_10","tag":"input","type":"text","text":"","label":"","placeholder":"","id":"0","name":"spec_name","aria":"","xpath":"//INPUT[@id = '0']","recorded_targets":[]}
+- {"GLOBAL_ID":"g1_el_11","tag":"button","type":"","text":"Edit","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Edit')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g1_el_12","tag":"button","type":"","text":"Delete","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Delete')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g1_el_13","tag":"button","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Home')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g1_el_14","tag":"button","type":"","text":"Add","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add')]","recorded_targets":[]}
+
+=== STATE state11.html ===
+FORM_SUMMARY: {"fields":[{"global_id":"g2_el_10","tag":"input","type":"text","label":"","placeholder":"","options":[]}],"submit_like_controls":[{"global_id":"g2_el_4","tag":"a","text":"Add New"},{"global_id":"g2_el_7","tag":"a","text":"Add New"},{"global_id":"g2_el_14","tag":"button","text":"Add"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":7,"text":"Specialties","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[5]/A[1]","target_state":"state10.html","target_dom_available":true,"input_values":[{"xpath":"//*[@id = '0']","action":"input","input_value":"PgwiPHAm","identification_type":"id","identifier":"0"}]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g2_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g2_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g2_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g2_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g2_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g2_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g2_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g2_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g2_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g2_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g2_el_10","tag":"input","type":"text","text":"","label":"","placeholder":"","id":"0","name":"pettype_name","aria":"","xpath":"//INPUT[@id = '0']","recorded_targets":[]}
+- {"GLOBAL_ID":"g2_el_11","tag":"button","type":"","text":"Edit","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Edit')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g2_el_12","tag":"button","type":"","text":"Delete","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Delete')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g2_el_13","tag":"button","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Home')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g2_el_14","tag":"button","type":"","text":"Add","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add')]","recorded_targets":[]}
+
+=== STATE state14.html ===
+FORM_SUMMARY: {"fields":[{"global_id":"g3_el_10","tag":"input","type":"text","label":"","placeholder":"","options":[]}],"submit_like_controls":[{"global_id":"g3_el_4","tag":"a","text":"Add New"},{"global_id":"g3_el_7","tag":"a","text":"Add New"},{"global_id":"g3_el_11","tag":"button","text":"Update"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":9,"text":"Update","click_xpath":"xpath //FORM[@id = 'specialty']/DIV[2]/DIV[1]/BUTTON[1]","target_state":"state15.html","target_dom_available":true,"input_values":[{"xpath":"//*[@id = 'name']","action":"input","input_value":"PetUpdated28357","identification_type":"id","identifier":"name"}]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g3_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g3_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g3_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g3_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g3_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g3_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g3_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g3_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g3_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g3_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g3_el_10","tag":"input","type":"text","text":"","label":"","placeholder":"","id":"name","name":"name","aria":"","xpath":"//INPUT[@id = 'name']","recorded_targets":[]}
+- {"GLOBAL_ID":"g3_el_11","tag":"button","type":"submit","text":"Update","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Update')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g3_el_12","tag":"button","type":"","text":"Cancel","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Cancel')]","recorded_targets":[]}
+
+=== STATE state15.html ===
+FORM_SUMMARY: {"fields":[{"global_id":"g4_el_10","tag":"input","type":"text","label":"","placeholder":"","options":[]}],"submit_like_controls":[{"global_id":"g4_el_4","tag":"a","text":"Add New"},{"global_id":"g4_el_7","tag":"a","text":"Add New"},{"global_id":"g4_el_14","tag":"button","text":"Add"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":10,"text":"Delete","click_xpath":"xpath //TABLE[@id = 'specialties']/TBODY[1]/TR[1]/TD[2]/BUTTON[2]","target_state":"state16.html","target_dom_available":true,"input_values":[{"xpath":"//*[@id = '0']","action":"input","input_value":"PDPQjkog","identification_type":"id","identifier":"0"}]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g4_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g4_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g4_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g4_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g4_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g4_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g4_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g4_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g4_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g4_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g4_el_10","tag":"input","type":"text","text":"","label":"","placeholder":"","id":"0","name":"spec_name","aria":"","xpath":"//INPUT[@id = '0']","recorded_targets":[]}
+- {"GLOBAL_ID":"g4_el_11","tag":"button","type":"","text":"Edit","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Edit')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g4_el_12","tag":"button","type":"","text":"Delete","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Delete')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g4_el_13","tag":"button","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Home')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g4_el_14","tag":"button","type":"","text":"Add","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add')]","recorded_targets":[]}
+
+=== STATE state16.html ===
+FORM_SUMMARY: {"fields":[],"submit_like_controls":[{"global_id":"g5_el_4","tag":"a","text":"Add New"},{"global_id":"g5_el_7","tag":"a","text":"Add New"},{"global_id":"g5_el_11","tag":"button","text":"Add"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":11,"text":"Add","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/APP-SPECIALTY-LIST[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[2]","target_state":"state17.html","target_dom_available":true,"input_values":[]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g5_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g5_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g5_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g5_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g5_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g5_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g5_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g5_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g5_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g5_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g5_el_10","tag":"button","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Home')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g5_el_11","tag":"button","type":"","text":"Add","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add')]","recorded_targets":[]}
+
+=== STATE state17.html ===
+FORM_SUMMARY: {"fields":[{"global_id":"g6_el_10","tag":"input","type":"text","label":"","placeholder":"","options":[]}],"submit_like_controls":[{"global_id":"g6_el_4","tag":"a","text":"Add New"},{"global_id":"g6_el_7","tag":"a","text":"Add New"},{"global_id":"g6_el_11","tag":"button","text":"Save"},{"global_id":"g6_el_13","tag":"button","text":"Add"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":12,"text":"Add","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/APP-SPECIALTY-LIST[1]/DIV[1]/DIV[1]/DIV[2]/BUTTON[2]","target_state":"state16.html","target_dom_available":true,"input_values":[{"xpath":"//*[@id = 'name']","action":"input","input_value":"PetUpdated28357","identification_type":"id","identifier":"name"}]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g6_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g6_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g6_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g6_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g6_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g6_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g6_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g6_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g6_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g6_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g6_el_10","tag":"input","type":"text","text":"","label":"","placeholder":"","id":"name","name":"name","aria":"","xpath":"//INPUT[@id = 'name']","recorded_targets":[]}
+- {"GLOBAL_ID":"g6_el_11","tag":"button","type":"submit","text":"Save","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Save')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g6_el_12","tag":"button","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Home')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g6_el_13","tag":"button","type":"","text":"Add","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add')]","recorded_targets":[]}
+
+=== STATE state21.html ===
+FORM_SUMMARY: {"fields":[],"submit_like_controls":[{"global_id":"g7_el_4","tag":"a","text":"Add New"},{"global_id":"g7_el_7","tag":"a","text":"Add New"},{"global_id":"g7_el_11","tag":"button","text":"Add"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":14,"text":"Add","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/APP-SPECIALTY-LIST[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[2]","target_state":"state22.html","target_dom_available":true,"input_values":[]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g7_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g7_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g7_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g7_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g7_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g7_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g7_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g7_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g7_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g7_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g7_el_10","tag":"button","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Home')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g7_el_11","tag":"button","type":"","text":"Add","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add')]","recorded_targets":[]}
+
+=== STATE state22.html ===
+FORM_SUMMARY: {"fields":[{"global_id":"g8_el_10","tag":"input","type":"text","label":"","placeholder":"","options":[]}],"submit_like_controls":[{"global_id":"g8_el_4","tag":"a","text":"Add New"},{"global_id":"g8_el_7","tag":"a","text":"Add New"},{"global_id":"g8_el_11","tag":"button","text":"Save"},{"global_id":"g8_el_13","tag":"button","text":"Add"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":15,"text":"Save","click_xpath":"xpath //FORM[@id = 'specialty']/DIV[2]/DIV[1]/BUTTON[1]","target_state":"state23.html","target_dom_available":true,"input_values":[{"xpath":"//*[@id = 'name']","action":"input","input_value":"PetUpdated28357","identification_type":"id","identifier":"name"}]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g8_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g8_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g8_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g8_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g8_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g8_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g8_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g8_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g8_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g8_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g8_el_10","tag":"input","type":"text","text":"","label":"","placeholder":"","id":"name","name":"name","aria":"","xpath":"//INPUT[@id = 'name']","recorded_targets":[]}
+- {"GLOBAL_ID":"g8_el_11","tag":"button","type":"submit","text":"Save","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Save')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g8_el_12","tag":"button","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Home')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g8_el_13","tag":"button","type":"","text":"Add","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add')]","recorded_targets":[]}
+
+=== STATE state23.html ===
+FORM_SUMMARY: {"fields":[{"global_id":"g9_el_10","tag":"input","type":"text","label":"","placeholder":"","options":[]}],"submit_like_controls":[{"global_id":"g9_el_4","tag":"a","text":"Add New"},{"global_id":"g9_el_7","tag":"a","text":"Add New"},{"global_id":"g9_el_14","tag":"button","text":"Add"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":16,"text":"Edit","click_xpath":"xpath //TABLE[@id = 'specialties']/TBODY[1]/TR[1]/TD[2]/BUTTON[1]","target_state":"state24.html","target_dom_available":true,"input_values":[{"xpath":"//*[@id = '0']","action":"input","input_value":"yPoLMhFV","identification_type":"id","identifier":"0"}]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g9_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g9_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g9_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g9_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g9_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g9_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g9_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g9_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g9_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g9_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g9_el_10","tag":"input","type":"text","text":"","label":"","placeholder":"","id":"0","name":"spec_name","aria":"","xpath":"//INPUT[@id = '0']","recorded_targets":[]}
+- {"GLOBAL_ID":"g9_el_11","tag":"button","type":"","text":"Edit","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Edit')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g9_el_12","tag":"button","type":"","text":"Delete","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Delete')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g9_el_13","tag":"button","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Home')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g9_el_14","tag":"button","type":"","text":"Add","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add')]","recorded_targets":[]}
+
+=== STATE state24.html ===
+FORM_SUMMARY: {"fields":[{"global_id":"g10_el_10","tag":"input","type":"text","label":"","placeholder":"","options":[]}],"submit_like_controls":[{"global_id":"g10_el_4","tag":"a","text":"Add New"},{"global_id":"g10_el_7","tag":"a","text":"Add New"},{"global_id":"g10_el_11","tag":"button","text":"Update"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":17,"text":"Update","click_xpath":"xpath //FORM[@id = 'specialty']/DIV[2]/DIV[1]/BUTTON[1]","target_state":"state25.html","target_dom_available":true,"input_values":[{"xpath":"//*[@id = 'name']","action":"input","input_value":"PetUpdated28357","identification_type":"id","identifier":"name"}]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g10_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g10_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g10_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g10_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g10_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g10_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g10_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g10_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g10_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g10_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g10_el_10","tag":"input","type":"text","text":"","label":"","placeholder":"","id":"name","name":"name","aria":"","xpath":"//INPUT[@id = 'name']","recorded_targets":[]}
+- {"GLOBAL_ID":"g10_el_11","tag":"button","type":"submit","text":"Update","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Update')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g10_el_12","tag":"button","type":"","text":"Cancel","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Cancel')]","recorded_targets":[]}
+
+=== STATE state25.html ===
+FORM_SUMMARY: {"fields":[{"global_id":"g11_el_10","tag":"input","type":"text","label":"","placeholder":"","options":[]}],"submit_like_controls":[{"global_id":"g11_el_4","tag":"a","text":"Add New"},{"global_id":"g11_el_7","tag":"a","text":"Add New"},{"global_id":"g11_el_14","tag":"button","text":"Add"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":18,"text":"Delete","click_xpath":"xpath //TABLE[@id = 'specialties']/TBODY[1]/TR[1]/TD[2]/BUTTON[2]","target_state":"state21.html","target_dom_available":true,"input_values":[{"xpath":"//*[@id = '0']","action":"input","input_value":"qzRmRgLC","identification_type":"id","identifier":"0"}]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g11_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g11_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g11_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g11_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g11_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g11_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g11_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g11_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g11_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g11_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g11_el_10","tag":"input","type":"text","text":"","label":"","placeholder":"","id":"0","name":"spec_name","aria":"","xpath":"//INPUT[@id = '0']","recorded_targets":[]}
+- {"GLOBAL_ID":"g11_el_11","tag":"button","type":"","text":"Edit","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Edit')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g11_el_12","tag":"button","type":"","text":"Delete","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Delete')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g11_el_13","tag":"button","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Home')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g11_el_14","tag":"button","type":"","text":"Add","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add')]","recorded_targets":[]}
+
+=== STATE state28.html ===
+FORM_SUMMARY: {"fields":[],"submit_like_controls":[{"global_id":"g12_el_4","tag":"a","text":"Add New"},{"global_id":"g12_el_7","tag":"a","text":"Add New"},{"global_id":"g12_el_11","tag":"button","text":"Add Owner"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":20,"text":"Add Owner","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/APP-OWNER-LIST[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]","target_state":"state29.html","target_dom_available":true,"input_values":[]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g12_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g12_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g12_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g12_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g12_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g12_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g12_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g12_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g12_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g12_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g12_el_10","tag":"div","type":"","text":"Name Address City Telephone Pets Add Owner","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//DIV[contains(normalize-space(.), 'Name Address City Telephone Pets Add Owner')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g12_el_11","tag":"button","type":"","text":"Add Owner","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add Owner')]","recorded_targets":[]}
+
+=== STATE state29.html ===
+FORM_SUMMARY: {"fields":[{"global_id":"g13_el_10","tag":"input","type":"text","label":"First Name","placeholder":"","options":[]},{"global_id":"g13_el_11","tag":"input","type":"text","label":"Last Name","placeholder":"","options":[]},{"global_id":"g13_el_12","tag":"input","type":"text","label":"Address","placeholder":"","options":[]},{"global_id":"g13_el_13","tag":"input","type":"text","label":"City","placeholder":"","options":[]},{"global_id":"g13_el_14","tag":"input","type":"text","label":"Telephone","placeholder":"","options":[]}],"submit_like_controls":[{"global_id":"g13_el_4","tag":"a","text":"Add New"},{"global_id":"g13_el_7","tag":"a","text":"Add New"},{"global_id":"g13_el_12","tag":"input","text":"Address"},{"global_id":"g13_el_16","tag":"button","text":"Add Owner"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":21,"text":"Add Owner","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/APP-OWNER-ADD[1]/DIV[1]/DIV[1]/FORM[1]/DIV[7]/DIV[1]/BUTTON[2]","target_state":"state30.html","target_dom_available":true,"input_values":[{"xpath":"//*[@id = 'firstName']","action":"input","input_value":"RLMOwnerUpdated","identification_type":"id","identifier":"firstName"},{"xpath":"//*[@id = 'lastName']","action":"input","input_value":"Updated28357","identification_type":"id","identifier":"lastName"},{"xpath":"//*[@id = 'address']","action":"input","input_value":"Updated Automation Street","identification_type":"id","identifier":"address"},{"xpath":"//*[@id = 'city']","action":"input","input_value":"Manisa","identification_type":"id","identifier":"city"},{"xpath":"//*[@id = 'telephone']","action":"input","input_value":"5551234567","identification_type":"id","identifier":"telephone"}]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g13_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g13_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g13_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g13_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g13_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g13_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g13_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g13_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g13_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g13_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g13_el_10","tag":"input","type":"text","text":"First Name","label":"First Name","placeholder":"","id":"firstName","name":"firstName","aria":"","xpath":"//INPUT[@id = 'firstName']","recorded_targets":[]}
+- {"GLOBAL_ID":"g13_el_11","tag":"input","type":"text","text":"Last Name","label":"Last Name","placeholder":"","id":"lastName","name":"lastName","aria":"","xpath":"//INPUT[@id = 'lastName']","recorded_targets":[]}
+- {"GLOBAL_ID":"g13_el_12","tag":"input","type":"text","text":"Address","label":"Address","placeholder":"","id":"address","name":"address","aria":"","xpath":"//INPUT[@id = 'address']","recorded_targets":[]}
+- {"GLOBAL_ID":"g13_el_13","tag":"input","type":"text","text":"City","label":"City","placeholder":"","id":"city","name":"city","aria":"","xpath":"//INPUT[@id = 'city']","recorded_targets":[]}
+- {"GLOBAL_ID":"g13_el_14","tag":"input","type":"text","text":"Telephone","label":"Telephone","placeholder":"","id":"telephone","name":"telephone","aria":"","xpath":"//INPUT[@id = 'telephone']","recorded_targets":[]}
+- {"GLOBAL_ID":"g13_el_15","tag":"button","type":"button","text":"Back","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Back')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g13_el_16","tag":"button","type":"submit","text":"Add Owner","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add Owner')]","recorded_targets":[]}
+
+=== STATE state30.html ===
+FORM_SUMMARY: {"fields":[],"submit_like_controls":[{"global_id":"g14_el_4","tag":"a","text":"Add New"},{"global_id":"g14_el_7","tag":"a","text":"Add New"},{"global_id":"g14_el_11","tag":"a","text":"RLMOwnerUpdated Updated28357"},{"global_id":"g14_el_12","tag":"button","text":"Add Owner"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":22,"text":"RLMOwnerUpdated Updated28357","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/APP-OWNER-LIST[1]/DIV[1]/DIV[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/A[1]","target_state":"state31.html","target_dom_available":true,"input_values":[]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g14_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g14_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g14_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g14_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g14_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g14_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g14_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g14_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g14_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g14_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g14_el_10","tag":"div","type":"","text":"Name Address City Telephone Pets RLMOwnerUpdated Updated28357 Updated Automation Street Manisa 5551028402 Add Owner","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/APP-OWNER-LIST[1]/DIV[1]/DIV[1]/DIV[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g14_el_11","tag":"a","type":"","text":"RLMOwnerUpdated Updated28357","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'RLMOwnerUpdated Updated28357')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g14_el_12","tag":"button","type":"","text":"Add Owner","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add Owner')]","recorded_targets":[]}
+
+=== STATE state31.html ===
+FORM_SUMMARY: {"fields":[],"submit_like_controls":[{"global_id":"g15_el_4","tag":"a","text":"Add New"},{"global_id":"g15_el_7","tag":"a","text":"Add New"},{"global_id":"g15_el_12","tag":"button","text":"Add New Pet"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":23,"text":"Edit Owner","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/APP-OWNER-DETAIL[1]/DIV[1]/DIV[1]/BUTTON[2]","target_state":"state32.html","target_dom_available":true,"input_values":[]}
+- {"edge_index":25,"text":"Add New Pet","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/APP-OWNER-DETAIL[1]/DIV[1]/DIV[1]/BUTTON[3]","target_state":"state34.html","target_dom_available":true,"input_values":[]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g15_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g15_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g15_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g15_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g15_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g15_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g15_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g15_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g15_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g15_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g15_el_10","tag":"button","type":"","text":"< Back","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), '< Back')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g15_el_11","tag":"button","type":"","text":"Edit Owner","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Edit Owner')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g15_el_12","tag":"button","type":"","text":"Add New Pet","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add New Pet')]","recorded_targets":[]}
+
+=== STATE state32.html ===
+FORM_SUMMARY: {"fields":[{"global_id":"g16_el_10","tag":"input","type":"text","label":"First Name","placeholder":"","options":[]},{"global_id":"g16_el_11","tag":"input","type":"text","label":"Last Name","placeholder":"","options":[]},{"global_id":"g16_el_12","tag":"input","type":"text","label":"Address","placeholder":"","options":[]},{"global_id":"g16_el_13","tag":"input","type":"text","label":"City","placeholder":"","options":[]},{"global_id":"g16_el_14","tag":"input","type":"text","label":"Telephone","placeholder":"","options":[]}],"submit_like_controls":[{"global_id":"g16_el_4","tag":"a","text":"Add New"},{"global_id":"g16_el_7","tag":"a","text":"Add New"},{"global_id":"g16_el_12","tag":"input","text":"Address"},{"global_id":"g16_el_16","tag":"button","text":"Update Owner"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":24,"text":"Update Owner","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/APP-OWNER-EDIT[1]/DIV[1]/DIV[1]/FORM[1]/DIV[7]/DIV[1]/BUTTON[2]","target_state":"state31.html","target_dom_available":true,"input_values":[{"xpath":"//*[@id = 'firstName']","action":"input","input_value":"RLMOwnerUpdated","identification_type":"id","identifier":"firstName"},{"xpath":"//*[@id = 'lastName']","action":"input","input_value":"Updated28357","identification_type":"id","identifier":"lastName"},{"xpath":"//*[@id = 'address']","action":"input","input_value":"Updated Automation Street","identification_type":"id","identifier":"address"},{"xpath":"//*[@id = 'city']","action":"input","input_value":"Manisa","identification_type":"id","identifier":"city"},{"xpath":"//*[@id = 'telephone']","action":"input","input_value":"5551234567","identification_type":"id","identifier":"telephone"}]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g16_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g16_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g16_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g16_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g16_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g16_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g16_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g16_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g16_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g16_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g16_el_10","tag":"input","type":"text","text":"First Name","label":"First Name","placeholder":"","id":"firstName","name":"firstName","aria":"","xpath":"//INPUT[@id = 'firstName']","recorded_targets":[]}
+- {"GLOBAL_ID":"g16_el_11","tag":"input","type":"text","text":"Last Name","label":"Last Name","placeholder":"","id":"lastName","name":"lastName","aria":"","xpath":"//INPUT[@id = 'lastName']","recorded_targets":[]}
+- {"GLOBAL_ID":"g16_el_12","tag":"input","type":"text","text":"Address","label":"Address","placeholder":"","id":"address","name":"address","aria":"","xpath":"//INPUT[@id = 'address']","recorded_targets":[]}
+- {"GLOBAL_ID":"g16_el_13","tag":"input","type":"text","text":"City","label":"City","placeholder":"","id":"city","name":"city","aria":"","xpath":"//INPUT[@id = 'city']","recorded_targets":[]}
+- {"GLOBAL_ID":"g16_el_14","tag":"input","type":"text","text":"Telephone","label":"Telephone","placeholder":"","id":"telephone","name":"telephone","aria":"","xpath":"//INPUT[@id = 'telephone']","recorded_targets":[]}
+- {"GLOBAL_ID":"g16_el_15","tag":"button","type":"","text":"Back","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Back')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g16_el_16","tag":"button","type":"submit","text":"Update Owner","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Update Owner')]","recorded_targets":[]}
+
+=== STATE state34.html ===
+FORM_SUMMARY: {"fields":[{"global_id":"g17_el_10","tag":"input","type":"text","label":"","placeholder":"","options":[]},{"global_id":"g17_el_11","tag":"input","type":"text","label":"Name","placeholder":"","options":[]},{"global_id":"g17_el_12","tag":"input","type":"","label":"","placeholder":"","options":[]},{"global_id":"g17_el_17","tag":"select","type":"","label":"Type","placeholder":"","options":["BootstrapType28357"]}],"submit_like_controls":[{"global_id":"g17_el_4","tag":"a","text":"Add New"},{"global_id":"g17_el_7","tag":"a","text":"Add New"},{"global_id":"g17_el_19","tag":"button","text":"Save Pet"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":26,"text":"Save Pet","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/APP-PET-ADD[1]/DIV[1]/DIV[1]/FORM[1]/DIV[6]/DIV[1]/BUTTON[2]","target_state":"state35.html","target_dom_available":true,"input_values":[{"xpath":"//*[@id = 'owner_name']","action":"input","input_value":"zubILypM","identification_type":"id","identifier":"owner_name"},{"xpath":"//*[@id = 'name']","action":"input","input_value":"PetUpdated28357","identification_type":"id","identifier":"name"},{"xpath":"//*[@name = 'birthDate']","action":"input","input_value":"2026/04/08","identification_type":"name","identifier":"birthDate"},{"xpath":"//*[@id = 'type']","action":"input","input_value":"BootstrapType28357","identification_type":"id","identifier":"type"}]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g17_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_10","tag":"input","type":"text","text":"","label":"","placeholder":"","id":"owner_name","name":"owner_name","aria":"","xpath":"//INPUT[@id = 'owner_name']","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_11","tag":"input","type":"text","text":"Name","label":"Name","placeholder":"","id":"name","name":"name","aria":"","xpath":"//INPUT[@id = 'name']","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_12","tag":"input","type":"","text":"","label":"","placeholder":"","id":"","name":"birthDate","aria":"","xpath":"//INPUT[@name = 'birthDate']","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_13","tag":"button","type":"button","text":"Open calendar","label":"","placeholder":"","id":"","name":"","aria":"Open calendar","xpath":"//BUTTON[@aria-label = 'Open calendar']","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_14","tag":"span","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/APP-PET-ADD[1]/DIV[1]/DIV[1]/FORM[1]/DIV[4]/MAT-DATEPICKER-TOGGLE[1]/BUTTON[1]/SPAN[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_15","tag":"div","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/APP-PET-ADD[1]/DIV[1]/DIV[1]/FORM[1]/DIV[4]/MAT-DATEPICKER-TOGGLE[1]/BUTTON[1]/DIV[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_16","tag":"div","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/APP-PET-ADD[1]/DIV[1]/DIV[1]/FORM[1]/DIV[4]/MAT-DATEPICKER-TOGGLE[1]/BUTTON[1]/DIV[2]","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_17","tag":"select","type":"","text":"BootstrapType28357","label":"Type","placeholder":"","id":"type","name":"type","aria":"","xpath":"//SELECT[@id = 'type']","recorded_targets":[],"options":["BootstrapType28357"]}
+- {"GLOBAL_ID":"g17_el_18","tag":"button","type":"button","text":"< Back","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), '< Back')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g17_el_19","tag":"button","type":"submit","text":"Save Pet","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Save Pet')]","recorded_targets":[]}
+
+=== STATE state35.html ===
+FORM_SUMMARY: {"fields":[],"submit_like_controls":[{"global_id":"g18_el_4","tag":"a","text":"Add New"},{"global_id":"g18_el_7","tag":"a","text":"Add New"},{"global_id":"g18_el_12","tag":"button","text":"Add New Pet"},{"global_id":"g18_el_15","tag":"button","text":"Add Visit"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":27,"text":"Edit Pet","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/APP-OWNER-DETAIL[1]/DIV[1]/DIV[1]/TABLE[2]/TBODY[1]/TR[1]/APP-PET-LIST[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DL[1]/BUTTON[1]","target_state":"state36.html","target_dom_available":true,"input_values":[]}
+- {"edge_index":29,"text":"Add Visit","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/APP-OWNER-DETAIL[1]/DIV[1]/DIV[1]/TABLE[2]/TBODY[1]/TR[1]/APP-PET-LIST[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DL[1]/BUTTON[3]","target_state":"state38.html","target_dom_available":true,"input_values":[]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g18_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g18_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g18_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g18_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g18_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g18_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g18_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g18_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g18_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g18_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g18_el_10","tag":"button","type":"","text":"< Back","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), '< Back')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g18_el_11","tag":"button","type":"","text":"Edit Owner","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Edit Owner')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g18_el_12","tag":"button","type":"","text":"Add New Pet","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add New Pet')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g18_el_13","tag":"button","type":"","text":"Edit Pet","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Edit Pet')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g18_el_14","tag":"button","type":"","text":"Delete Pet","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Delete Pet')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g18_el_15","tag":"button","type":"","text":"Add Visit","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add Visit')]","recorded_targets":[]}
+
+=== STATE state36.html ===
+FORM_SUMMARY: {"fields":[{"global_id":"g19_el_10","tag":"input","type":"text","label":"","placeholder":"","options":[]},{"global_id":"g19_el_11","tag":"input","type":"text","label":"Name","placeholder":"","options":[]},{"global_id":"g19_el_12","tag":"input","type":"","label":"","placeholder":"","options":[]},{"global_id":"g19_el_17","tag":"input","type":"text","label":"","placeholder":"","options":[]},{"global_id":"g19_el_18","tag":"select","type":"","label":"Type","placeholder":"","options":["BootstrapType28357"]}],"submit_like_controls":[{"global_id":"g19_el_4","tag":"a","text":"Add New"},{"global_id":"g19_el_7","tag":"a","text":"Add New"},{"global_id":"g19_el_20","tag":"button","text":"Update Pet"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":28,"text":"Update Pet","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/APP-PET-EDIT[1]/DIV[1]/DIV[1]/FORM[1]/DIV[6]/DIV[1]/BUTTON[2]","target_state":"state35.html","target_dom_available":true,"input_values":[{"xpath":"//*[@id = 'owner_name']","action":"input","input_value":"HZAFkEMG","identification_type":"id","identifier":"owner_name"},{"xpath":"//*[@id = 'name']","action":"input","input_value":"PetUpdated28357","identification_type":"id","identifier":"name"},{"xpath":"//*[@name = 'birthDate']","action":"input","input_value":"2026/04/08","identification_type":"name","identifier":"birthDate"},{"xpath":"//*[@id = 'type1']","action":"input","input_value":"Oboljrar","identification_type":"id","identifier":"type1"},{"xpath":"//*[@id = 'type']","action":"input","input_value":"BootstrapType28357","identification_type":"id","identifier":"type"}]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g19_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_10","tag":"input","type":"text","text":"","label":"","placeholder":"","id":"owner_name","name":"owner_name","aria":"","xpath":"//INPUT[@id = 'owner_name']","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_11","tag":"input","type":"text","text":"Name","label":"Name","placeholder":"","id":"name","name":"name","aria":"","xpath":"//INPUT[@id = 'name']","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_12","tag":"input","type":"","text":"","label":"","placeholder":"","id":"","name":"birthDate","aria":"","xpath":"//INPUT[@name = 'birthDate']","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_13","tag":"button","type":"button","text":"Open calendar","label":"","placeholder":"","id":"","name":"","aria":"Open calendar","xpath":"//BUTTON[@aria-label = 'Open calendar']","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_14","tag":"span","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/APP-PET-EDIT[1]/DIV[1]/DIV[1]/FORM[1]/DIV[4]/MAT-DATEPICKER-TOGGLE[1]/BUTTON[1]/SPAN[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_15","tag":"div","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/APP-PET-EDIT[1]/DIV[1]/DIV[1]/FORM[1]/DIV[4]/MAT-DATEPICKER-TOGGLE[1]/BUTTON[1]/DIV[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_16","tag":"div","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/APP-PET-EDIT[1]/DIV[1]/DIV[1]/FORM[1]/DIV[4]/MAT-DATEPICKER-TOGGLE[1]/BUTTON[1]/DIV[2]","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_17","tag":"input","type":"text","text":"","label":"","placeholder":"","id":"type1","name":"type1","aria":"","xpath":"//INPUT[@id = 'type1']","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_18","tag":"select","type":"","text":"BootstrapType28357","label":"Type","placeholder":"","id":"type","name":"type","aria":"","xpath":"//SELECT[@id = 'type']","recorded_targets":[],"options":["BootstrapType28357"]}
+- {"GLOBAL_ID":"g19_el_19","tag":"button","type":"button","text":"< Back","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), '< Back')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g19_el_20","tag":"button","type":"submit","text":"Update Pet","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Update Pet')]","recorded_targets":[]}
+
+=== STATE state38.html ===
+FORM_SUMMARY: {"fields":[{"global_id":"g20_el_10","tag":"input","type":"","label":"","placeholder":"","options":[]},{"global_id":"g20_el_15","tag":"input","type":"text","label":"","placeholder":"","options":[]}],"submit_like_controls":[{"global_id":"g20_el_4","tag":"a","text":"Add New"},{"global_id":"g20_el_7","tag":"a","text":"Add New"},{"global_id":"g20_el_17","tag":"button","text":"Add Visit"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":30,"text":"Add Visit","click_xpath":"xpath //FORM[@id = 'visit']/DIV[2]/DIV[1]/BUTTON[2]","target_state":"state39.html","target_dom_available":true,"input_values":[{"xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/APP-VISIT-ADD[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]","action":"input","input_value":"2026/07/24","identification_type":"xpath","identifier":"/HTML[1]/BODY[1]/APP-ROOT[1]/APP-VISIT-ADD[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"},{"xpath":"//*[@id = 'description']","action":"input","input_value":"RLM updated examination","identification_type":"id","identifier":"description"}]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g20_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g20_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g20_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g20_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g20_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g20_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g20_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g20_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g20_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g20_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g20_el_10","tag":"input","type":"","text":"","label":"","placeholder":"","id":"","name":"date","aria":"","xpath":"//INPUT[@name = 'date']","recorded_targets":[]}
+- {"GLOBAL_ID":"g20_el_11","tag":"button","type":"button","text":"Open calendar","label":"","placeholder":"","id":"","name":"","aria":"Open calendar","xpath":"//BUTTON[@aria-label = 'Open calendar']","recorded_targets":[]}
+- {"GLOBAL_ID":"g20_el_12","tag":"span","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/APP-VISIT-ADD[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/MAT-DATEPICKER-TOGGLE[1]/BUTTON[1]/SPAN[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g20_el_13","tag":"div","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/APP-VISIT-ADD[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/MAT-DATEPICKER-TOGGLE[1]/BUTTON[1]/DIV[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g20_el_14","tag":"div","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/APP-VISIT-ADD[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/MAT-DATEPICKER-TOGGLE[1]/BUTTON[1]/DIV[2]","recorded_targets":[]}
+- {"GLOBAL_ID":"g20_el_15","tag":"input","type":"text","text":"","label":"","placeholder":"","id":"description","name":"description","aria":"","xpath":"//INPUT[@id = 'description']","recorded_targets":[]}
+- {"GLOBAL_ID":"g20_el_16","tag":"button","type":"button","text":"Back","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Back')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g20_el_17","tag":"button","type":"submit","text":"Add Visit","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add Visit')]","recorded_targets":[]}
+
+=== STATE state39.html ===
+FORM_SUMMARY: {"fields":[],"submit_like_controls":[{"global_id":"g21_el_4","tag":"a","text":"Add New"},{"global_id":"g21_el_7","tag":"a","text":"Add New"},{"global_id":"g21_el_12","tag":"button","text":"Add New Pet"},{"global_id":"g21_el_15","tag":"button","text":"Add Visit"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":31,"text":"Edit Visit","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/APP-OWNER-DETAIL[1]/DIV[1]/DIV[1]/TABLE[2]/TBODY[1]/TR[1]/APP-PET-LIST[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/APP-VISIT-LIST[1]/TABLE[1]/TBODY[1]/TR[1]/TD[3]/BUTTON[1]","target_state":"state40.html","target_dom_available":true,"input_values":[]}
+- {"edge_index":33,"text":"Delete Visit","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/APP-OWNER-DETAIL[1]/DIV[1]/DIV[1]/TABLE[2]/TBODY[1]/TR[1]/APP-PET-LIST[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/APP-VISIT-LIST[1]/TABLE[1]/TBODY[1]/TR[1]/TD[3]/BUTTON[2]","target_state":"state42.html","target_dom_available":true,"input_values":[]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g21_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g21_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g21_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g21_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g21_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g21_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g21_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g21_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g21_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g21_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g21_el_10","tag":"button","type":"","text":"< Back","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), '< Back')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g21_el_11","tag":"button","type":"","text":"Edit Owner","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Edit Owner')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g21_el_12","tag":"button","type":"","text":"Add New Pet","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add New Pet')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g21_el_13","tag":"button","type":"","text":"Edit Pet","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Edit Pet')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g21_el_14","tag":"button","type":"","text":"Delete Pet","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Delete Pet')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g21_el_15","tag":"button","type":"","text":"Add Visit","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add Visit')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g21_el_16","tag":"button","type":"","text":"Edit Visit","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Edit Visit')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g21_el_17","tag":"button","type":"","text":"Delete Visit","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Delete Visit')]","recorded_targets":[]}
+
+=== STATE state4.html ===
+FORM_SUMMARY: {"fields":[],"submit_like_controls":[{"global_id":"g22_el_4","tag":"a","text":"Add New"},{"global_id":"g22_el_7","tag":"a","text":"Add New"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":1,"text":"Owners","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/A[1]","target_state":"index.html","target_dom_available":true,"input_values":[]}
+- {"edge_index":19,"text":"All","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","target_state":"state28.html","target_dom_available":true,"input_values":[]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g22_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g22_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g22_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g22_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":["state28.html"]}
+- {"GLOBAL_ID":"g22_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g22_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g22_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g22_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g22_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g22_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+
+=== STATE state40.html ===
+FORM_SUMMARY: {"fields":[{"global_id":"g23_el_10","tag":"input","type":"","label":"","placeholder":"","options":[]},{"global_id":"g23_el_15","tag":"input","type":"text","label":"","placeholder":"","options":[]}],"submit_like_controls":[{"global_id":"g23_el_4","tag":"a","text":"Add New"},{"global_id":"g23_el_7","tag":"a","text":"Add New"},{"global_id":"g23_el_17","tag":"button","text":"Update Visit"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":32,"text":"Update Visit","click_xpath":"xpath //FORM[@id = 'visit']/DIV[2]/DIV[1]/BUTTON[2]","target_state":"state39.html","target_dom_available":true,"input_values":[{"xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/APP-VISIT-EDIT[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]","action":"input","input_value":"2026/07/10","identification_type":"xpath","identifier":"/HTML[1]/BODY[1]/APP-ROOT[1]/APP-VISIT-EDIT[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/INPUT[1]"},{"xpath":"//*[@id = 'description']","action":"input","input_value":"RLM updated examination","identification_type":"id","identifier":"description"}]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g23_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g23_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g23_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g23_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g23_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g23_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g23_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g23_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g23_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g23_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g23_el_10","tag":"input","type":"","text":"","label":"","placeholder":"","id":"","name":"date","aria":"","xpath":"//INPUT[@name = 'date']","recorded_targets":[]}
+- {"GLOBAL_ID":"g23_el_11","tag":"button","type":"button","text":"Open calendar","label":"","placeholder":"","id":"","name":"","aria":"Open calendar","xpath":"//BUTTON[@aria-label = 'Open calendar']","recorded_targets":[]}
+- {"GLOBAL_ID":"g23_el_12","tag":"span","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/APP-VISIT-EDIT[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/MAT-DATEPICKER-TOGGLE[1]/BUTTON[1]/SPAN[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g23_el_13","tag":"div","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/APP-VISIT-EDIT[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/MAT-DATEPICKER-TOGGLE[1]/BUTTON[1]/DIV[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g23_el_14","tag":"div","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/APP-VISIT-EDIT[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/MAT-DATEPICKER-TOGGLE[1]/BUTTON[1]/DIV[2]","recorded_targets":[]}
+- {"GLOBAL_ID":"g23_el_15","tag":"input","type":"text","text":"","label":"","placeholder":"","id":"description","name":"description","aria":"","xpath":"//INPUT[@id = 'description']","recorded_targets":[]}
+- {"GLOBAL_ID":"g23_el_16","tag":"button","type":"button","text":"Back","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Back')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g23_el_17","tag":"button","type":"submit","text":"Update Visit","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Update Visit')]","recorded_targets":[]}
+
+=== STATE state42.html ===
+FORM_SUMMARY: {"fields":[],"submit_like_controls":[{"global_id":"g24_el_4","tag":"a","text":"Add New"},{"global_id":"g24_el_7","tag":"a","text":"Add New"},{"global_id":"g24_el_12","tag":"button","text":"Add New Pet"},{"global_id":"g24_el_15","tag":"button","text":"Add Visit"}]}
+RECORDED_TRANSITIONS:
+- NONE
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g24_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g24_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g24_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g24_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g24_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g24_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g24_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g24_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g24_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g24_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g24_el_10","tag":"button","type":"","text":"< Back","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), '< Back')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g24_el_11","tag":"button","type":"","text":"Edit Owner","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Edit Owner')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g24_el_12","tag":"button","type":"","text":"Add New Pet","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add New Pet')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g24_el_13","tag":"button","type":"","text":"Edit Pet","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Edit Pet')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g24_el_14","tag":"button","type":"","text":"Delete Pet","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Delete Pet')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g24_el_15","tag":"button","type":"","text":"Add Visit","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add Visit')]","recorded_targets":[]}
+
+=== STATE state44.html ===
+FORM_SUMMARY: {"fields":[],"submit_like_controls":[{"global_id":"g25_el_4","tag":"a","text":"Add New"},{"global_id":"g25_el_7","tag":"a","text":"Add New"},{"global_id":"g25_el_11","tag":"button","text":"Add Vet"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":35,"text":"Add Vet","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/APP-VET-LIST[1]/DIV[1]/DIV[1]/DIV[1]/BUTTON[2]","target_state":"state45.html","target_dom_available":true,"input_values":[]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g25_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g25_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g25_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g25_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g25_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g25_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g25_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g25_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g25_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g25_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g25_el_10","tag":"button","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Home')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g25_el_11","tag":"button","type":"","text":"Add Vet","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add Vet')]","recorded_targets":[]}
+
+=== STATE state45.html ===
+FORM_SUMMARY: {"fields":[{"global_id":"g26_el_10","tag":"input","type":"text","label":"First Name","placeholder":"","options":[]},{"global_id":"g26_el_11","tag":"input","type":"text","label":"Last Name","placeholder":"","options":[]},{"global_id":"g26_el_12","tag":"select","type":"","label":"Type","placeholder":"","options":[]}],"submit_like_controls":[{"global_id":"g26_el_4","tag":"a","text":"Add New"},{"global_id":"g26_el_7","tag":"a","text":"Add New"},{"global_id":"g26_el_14","tag":"button","text":"Save Vet"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":36,"text":"Save Vet","click_xpath":"xpath //FORM[@id = 'vet']/DIV[5]/DIV[1]/BUTTON[2]","target_state":"state46.html","target_dom_available":true,"input_values":[{"xpath":"//*[@id = 'firstName']","action":"input","input_value":"RLMOwnerUpdated","identification_type":"id","identifier":"firstName"},{"xpath":"//*[@id = 'lastName']","action":"input","input_value":"Updated28357","identification_type":"id","identifier":"lastName"},{"xpath":"//*[@id = 'specialties']","action":"input","input_value":"BootstrapSpecialty28357","identification_type":"id","identifier":"specialties"}]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g26_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g26_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g26_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g26_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g26_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g26_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g26_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g26_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g26_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g26_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g26_el_10","tag":"input","type":"text","text":"First Name","label":"First Name","placeholder":"","id":"firstName","name":"firstName","aria":"","xpath":"//INPUT[@id = 'firstName']","recorded_targets":[]}
+- {"GLOBAL_ID":"g26_el_11","tag":"input","type":"text","text":"Last Name","label":"Last Name","placeholder":"","id":"lastName","name":"lastName","aria":"","xpath":"//INPUT[@id = 'lastName']","recorded_targets":[]}
+- {"GLOBAL_ID":"g26_el_12","tag":"select","type":"","text":"Type","label":"Type","placeholder":"","id":"specialties","name":"specialties","aria":"","xpath":"//SELECT[@id = 'specialties']","recorded_targets":[],"options":[]}
+- {"GLOBAL_ID":"g26_el_13","tag":"button","type":"button","text":"< Back","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), '< Back')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g26_el_14","tag":"button","type":"submit","text":"Save Vet","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Save Vet')]","recorded_targets":[]}
+
+=== STATE state46.html ===
+FORM_SUMMARY: {"fields":[],"submit_like_controls":[{"global_id":"g27_el_4","tag":"a","text":"Add New"},{"global_id":"g27_el_7","tag":"a","text":"Add New"},{"global_id":"g27_el_13","tag":"button","text":"Add Vet"}]}
+RECORDED_TRANSITIONS:
+- NONE
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g27_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g27_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g27_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g27_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g27_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g27_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g27_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g27_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g27_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g27_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g27_el_10","tag":"button","type":"","text":"Edit Vet","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Edit Vet')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g27_el_11","tag":"button","type":"","text":"Delete Vet","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Delete Vet')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g27_el_12","tag":"button","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Home')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g27_el_13","tag":"button","type":"","text":"Add Vet","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add Vet')]","recorded_targets":[]}
+
+=== STATE state6.html ===
+FORM_SUMMARY: {"fields":[],"submit_like_controls":[{"global_id":"g28_el_4","tag":"a","text":"Add New"},{"global_id":"g28_el_7","tag":"a","text":"Add New"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":3,"text":"Veterinarians","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/A[1]","target_state":"index.html","target_dom_available":true,"input_values":[]}
+- {"edge_index":34,"text":"All","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","target_state":"state44.html","target_dom_available":true,"input_values":[]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g28_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g28_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g28_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g28_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g28_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g28_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g28_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":["state44.html"]}
+- {"GLOBAL_ID":"g28_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g28_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g28_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+
+=== STATE state8.html ===
+FORM_SUMMARY: {"fields":[{"global_id":"g29_el_10","tag":"input","type":"text","label":"","placeholder":"","options":[]}],"submit_like_controls":[{"global_id":"g29_el_4","tag":"a","text":"Add New"},{"global_id":"g29_el_7","tag":"a","text":"Add New"},{"global_id":"g29_el_14","tag":"button","text":"Add"}]}
+RECORDED_TRANSITIONS:
+- {"edge_index":5,"text":"Specialties","click_xpath":"xpath /HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[5]/A[1]","target_state":"state10.html","target_dom_available":true,"input_values":[{"xpath":"//*[@id = '0']","action":"input","input_value":"TXYUqpWo","identification_type":"id","identifier":"0"}]}
+ACTIONABLE_DOM:
+- {"GLOBAL_ID":"g29_el_0","tag":"a","type":"","text":"","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/DIV[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g29_el_1","tag":"a","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'home page']","recorded_targets":[]}
+- {"GLOBAL_ID":"g29_el_2","tag":"a","type":"","text":"Owners","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Owners')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g29_el_3","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g29_el_4","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g29_el_5","tag":"a","type":"","text":"Veterinarians","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[contains(normalize-space(.), 'Veterinarians')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g29_el_6","tag":"a","type":"","text":"All","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[1]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g29_el_7","tag":"a","type":"","text":"Add New","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"/HTML[1]/BODY[1]/APP-ROOT[1]/DIV[1]/NAV[1]/DIV[1]/UL[1]/LI[3]/UL[1]/LI[2]/A[1]","recorded_targets":[]}
+- {"GLOBAL_ID":"g29_el_8","tag":"a","type":"","text":"Pet Types","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'pettypes']","recorded_targets":[]}
+- {"GLOBAL_ID":"g29_el_9","tag":"a","type":"","text":"Specialties","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//A[@title = 'specialties']","recorded_targets":[]}
+- {"GLOBAL_ID":"g29_el_10","tag":"input","type":"text","text":"","label":"","placeholder":"","id":"0","name":"pettype_name","aria":"","xpath":"//INPUT[@id = '0']","recorded_targets":[]}
+- {"GLOBAL_ID":"g29_el_11","tag":"button","type":"","text":"Edit","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Edit')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g29_el_12","tag":"button","type":"","text":"Delete","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Delete')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g29_el_13","tag":"button","type":"","text":"Home","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Home')]","recorded_targets":[]}
+- {"GLOBAL_ID":"g29_el_14","tag":"button","type":"","text":"Add","label":"","placeholder":"","id":"","name":"","aria":"","xpath":"//BUTTON[contains(normalize-space(.), 'Add')]","recorded_targets":[]}

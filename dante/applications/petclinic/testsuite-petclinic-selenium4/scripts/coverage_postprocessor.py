@@ -662,18 +662,18 @@ def dante_overlapping_ranges(
         return []
 
     result: list[tuple[int, int, int]] = []
-    range_start = -1
 
-    for index in range(len(remaining) - 1):
-        first = remaining[index]
-        if range_start == -1:
-            range_start = first
-        second = remaining[index + 1]
-        if abs(first - second) > 1:
-            result.append((range_start, first, 1))
-            range_start = -1
+    run_start = remaining[0]
+    previous = remaining[0]
 
-    result.append((range_start, remaining[-1], 1))
+    for current in remaining[1:]:
+        if current != previous + 1:
+            result.append((run_start, previous, 1))
+            run_start = current
+
+        previous = current
+
+    result.append((run_start, previous, 1))
     return result
 
 
@@ -697,7 +697,21 @@ def build_dante_report(
         selected_lines,
     )
 
-    covered_units: set[int] = set()
+    # The historical implementation materialized every covered character
+    # into a Python set for every raw V8 range. Large applications such as
+    # Phoenix contain hundreds of thousands of repeated ranges, making that
+    # unnecessarily expensive.
+    #
+    # Preserve the same DANTE semantics and diagnostics, but:
+    #   1) perform expensive validation/splitting once per unique range;
+    #   2) represent coverage as inclusive intervals;
+    #   3) merge the intervals once at the end.
+    range_cache: dict[
+        tuple[int, int, int],
+        tuple[tuple[int, int], ...] | None,
+    ] = {}
+    coverage_intervals: list[tuple[int, int]] = []
+
     successful_tests = 0
     accepted_ranges = 0
     rejected_ranges = 0
@@ -727,25 +741,79 @@ def build_dante_report(
                     whole_file_ranges += 1
                     continue
 
-                if not dante_can_add(allowed, start, end):
+                cache_key = (start, end, count)
+                is_new = cache_key not in range_cache
+
+                if is_new:
+                    if not dante_can_add(allowed, start, end):
+                        range_cache[cache_key] = None
+                    else:
+                        replacements = dante_overlapping_ranges(
+                            source,
+                            start,
+                            end,
+                            count,
+                        )
+
+                        ranges_to_add = replacements or [
+                            (start, end, count)
+                        ]
+
+                        range_cache[cache_key] = tuple(
+                            (accepted_start, accepted_end)
+                            for accepted_start, accepted_end, _accepted_count
+                            in ranges_to_add
+                        )
+
+                cached_ranges = range_cache[cache_key]
+
+                if cached_ranges is None:
                     rejected_ranges += 1
                     continue
 
-                replacements = dante_overlapping_ranges(
-                    source,
-                    start,
-                    end,
-                    count,
-                )
+                # Keep historical diagnostics occurrence-based.
+                accepted_ranges += len(cached_ranges)
 
-                ranges_to_add = replacements or [(start, end, count)]
-                accepted_ranges += len(ranges_to_add)
+                # Coverage union only needs each identical range once.
+                if is_new:
+                    coverage_intervals.extend(cached_ranges)
 
-                for accepted_start, accepted_end, _accepted_count in ranges_to_add:
-                    covered_units.update(range(accepted_start, accepted_end + 1))
+    # Historical PercentageCovered ignores character units <= 0.
+    # Do the same without materializing every character as an int object.
+    normalized_intervals: list[tuple[int, int]] = []
 
-    covered_units = {unit for unit in covered_units if unit > 0}
-    covered_count = len(covered_units)
+    for interval_start, interval_end in coverage_intervals:
+        interval_start = max(interval_start, 1)
+
+        if interval_end >= interval_start:
+            normalized_intervals.append(
+                (interval_start, interval_end)
+            )
+
+    normalized_intervals.sort()
+
+    covered_count = 0
+
+    if normalized_intervals:
+        current_start, current_end = normalized_intervals[0]
+
+        for interval_start, interval_end in normalized_intervals[1:]:
+            if interval_start <= current_end + 1:
+                if interval_end > current_end:
+                    current_end = interval_end
+            else:
+                covered_count += current_end - current_start + 1
+                current_start = interval_start
+                current_end = interval_end
+
+        covered_count += current_end - current_start + 1
+
+    if covered_count > denominator:
+        raise RuntimeError(
+            "Invalid DANTE-compatible coverage: "
+            f"covered={covered_count} > total={denominator}"
+        )
+
     percentage = covered_count * 100.0 / denominator if denominator else 0.0
 
     return {

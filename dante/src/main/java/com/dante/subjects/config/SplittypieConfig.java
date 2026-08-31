@@ -69,6 +69,14 @@ public class SplittypieConfig extends Config {
         builder.crawlRules().click("button")
                 .withAttribute("class", "btn btn-success save-transaction");
 
+        /*
+         * The result.json shows that Add New Transaction is reached, but the
+         * first modal candidate is the X/Dismiss button. Prevent Crawljax from
+         * consuming the transaction branch by immediately closing the modal.
+         */
+        builder.crawlRules().dontClick("button")
+                .withAttribute("aria-label", "Dismiss");
+
         // Event commits/dropdowns
         builder.crawlRules().click("button")
                 .withAttribute("class", "btn btn-success save-event");
@@ -205,39 +213,67 @@ public class SplittypieConfig extends Config {
                 FormInput.InputType.TEXT,
                 new Identification(Identification.How.xpath,
                         "/HTML[1]/BODY[1]/DIV[1]/DIV[4]/FORM[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/INPUT[1]"));
-        quickAddInput.inputValues("3 ticket");
+        quickAddInput.inputValues("03/24 40 Museum Tickets", "12 20 shopping");
 
         inputSpecification.setValuesInForm(quickAddForm)
                 .beforeClickElement("button")
                 .withAttribute("class", "btn btn-primary btn-add");
 
-        Form transactionDetailsForm = new Form();
+        /*
+         * Detailed transaction form.
+         *
+         * Use the original DANTE structural XPaths and multi-value corpus.
+         * In the latest crawl the class-based selectors were not being applied:
+         * result.json contains random strings for Save Transaction inputs.
+         */
+        Form addWithDetailsForm = new Form();
 
-        FormInput payerInput = transactionDetailsForm.inputField(
-                FormInput.InputType.SELECT,
-                new Identification(Identification.How.xpath,
-                        "//DIV[contains(@class, 'transaction-payer')]//SELECT[1]"));
-        payerInput.inputValues("Jhon");
-
-        FormInput transactionNameInput = transactionDetailsForm.inputField(
+        FormInput amountInput = addWithDetailsForm.inputField(
                 FormInput.InputType.TEXT,
-                new Identification(Identification.How.xpath,
-                        "//INPUT[contains(@class, 'transaction-name')]"));
-        transactionNameInput.inputValues("Ticket to Museum");
+                new Identification(
+                        Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/INPUT[1]"));
+        amountInput.inputValues("100", "200", "400");
 
-        FormInput amountInput = transactionDetailsForm.inputField(
+        FormInput dateInput = addWithDetailsForm.inputField(
                 FormInput.InputType.TEXT,
-                new Identification(Identification.How.xpath,
-                        "//INPUT[contains(@class, 'transaction-amount')]"));
-        amountInput.inputValues("5");
+                new Identification(
+                        Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[2]/INPUT[1]"));
+        dateInput.inputValues(
+                "2019-04-07",
+                "2019-04-08",
+                "2019-05-07");
 
-        FormInput dateInput = transactionDetailsForm.inputField(
+        inputSpecification.setValuesInForm(addWithDetailsForm)
+                .beforeClickElement("button")
+                .withAttribute("class", "btn btn-success save-transaction");
+
+        /*
+         * Existing transaction edit form, also restored from the original
+         * DANTE profile so editing a transaction does not fall back to random
+         * values.
+         */
+        Form transactionEditForm = new Form();
+
+        FormInput dateTransactionInput = transactionEditForm.inputField(
                 FormInput.InputType.TEXT,
-                new Identification(Identification.How.xpath,
-                        "//INPUT[contains(@class, 'transaction-date')]"));
-        dateInput.inputValues("2026-07-21");
+                new Identification(
+                        Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/INPUT[1]"));
+        dateTransactionInput.inputValues(
+                "2019-04-08",
+                "2019-04-09",
+                "2019-05-08");
 
-        inputSpecification.setValuesInForm(transactionDetailsForm)
+        FormInput amountTransactionInput = transactionEditForm.inputField(
+                FormInput.InputType.TEXT,
+                new Identification(
+                        Identification.How.xpath,
+                        "/HTML[1]/BODY[1]/DIV[1]/DIV[3]/MAIN[1]/DIV[1]/DIV[1]/FORM[1]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/INPUT[1]"));
+        amountTransactionInput.inputValues("100", "200", "400");
+
+        inputSpecification.setValuesInForm(transactionEditForm)
                 .beforeClickElement("button")
                 .withAttribute("class", "btn btn-success save-transaction");
 

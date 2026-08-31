@@ -1,0 +1,34 @@
+{
+  "metric": "dante_compatible_source_map_filtered_main_js_character_coverage",
+  "scriptSelection": "(?:^|/)splittypie\\.js(?:\\?.*)?$",
+  "sourceMapSelectedGeneratedLines": 4224,
+  "sourceMapParserDiagnostics": {
+    "srcCodeFolder": "splittypie",
+    "rawSrcCodeFilesToExclude": "",
+    "parsedExclusionTokens": [
+      ""
+    ],
+    "emptyExclusionBehavior": "java",
+    "matchedSourceFiles": 0,
+    "lineRanges": [],
+    "flattenedLineRangeUnits": 0,
+    "emptyLineRangesMeanAllMainJsLines": true,
+    "generatedLineIndexing": "Atlassian mapping lines are zero-based; values are intentionally compared unchanged with ScriptRangeCoverage's one-based i+1 line numbers to reproduce the supplied implementation."
+  },
+  "totalCoverageUnits": 272514,
+  "coveredCoverageUnits": 193371,
+  "coveragePercent": 70.9582,
+  "successfulTestsInUnion": 299,
+  "acceptedRanges": 140015,
+  "rejectedRanges": 50243,
+  "wholeFileRangesExcluded": 299,
+  "historicalSemantics": {
+    "callCount": false,
+    "detailed": false,
+    "rangeEnd": "inclusive after CoverageRangeWrapper.flattenRange()",
+    "zeroAndWholeFileRangesExcluded": true,
+    "nestedFunctionHeuristic": "ported from ScriptRangeCoverage.getOverlappingCoverageObjects",
+    "denominator": "selected generated main.js line character ranges, matching PercentageCovered"
+  },
+  "compatibilityNote": "SourceMapParser.java is now ported explicitly: source-name filtering, per-source inclusive min/max generated-line ranges, zero-based generated line values, and the supplied implementation's empty-exclusion behavior are represented. With an empty src_code_files_to_exclude value and emptyExclusionBehavior=java, no source file matches and DANTE falls back to all main.js lines because ScriptRangeCoverage treats an empty line-range set as unfiltered. Use ignore_empty only when reproducing a known patched historical runtime."
+}

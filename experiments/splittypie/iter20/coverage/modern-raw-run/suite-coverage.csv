@@ -1,0 +1,4 @@
+url,known_bytes,covered_bytes,coverage_percent
+"http://localhost:4200/assets/splittypie.js",272515,223714,82.092362
+"http://localhost:4200/assets/vendor.js",4479883,3116494,69.566415
+"http://localhost:4200/ember-cli-live-reload.js",335,335,100.000000

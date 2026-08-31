@@ -14,7 +14,7 @@ import sys
 if len(sys.argv) != 3:
     raise SystemExit(
         "Usage: prepare-selenium4-suite.py "
-        "<GeneratedTestSuiteFired.java> <selenium4-project-root>"
+        "<GeneratedTestSuiteFired-or-Checked.java> <selenium4-project-root>"
     )
 
 source = Path(sys.argv[1]).resolve()
@@ -47,6 +47,17 @@ if not coverage_class.is_file():
     )
 
 text = source.read_text(encoding="utf-8")
+
+# ------------------------------------------------------------
+# Legacy generated suites use utils.Properties.app_url.
+# The Selenium4 harness must be application-agnostic, so replace those
+# references before removing the legacy utils.Properties import.
+# TESTCEPTION_APP_URL is supplied by the application-aware runners.
+# TESTCEPTION_WAIT_URL is a safe fallback for older wrappers.
+# ------------------------------------------------------------
+
+properties_app_url_updates = text.count("Properties.app_url")
+text = text.replace("Properties.app_url", "APP_URL")
 
 # ------------------------------------------------------------
 # Remove legacy DANTE execution-only imports.
@@ -87,13 +98,19 @@ text = text.replace(anchor, selenium4_imports, 1)
 # Rename class for Maven/Selenium4 project.
 # ------------------------------------------------------------
 
-if "public class GeneratedTestSuiteFired {" not in text:
+source_class_match = re.search(
+    r"public class (GeneratedTestSuite(?:Fired|Checked)) \{",
+    text,
+)
+if source_class_match is None:
     raise SystemExit(
-        "Expected GeneratedTestSuiteFired class declaration was not found."
+        "Expected GeneratedTestSuiteFired or GeneratedTestSuiteChecked "
+        "class declaration was not found."
     )
 
+source_class = source_class_match.group(1)
 text = text.replace(
-    "public class GeneratedTestSuiteFired {",
+    f"public class {source_class} {{",
     "public class GeneratedTestSuiteFiredTest {",
     1,
 )
@@ -114,6 +131,14 @@ text = text.replace(
 driver_decl = "\tprivate static WebDriver driver;\n"
 
 coverage_watcher = """	private static WebDriver driver;
+	private static final String APP_URL =
+		System.getenv().getOrDefault(
+			"TESTCEPTION_APP_URL",
+			System.getenv().getOrDefault(
+				"TESTCEPTION_WAIT_URL",
+				"http://localhost:3000/"
+			)
+		);
 	private static Selenium4JsCoverage jsCoverage;
 	private static boolean driverBroken = false;
 	private static int testsStarted = 0;
@@ -145,11 +170,51 @@ coverage_watcher = """	private static WebDriver driver;
 		}
 
 		options.addArguments("--remote-allow-origins=*");
-		WebDriver newDriver = new ChromeDriver(options);
-		newDriver.manage().window().maximize();
-		return newDriver;
-	}
 
+		/*
+		 * Do not call manage().window().maximize() after Chrome startup.
+		 * Chrome 114 occasionally loses the initial window before that
+		 * command is processed and returns "no such window".
+		 */
+		options.addArguments("--window-size=1920,1080");
+
+		RuntimeException lastError = null;
+
+		for (int attempt = 1; attempt <= 3; attempt++) {
+			try {
+				return new ChromeDriver(options);
+			} catch (RuntimeException e) {
+				lastError = e;
+
+				System.out.println(
+					"SELENIUM4_BROWSER_CREATE_RETRY | attempt="
+					+ attempt
+					+ "/3 | "
+					+ e.getClass().getSimpleName()
+					+ " | "
+					+ String.valueOf(e.getMessage())
+				);
+
+				if (attempt < 3) {
+					try {
+						Thread.sleep(750L);
+					} catch (InterruptedException interrupted) {
+						Thread.currentThread().interrupt();
+						throw new RuntimeException(
+							"Interrupted while retrying ChromeDriver creation",
+							interrupted
+						);
+					}
+				}
+			}
+		}
+
+		throw lastError != null
+			? lastError
+			: new IllegalStateException(
+				"ChromeDriver creation failed"
+			);
+	}
 	private static boolean isFatalDriverError(Throwable error) {
 		Throwable current = error;
 		while (current != null) {
@@ -190,13 +255,41 @@ coverage_watcher = """	private static WebDriver driver;
 		);
 
 		boolean oldDriverBroken = driverBroken;
+		WebDriver oldDriver = driver;
 
 		if (!oldDriverBroken && jsCoverage != null) {
-			jsCoverage.prepareForBrowserRecycle();
+			try {
+				jsCoverage.prepareForBrowserRecycle();
+			} catch (RuntimeException e) {
+				oldDriverBroken = true;
+				driverBroken = true;
+
+				System.out.println(
+					"SELENIUM4_RECYCLE_PREPARE_WARNING | "
+					+ e.getClass().getSimpleName()
+					+ " | "
+					+ String.valueOf(e.getMessage())
+				);
+			}
 		}
 
-		WebDriver oldDriver = driver;
-		driver = null;
+		/*
+		 * Important:
+		 * Create the replacement before touching the static driver.
+		 * A transient Chrome startup failure must not leave driver=null.
+		 */
+		WebDriver replacementDriver = createChromeDriver();
+
+		if (!(replacementDriver instanceof HasCdp)) {
+			try {
+				replacementDriver.quit();
+			} catch (Exception ignored) {
+			}
+
+			throw new IllegalStateException(
+				"Fresh Chrome driver does not implement HasCdp"
+			);
+		}
 
 		if (oldDriver != null && !oldDriverBroken) {
 			try {
@@ -208,26 +301,33 @@ coverage_watcher = """	private static WebDriver driver;
 			}
 		} else if (oldDriverBroken) {
 			System.out.println(
-				"SELENIUM4_OLD_DRIVER_QUIT_SKIPPED | reason=DRIVER_UNRESPONSIVE"
+				"SELENIUM4_OLD_DRIVER_QUIT_SKIPPED | "
+				+ "reason=DRIVER_UNRESPONSIVE"
 			);
 		}
 
-		driver = createChromeDriver();
-
-		if (!(driver instanceof HasCdp)) {
-			throw new IllegalStateException(
-				"Fresh Chrome driver does not implement HasCdp"
+		try {
+			jsCoverage.rebindToNewDriver(
+				(HasCdp) replacementDriver
 			);
-		}
 
-		jsCoverage.rebindToNewDriver((HasCdp) driver);
-		driverBroken = false;
+			driver = replacementDriver;
+			driverBroken = false;
+
+		} catch (RuntimeException e) {
+			try {
+				replacementDriver.quit();
+			} catch (Exception ignored) {
+			}
+
+			driverBroken = true;
+			throw e;
+		}
 
 		System.out.println(
 			"SELENIUM4_BROWSER_RECYCLE_DONE | reason=" + reason
 		);
 	}
-
 	private static void ensureDriverAvailableForStep() throws Exception {
 		if (driverBroken) {
 			throw new RuntimeException(
@@ -486,16 +586,49 @@ for forbidden in (
     "DriverProvider.getInstance()",
     "BasePageObject basePageObject",
     "public class GeneratedTestSuiteFired {",
+    "public class GeneratedTestSuiteChecked {",
 ):
     if forbidden in text:
         raise SystemExit(
             f"Legacy Selenium3/DANTE token still present after transformation: {forbidden}"
         )
 
+# TESTCEPTION_REMOVE_LEGACY_MAXIMIZE_V1
+# Legacy DANTE suites may contain a second maximize() in setUp().
+# The Selenium4 bridge already gives Chrome a deterministic window size
+# through ChromeOptions, so remove any post-start maximize command.
+text = re.sub(
+    r"(?m)^[ \t]*driver\.manage\(\)\.window\(\)\.maximize\(\);[ \t]*\n?",
+    "",
+    text,
+)
+
 output.parent.mkdir(parents=True, exist_ok=True)
 output.write_text(text, encoding="utf-8")
 
+# TESTCEPTION_PER_TEST_BACKEND_RESET_BRIDGE_V1
+# Keep application-specific backend isolation outside the core Selenium4
+# transformation so fresh-browser and coverage logic remain unchanged.
+postprocessor = (
+    Path(__file__).resolve().with_name(
+        "inject-per-test-reset.py"
+    )
+)
+if postprocessor.is_file():
+    import subprocess
+    subprocess.run(
+        [
+            sys.executable,
+            str(postprocessor),
+            str(output),
+        ],
+        check=True,
+    )
+
+
 print(f"Selenium4 suite prepared: {output}")
+print(f"Source suite strategy    : {source_class}")
+print(f"Properties.app_url fixed : {properties_app_url_updates}")
 print(f"Generated tests          : {test_count}")
 print(f"STEP_SKIPPED logs updated: {skip_log_updates}")
 print(f"Driver guards inserted   : {helper_guard_updates}")

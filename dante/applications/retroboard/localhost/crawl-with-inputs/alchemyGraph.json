@@ -1,0 +1,1324 @@
+{
+  "nodes" : [ {
+    "name" : "state20",
+    "url" : "http://localhost:4000/",
+    "candidateElements" : [ {
+      "top" : 284,
+      "left" : 36,
+      "xpath" : "//LABEL[@id = '0']",
+      "width" : 75,
+      "height" : 48
+    }, {
+      "top" : 284,
+      "left" : 110,
+      "xpath" : "//LABEL[@id = '1']",
+      "width" : 90,
+      "height" : 48
+    }, {
+      "top" : 284,
+      "left" : 200,
+      "xpath" : "//LABEL[@id = '2']",
+      "width" : 96,
+      "height" : 48
+    }, {
+      "top" : 357,
+      "left" : 48,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/UL[1]/LI[1]/SPAN[1]",
+      "width" : 1118,
+      "height" : 72
+    }, {
+      "top" : 365,
+      "left" : 64,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/UL[1]/LI[1]/SPAN[1]/SPAN[1]",
+      "width" : 56,
+      "height" : 56
+    }, {
+      "top" : 373,
+      "left" : 64,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/UL[1]/LI[1]/SPAN[1]/SPAN[1]/SPAN[1]",
+      "width" : 40,
+      "height" : 40
+    }, {
+      "top" : 357,
+      "left" : 120,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/UL[1]/LI[1]/SPAN[1]/SPAN[2]",
+      "width" : 990,
+      "height" : 72
+    }, {
+      "top" : 374,
+      "left" : 120,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/UL[1]/LI[1]/SPAN[1]/SPAN[2]/SPAN[1]",
+      "width" : 990,
+      "height" : 18
+    }, {
+      "top" : 392,
+      "left" : 120,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/UL[1]/LI[1]/SPAN[1]/SPAN[2]/SPAN[2]",
+      "width" : 990,
+      "height" : 19
+    }, {
+      "top" : 373,
+      "left" : 1110,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/UL[1]/LI[1]/SPAN[1]/SPAN[3]",
+      "width" : 40,
+      "height" : 40
+    }, {
+      "top" : 381,
+      "left" : 1126,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/UL[1]/LI[1]/SPAN[1]/SPAN[3]/SPAN[1]",
+      "width" : 24,
+      "height" : 24
+    }, {
+      "top" : 381,
+      "left" : 1126,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/UL[1]/LI[1]/SPAN[1]/SPAN[3]/SPAN[1]/SPAN[1]",
+      "width" : 24,
+      "height" : 24
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 1,
+    "id" : 20,
+    "failedEvents" : [ "xpath //LABEL[@id = '1']", "xpath //LABEL[@id = '1']", "xpath //LABEL[@id = '1']", "xpath //LABEL[@id = '1']", "xpath //LABEL[@id = '1']", "xpath //LABEL[@id = '1']" ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830869900,
+    "nearestState" : "state18"
+  }, {
+    "name" : "state9",
+    "url" : "http://localhost:4000/",
+    "candidateElements" : [ {
+      "top" : 207,
+      "left" : 1065,
+      "xpath" : "//BUTTON[@id = 'crawljax-logout']",
+      "width" : 100,
+      "height" : 36
+    }, {
+      "top" : 284,
+      "left" : 36,
+      "xpath" : "//LABEL[@id = '0']",
+      "width" : 75,
+      "height" : 48
+    }, {
+      "top" : 284,
+      "left" : 110,
+      "xpath" : "//LABEL[@id = '1']",
+      "width" : 90,
+      "height" : 48
+    }, {
+      "top" : 284,
+      "left" : 200,
+      "xpath" : "//LABEL[@id = '2']",
+      "width" : 96,
+      "height" : 48
+    }, {
+      "top" : 20,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]",
+      "width" : 219,
+      "height" : 54
+    }, {
+      "top" : 28,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]",
+      "width" : 219,
+      "height" : 37
+    }, {
+      "top" : 28,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 28,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 28,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]",
+      "width" : 219,
+      "height" : 37
+    }, {
+      "top" : 98,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/LABEL[1]/SPAN[1]",
+      "width" : 36,
+      "height" : 14
+    }, {
+      "top" : 95,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/LABEL[1]/SPAN[1]/SPAN[1]",
+      "width" : 20,
+      "height" : 20
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 1,
+    "id" : 9,
+    "failedEvents" : [ ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830817353,
+    "nearestState" : "state8"
+  }, {
+    "name" : "state6",
+    "url" : "http://localhost:4000/session/Skw0ZjpvGe",
+    "candidateElements" : [ {
+      "top" : 319,
+      "left" : 1168,
+      "xpath" : "//BUTTON[@id = 'crawljax-menu']",
+      "width" : 36,
+      "height" : 36
+    }, {
+      "top" : 383,
+      "left" : 18,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 499,
+      "left" : 18,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 615,
+      "left" : 18,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 731,
+      "left" : 18,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[5]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 847,
+      "left" : 18,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[6]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 383,
+      "left" : 422,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 499,
+      "left" : 422,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 615,
+      "left" : 422,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 731,
+      "left" : 422,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[5]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 847,
+      "left" : 422,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[6]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 383,
+      "left" : 827,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 499,
+      "left" : 827,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 615,
+      "left" : 827,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 731,
+      "left" : 827,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[5]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 847,
+      "left" : 827,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[6]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 679,
+      "left" : 1147,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/NAV[1]/BUTTON[1]",
+      "width" : 35,
+      "height" : 36
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 1,
+    "id" : 6,
+    "failedEvents" : [ "xpath //BUTTON[@id = 'crawljax-menu']", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[5]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[6]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[5]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[6]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[5]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[6]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]" ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830753818,
+    "nearestState" : "state5"
+  }, {
+    "name" : "index",
+    "url" : "http://localhost:4000",
+    "candidateElements" : [ {
+      "top" : 12,
+      "left" : 34,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[1]/HEADER[1]/DIV[1]/A[1]",
+      "width" : 185,
+      "height" : 37
+    }, {
+      "top" : 269,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 105,
+      "height" : 36
+    }, {
+      "top" : 120,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]",
+      "width" : 500,
+      "height" : 54
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]",
+      "width" : 500,
+      "height" : 37
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]",
+      "width" : 500,
+      "height" : 37
+    } ],
+    "fanIn" : 0,
+    "fanOut" : 2,
+    "id" : 0,
+    "failedEvents" : [ ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830726096,
+    "nearestState" : "null"
+  }, {
+    "name" : "state5",
+    "url" : "http://localhost:4000/session/Skw0ZjpvGe",
+    "candidateElements" : [ {
+      "top" : 12,
+      "left" : 1168,
+      "xpath" : "//BUTTON[@id = 'crawljax-menu']",
+      "width" : 36,
+      "height" : 36
+    }, {
+      "top" : 267,
+      "left" : 18,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 267,
+      "left" : 422,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 267,
+      "left" : 827,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 304,
+      "left" : 48,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/SECTION[1]/BUTTON[1]",
+      "width" : 212,
+      "height" : 36
+    }, {
+      "top" : 372,
+      "left" : 1147,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/NAV[1]/BUTTON[1]",
+      "width" : 35,
+      "height" : 36
+    }, {
+      "top" : 99,
+      "left" : 528,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/SPAN[1]",
+      "width" : 157,
+      "height" : 21
+    }, {
+      "top" : 102,
+      "left" : 671,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/SPAN[1]/SPAN[1]",
+      "width" : 14,
+      "height" : 14
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 1,
+    "id" : 5,
+    "failedEvents" : [ "xpath //BUTTON[@id = 'crawljax-menu']", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]" ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830740105,
+    "nearestState" : "state4"
+  }, {
+    "name" : "state8",
+    "url" : "http://localhost:4000/session/Skw0ZjpvGe",
+    "candidateElements" : [ {
+      "top" : 499,
+      "left" : 18,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 615,
+      "left" : 18,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 731,
+      "left" : 18,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[5]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 847,
+      "left" : 18,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[6]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 964,
+      "left" : 18,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[7]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 499,
+      "left" : 422,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 615,
+      "left" : 422,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 731,
+      "left" : 422,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[5]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 847,
+      "left" : 422,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[6]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 964,
+      "left" : 422,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[7]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 499,
+      "left" : 827,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 615,
+      "left" : 827,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 731,
+      "left" : 827,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[5]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 847,
+      "left" : 827,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[6]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 964,
+      "left" : 827,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[7]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 686,
+      "left" : 975,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/BUTTON[1]",
+      "width" : 90,
+      "height" : 36
+    }, {
+      "top" : 686,
+      "left" : 1065,
+      "xpath" : "//BUTTON[@id = 'crawljax-logout']",
+      "width" : 100,
+      "height" : 36
+    }, {
+      "top" : 443,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]",
+      "width" : 219,
+      "height" : 54
+    }, {
+      "top" : 451,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]",
+      "width" : 219,
+      "height" : 37
+    }, {
+      "top" : 451,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 451,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 451,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]",
+      "width" : 219,
+      "height" : 37
+    }, {
+      "top" : 521,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/LABEL[1]/SPAN[1]",
+      "width" : 36,
+      "height" : 14
+    }, {
+      "top" : 518,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/LABEL[1]/SPAN[1]/SPAN[1]",
+      "width" : 20,
+      "height" : 20
+    }, {
+      "top" : 603,
+      "left" : 975,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/UL[1]/LI[1]/SPAN[1]",
+      "width" : 239,
+      "height" : 56
+    }, {
+      "top" : 603,
+      "left" : 991,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/UL[1]/LI[1]/SPAN[1]/SPAN[1]",
+      "width" : 56,
+      "height" : 56
+    }, {
+      "top" : 611,
+      "left" : 991,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/UL[1]/LI[1]/SPAN[1]/SPAN[1]/SPAN[1]",
+      "width" : 40,
+      "height" : 40
+    }, {
+      "top" : 622,
+      "left" : 1047,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/UL[1]/LI[1]/SPAN[1]/SPAN[2]",
+      "width" : 111,
+      "height" : 18
+    }, {
+      "top" : 622,
+      "left" : 1047,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/UL[1]/LI[1]/SPAN[1]/SPAN[2]/SPAN[1]",
+      "width" : 111,
+      "height" : 18
+    }, {
+      "top" : 611,
+      "left" : 1158,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/UL[1]/LI[1]/SPAN[1]/SPAN[3]",
+      "width" : 40,
+      "height" : 40
+    }, {
+      "top" : 619,
+      "left" : 1174,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/UL[1]/LI[1]/SPAN[1]/SPAN[3]/SPAN[1]",
+      "width" : 24,
+      "height" : 24
+    }, {
+      "top" : 619,
+      "left" : 1174,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/UL[1]/LI[1]/SPAN[1]/SPAN[3]/SPAN[1]/SPAN[1]",
+      "width" : 24,
+      "height" : 24
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 1,
+    "id" : 8,
+    "failedEvents" : [ "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[5]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[6]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[7]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[5]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[6]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[7]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[5]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[6]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[7]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]" ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830790493,
+    "nearestState" : "state7"
+  }, {
+    "name" : "state7",
+    "url" : "http://localhost:4000/session/Skw0ZjpvGe",
+    "candidateElements" : [ {
+      "top" : 319,
+      "left" : 1153,
+      "xpath" : "//BUTTON[@id = 'crawljax-menu']",
+      "width" : 36,
+      "height" : 36
+    }, {
+      "top" : 267,
+      "left" : 18,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 383,
+      "left" : 18,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 499,
+      "left" : 18,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 615,
+      "left" : 18,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 731,
+      "left" : 18,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[5]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 847,
+      "left" : 18,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[6]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 267,
+      "left" : 417,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 383,
+      "left" : 417,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 499,
+      "left" : 417,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 615,
+      "left" : 417,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 731,
+      "left" : 417,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[5]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 847,
+      "left" : 417,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[6]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 267,
+      "left" : 817,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 383,
+      "left" : 817,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 499,
+      "left" : 817,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 615,
+      "left" : 817,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 731,
+      "left" : 817,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[5]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 847,
+      "left" : 817,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[6]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 88,
+      "height" : 36
+    }, {
+      "top" : 99,
+      "left" : 520,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/SPAN[1]",
+      "width" : 157,
+      "height" : 21
+    }, {
+      "top" : 102,
+      "left" : 663,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/SPAN[1]/SPAN[1]",
+      "width" : 14,
+      "height" : 14
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 1,
+    "id" : 7,
+    "failedEvents" : [ ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830781700,
+    "nearestState" : "state6"
+  }, {
+    "name" : "state2",
+    "url" : "http://localhost:4000/",
+    "candidateElements" : [ {
+      "top" : 269,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/BUTTON[1]",
+      "width" : 105,
+      "height" : 36
+    }, {
+      "top" : 120,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]",
+      "width" : 500,
+      "height" : 54
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]",
+      "width" : 500,
+      "height" : 37
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]",
+      "width" : 500,
+      "height" : 37
+    } ],
+    "fanIn" : 2,
+    "fanOut" : 1,
+    "id" : 2,
+    "failedEvents" : [ ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830730962,
+    "nearestState" : "index"
+  }, {
+    "name" : "state4",
+    "url" : "http://localhost:4000/session/Skw0ZjpvGe",
+    "candidateElements" : [ {
+      "top" : 12,
+      "left" : 1132,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[1]/HEADER[1]/DIV[2]/SPAN[2]/BUTTON[1]",
+      "width" : 36,
+      "height" : 36
+    }, {
+      "top" : 12,
+      "left" : 1168,
+      "xpath" : "//BUTTON[@id = 'crawljax-menu']",
+      "width" : 36,
+      "height" : 36
+    }, {
+      "top" : 99,
+      "left" : 528,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/SPAN[1]",
+      "width" : 157,
+      "height" : 21
+    }, {
+      "top" : 102,
+      "left" : 671,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/SPAN[1]/SPAN[1]",
+      "width" : 14,
+      "height" : 14
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 1,
+    "id" : 4,
+    "failedEvents" : [ "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]" ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830736859,
+    "nearestState" : "state3"
+  }, {
+    "name" : "state3",
+    "url" : "http://localhost:4000/",
+    "candidateElements" : [ {
+      "top" : 417,
+      "left" : 48,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/BUTTON[1]",
+      "width" : 1118,
+      "height" : 36
+    }, {
+      "top" : 284,
+      "left" : 36,
+      "xpath" : "//LABEL[@id = '0']",
+      "width" : 75,
+      "height" : 48
+    }, {
+      "top" : 284,
+      "left" : 110,
+      "xpath" : "//LABEL[@id = '1']",
+      "width" : 96,
+      "height" : 48
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 1,
+    "id" : 3,
+    "failedEvents" : [ "xpath //LABEL[@id = '0']", "xpath //LABEL[@id = '1']" ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830734169,
+    "nearestState" : "state2"
+  }, {
+    "name" : "state18",
+    "url" : "http://localhost:4000/",
+    "candidateElements" : [ {
+      "top" : 284,
+      "left" : 36,
+      "xpath" : "//LABEL[@id = '0']",
+      "width" : 75,
+      "height" : 48
+    }, {
+      "top" : 284,
+      "left" : 110,
+      "xpath" : "//LABEL[@id = '1']",
+      "width" : 90,
+      "height" : 48
+    }, {
+      "top" : 284,
+      "left" : 200,
+      "xpath" : "//LABEL[@id = '2']",
+      "width" : 96,
+      "height" : 48
+    } ],
+    "fanIn" : 2,
+    "fanOut" : 1,
+    "id" : 18,
+    "failedEvents" : [ ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830864972,
+    "nearestState" : "state16"
+  }, {
+    "name" : "state24",
+    "url" : "http://localhost:4000/",
+    "candidateElements" : [ {
+      "top" : 377,
+      "left" : 48,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]",
+      "width" : 200,
+      "height" : 33
+    }, {
+      "top" : 377,
+      "left" : 48,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 377,
+      "left" : 48,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 377,
+      "left" : 48,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]",
+      "width" : 200,
+      "height" : 33
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "id" : 24,
+    "failedEvents" : [ "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]" ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830881561,
+    "nearestState" : "state22"
+  }, {
+    "name" : "state11",
+    "url" : "http://localhost:4000/",
+    "candidateElements" : [ {
+      "top" : 120,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]",
+      "width" : 500,
+      "height" : 54
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]",
+      "width" : 500,
+      "height" : 37
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]",
+      "width" : 500,
+      "height" : 37
+    }, {
+      "top" : 28,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]",
+      "width" : 219,
+      "height" : 37
+    }, {
+      "top" : 28,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 28,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 28,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]",
+      "width" : 219,
+      "height" : 37
+    }, {
+      "top" : 98,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/LABEL[1]/SPAN[1]",
+      "width" : 36,
+      "height" : 14
+    }, {
+      "top" : 95,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/LABEL[1]/SPAN[1]/SPAN[1]",
+      "width" : 20,
+      "height" : 20
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 1,
+    "id" : 11,
+    "failedEvents" : [ "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]" ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830831781,
+    "nearestState" : "state10"
+  }, {
+    "name" : "state22",
+    "url" : "http://localhost:4000/",
+    "candidateElements" : [ {
+      "top" : 284,
+      "left" : 200,
+      "xpath" : "//LABEL[@id = '2']",
+      "width" : 96,
+      "height" : 48
+    }, {
+      "top" : 369,
+      "left" : 48,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]",
+      "width" : 200,
+      "height" : 50
+    }, {
+      "top" : 377,
+      "left" : 48,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]",
+      "width" : 200,
+      "height" : 33
+    }, {
+      "top" : 377,
+      "left" : 48,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 377,
+      "left" : 48,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 377,
+      "left" : 48,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/SECTION[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]",
+      "width" : 200,
+      "height" : 33
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 1,
+    "id" : 22,
+    "failedEvents" : [ ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830875926,
+    "nearestState" : "state21"
+  }, {
+    "name" : "state10",
+    "url" : "http://localhost:4000/",
+    "candidateElements" : [ {
+      "top" : 120,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]",
+      "width" : 500,
+      "height" : 54
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]",
+      "width" : 500,
+      "height" : 37
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]",
+      "width" : 500,
+      "height" : 37
+    }, {
+      "top" : 20,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]",
+      "width" : 219,
+      "height" : 54
+    }, {
+      "top" : 28,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]",
+      "width" : 219,
+      "height" : 37
+    }, {
+      "top" : 28,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 28,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 28,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]",
+      "width" : 219,
+      "height" : 37
+    }, {
+      "top" : 98,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/LABEL[1]/SPAN[1]",
+      "width" : 36,
+      "height" : 14
+    }, {
+      "top" : 95,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/DIV[2]/ASIDE[1]/DIV[1]/LABEL[1]/SPAN[1]/SPAN[1]",
+      "width" : 20,
+      "height" : 20
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 1,
+    "id" : 10,
+    "failedEvents" : [ "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]" ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830821069,
+    "nearestState" : "state9"
+  }, {
+    "name" : "state21",
+    "url" : "http://localhost:4000/",
+    "candidateElements" : [ {
+      "top" : 284,
+      "left" : 200,
+      "xpath" : "//LABEL[@id = '2']",
+      "width" : 96,
+      "height" : 48
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 1,
+    "id" : 21,
+    "failedEvents" : [ ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830873205,
+    "nearestState" : "state20"
+  }, {
+    "name" : "state16",
+    "url" : "http://localhost:4000/",
+    "candidateElements" : [ {
+      "top" : 120,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]",
+      "width" : 500,
+      "height" : 54
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]",
+      "width" : 500,
+      "height" : 37
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]",
+      "width" : 32,
+      "height" : 32
+    }, {
+      "top" : 128,
+      "left" : 357,
+      "xpath" : "//DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]",
+      "width" : 500,
+      "height" : 37
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "id" : 16,
+    "failedEvents" : [ "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]", "xpath //DIV[@id = 'content']/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]" ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830852333,
+    "nearestState" : "state11"
+  }, {
+    "name" : "state25",
+    "url" : "http://localhost:4000/",
+    "candidateElements" : [ ],
+    "fanIn" : 0,
+    "fanOut" : 2,
+    "id" : 25,
+    "failedEvents" : [ ],
+    "hasNearDuplicate" : false,
+    "distToNearestState" : -1.0,
+    "cluster" : -1,
+    "timeAdded" : 1787830889337,
+    "nearestState" : "state24"
+  } ],
+  "links" : [ {
+    "source" : 0,
+    "target" : 2,
+    "text" : "Retrospected A good way of ranting in an Agile way",
+    "element" : "Element{node=[A: null], tag=A, text=Retrospected A good way of ranting in an Agile way, attributes={}}",
+    "eventType" : "click"
+  }, {
+    "source" : 2,
+    "target" : 3,
+    "text" : "Let's start",
+    "element" : "Element{node=[BUTTON: null], tag=BUTTON, text=Let's start, attributes={class=theme__button___1iKuo theme__raised___ONZv6 theme__accent___3MS_k, data-react-toolbox=button, type=button}}",
+    "eventType" : "click"
+  }, {
+    "source" : 3,
+    "target" : 4,
+    "text" : "Create a new session",
+    "element" : "Element{node=[BUTTON: null], tag=BUTTON, text=Create a new session, attributes={class=theme__button___1iKuo theme__raised___ONZv6 theme__accent___3MS_k, data-react-toolbox=button, type=button}}",
+    "eventType" : "click"
+  }, {
+    "source" : 4,
+    "target" : 5,
+    "text" : "",
+    "element" : "Element{node=[BUTTON: null], tag=BUTTON, text=, attributes={class=theme__toggle___1Zy-o theme__neutral___uDC3j theme__inverse___2Z8iZ, data-react-toolbox=button, title=Invite, type=button}}",
+    "eventType" : "click"
+  }, {
+    "source" : 5,
+    "target" : 6,
+    "text" : "Copy URL to Clipboard",
+    "element" : "Element{node=[BUTTON: null], tag=BUTTON, text=Copy URL to Clipboard, attributes={class=theme__button___1iKuo theme__flat___2ui7t theme__primary___2NhN1, data-react-toolbox=button, type=button}}",
+    "eventType" : "click"
+  }, {
+    "source" : 6,
+    "target" : 7,
+    "text" : "Ok",
+    "element" : "Element{node=[BUTTON: null], tag=BUTTON, text=Ok, attributes={class=theme__button___1iKuo theme__flat___2ui7t theme__neutral___uDC3j theme__button___3HGWm, data-react-toolbox=button, type=button}}",
+    "eventType" : "click"
+  }, {
+    "source" : 7,
+    "target" : 8,
+    "text" : "menu",
+    "element" : "Element{node=[BUTTON: null], tag=BUTTON, text=menu, attributes={class=theme__toggle___1Zy-o theme__neutral___uDC3j theme__inverse___2Z8iZ, data-react-toolbox=button, id=crawljax-menu, type=button}}",
+    "eventType" : "click"
+  }, {
+    "source" : 8,
+    "target" : 9,
+    "text" : "Leave",
+    "element" : "Element{node=[BUTTON: null], tag=BUTTON, text=Leave, attributes={class=theme__button___1iKuo theme__flat___2ui7t theme__accent___3MS_k, data-react-toolbox=button, type=button}}",
+    "eventType" : "click"
+  }, {
+    "source" : 9,
+    "target" : 10,
+    "text" : "Logout",
+    "element" : "Element{node=[BUTTON: null], tag=BUTTON, text=Logout, attributes={class=theme__button___1iKuo theme__flat___2ui7t theme__accent___3MS_k, data-react-toolbox=button, id=crawljax-logout, type=button}}",
+    "eventType" : "click"
+  }, {
+    "source" : 10,
+    "target" : 11,
+    "text" : "EnglishEnglish",
+    "element" : "Element{node=[DIV: null], tag=DIV, text=EnglishEnglish, attributes={class=theme__templateValue___3if5o theme__value___mflIw}}",
+    "eventType" : "click"
+  }, {
+    "source" : 11,
+    "target" : 16,
+    "text" : "",
+    "element" : "Element{node=[SPAN: null], tag=SPAN, text=, attributes={class=theme__off___Ih3qa}}",
+    "eventType" : "click"
+  }, {
+    "source" : 0,
+    "target" : 18,
+    "text" : "Let's start",
+    "element" : "Element{node=[BUTTON: null], tag=BUTTON, text=Let's start, attributes={class=theme__button___1iKuo theme__raised___ONZv6 theme__accent___3MS_k, data-react-toolbox=button, type=button}}",
+    "eventType" : "click"
+  }, {
+    "source" : 18,
+    "target" : 20,
+    "text" : "Previous",
+    "element" : "Element{node=[LABEL: null], tag=LABEL, text=Previous, attributes={class=theme__label___3A-Tl theme__withText___2-Su2, data-react-toolbox=tab, id=1}}",
+    "eventType" : "click"
+  }, {
+    "source" : 20,
+    "target" : 21,
+    "text" : "Create",
+    "element" : "Element{node=[LABEL: null], tag=LABEL, text=Create, attributes={class=theme__label___3A-Tl theme__withText___2-Su2, data-react-toolbox=tab, id=0}}",
+    "eventType" : "click"
+  }, {
+    "source" : 21,
+    "target" : 22,
+    "text" : "Advanced",
+    "element" : "Element{node=[LABEL: null], tag=LABEL, text=Advanced, attributes={class=theme__label___3A-Tl theme__withText___2-Su2, data-react-toolbox=tab, id=2}}",
+    "eventType" : "click"
+  }, {
+    "source" : 22,
+    "target" : 24,
+    "text" : "EnglishEnglish",
+    "element" : "Element{node=[DIV: null], tag=DIV, text=EnglishEnglish, attributes={class=theme__templateValue___3if5o theme__value___mflIw}}",
+    "eventType" : "click"
+  }, {
+    "source" : 25,
+    "target" : 2,
+    "text" : "Retrospected A good way of ranting in an Agile way",
+    "element" : "Element{node=[A: null], tag=A, text=Retrospected A good way of ranting in an Agile way, attributes={}}",
+    "eventType" : "click"
+  }, {
+    "source" : 25,
+    "target" : 18,
+    "text" : "Let's start",
+    "element" : "Element{node=[BUTTON: null], tag=BUTTON, text=Let's start, attributes={class=theme__button___1iKuo theme__raised___ONZv6 theme__accent___3MS_k, data-react-toolbox=button, type=button}}",
+    "eventType" : "click"
+  } ]
+}

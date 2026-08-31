@@ -93,6 +93,11 @@ public final class Selenium4JsCoverage {
     private boolean cdpUsable = true;
     private String activeTestName;
 
+    // TESTCEPTION_DEVTOOLS_PARITY_RANGE_RESOLUTION_V1
+    private final boolean dumpRawCdp = Boolean.parseBoolean(
+            getenv("TESTCEPTION_DUMP_RAW_CDP", "false"));
+    private int rawCdpSnapshotSequence;
+
     private Selenium4JsCoverage(
             HasCdp cdp,
             Path outputDirectory,
@@ -609,6 +614,10 @@ public final class Selenium4JsCoverage {
 
         Snapshot snapshot = new Snapshot();
 
+        List<Object> rawAcceptedScripts = dumpRawCdp
+                ? new ArrayList<>()
+                : null;
+
         for (Object rawScript : (List<?>) rawResult) {
             if (!(rawScript instanceof Map<?, ?>)) {
                 continue;
@@ -620,6 +629,10 @@ public final class Selenium4JsCoverage {
 
             if (!acceptUrl(url)) {
                 continue;
+            }
+
+            if (dumpRawCdp) {
+                rawAcceptedScripts.add(rawScript);
             }
 
             List<RawRange> ranges = extractRanges(script);
@@ -636,6 +649,10 @@ public final class Selenium4JsCoverage {
 
             aggregate.known.addAll(effective.known.intervals);
             aggregate.covered.addAll(effective.covered.intervals);
+        }
+
+        if (dumpRawCdp) {
+            writeRawCdpSnapshot(rawAcceptedScripts);
         }
 
         return snapshot;
@@ -695,10 +712,14 @@ public final class Selenium4JsCoverage {
         return ranges;
     }
 
-    /**
-     * Modern/raw report segmentation. Each boundary pair is assigned to the
-     * shortest containing V8 range, so a nested zero-count block overrides a
-     * positive outer function range.
+        /**
+     * MODERN_RAW range normalization ported from Puppeteer's
+     * convertToDisjointRanges() endpoint sweep.
+     *
+     * The previous implementation chose the globally shortest containing V8
+     * range for every boundary segment. The endpoint sweep instead processes
+     * V8's nested ranges as a valid parenthesis sequence and uses the top
+     * execution count on a stack as the effective state of each segment.
      */
     private static EffectiveRanges resolveEffectiveRanges(
             List<RawRange> ranges) {
@@ -708,43 +729,55 @@ public final class Selenium4JsCoverage {
             return result;
         }
 
-        TreeSet<Long> boundaries = new TreeSet<>();
+        List<RangePoint> points = new ArrayList<>(ranges.size() * 2);
+
         for (RawRange range : ranges) {
-            boundaries.add(range.start);
-            boundaries.add(range.end);
+            // Keep Testception's existing denominator semantics: the union of
+            // all source ranges observed for this script.
+            result.known.add(new Interval(range.start, range.end));
+
+            points.add(new RangePoint(range.start, 0, range));
+            points.add(new RangePoint(range.end, 1, range));
         }
 
-        List<Long> points = new ArrayList<>(boundaries);
-
-        for (int index = 0; index + 1 < points.size(); index++) {
-            long segmentStart = points.get(index);
-            long segmentEnd = points.get(index + 1);
-
-            if (segmentEnd <= segmentStart) {
-                continue;
+        // Same ordering as Puppeteer's convertToDisjointRanges():
+        // 1) increasing offset
+        // 2) end points before start points at the same offset
+        // 3) two starts: longer range first
+        // 4) two ends: shorter range first
+        points.sort((left, right) -> {
+            if (left.offset != right.offset) {
+                return Long.compare(left.offset, right.offset);
+            }
+            if (left.type != right.type) {
+                return Integer.compare(right.type, left.type);
             }
 
-            RawRange mostSpecific = null;
-            for (RawRange candidate : ranges) {
-                if (candidate.start <= segmentStart
-                        && candidate.end >= segmentEnd) {
-                    if (mostSpecific == null
-                            || candidate.length() < mostSpecific.length()
-                            || (candidate.length() == mostSpecific.length()
-                                && candidate.count < mostSpecific.count)) {
-                        mostSpecific = candidate;
-                    }
-                }
+            long leftLength = left.range.length();
+            long rightLength = right.range.length();
+            if (left.type == 0) {
+                return Long.compare(rightLength, leftLength);
+            }
+            return Long.compare(leftLength, rightLength);
+        });
+
+        List<Long> hitCountStack = new ArrayList<>();
+        long lastOffset = 0L;
+
+        for (RangePoint point : points) {
+            if (!hitCountStack.isEmpty()
+                    && lastOffset < point.offset
+                    && hitCountStack.get(hitCountStack.size() - 1) > 0L) {
+                // IntervalSet merges adjacent intervals, matching Puppeteer's
+                // explicit extension of the previous result.
+                result.covered.add(new Interval(lastOffset, point.offset));
             }
 
-            if (mostSpecific == null) {
-                continue;
-            }
-
-            Interval segment = new Interval(segmentStart, segmentEnd);
-            result.known.add(segment);
-            if (mostSpecific.count > 0L) {
-                result.covered.add(segment);
+            lastOffset = point.offset;
+            if (point.type == 0) {
+                hitCountStack.add(point.range.count);
+            } else if (!hitCountStack.isEmpty()) {
+                hitCountStack.remove(hitCountStack.size() - 1);
             }
         }
 
@@ -779,6 +812,92 @@ public final class Selenium4JsCoverage {
                     ignored -> new ScriptAggregate());
             suite.covered.addAll(entry.getValue().covered.intervals);
         }
+    }
+
+    /**
+     * Debug-only dump of accepted raw CDP ScriptCoverage objects before any
+     * Testception range normalization. Enable with:
+     * TESTCEPTION_DUMP_RAW_CDP=true
+     */
+    private void writeRawCdpSnapshot(List<Object> rawAcceptedScripts) {
+        try {
+            Files.createDirectories(outputDirectory);
+            Path file = outputDirectory.resolve(String.format(
+                    Locale.ROOT,
+                    "raw-cdp-snapshot-%03d.json",
+                    rawCdpSnapshotSequence++));
+
+            try (BufferedWriter writer = Files.newBufferedWriter(
+                    file,
+                    StandardCharsets.UTF_8)) {
+                writer.write("{\n");
+                writer.write("  \"mode\": \"" + mode + "\",\n");
+                writer.write("  \"rangeResolver\": "
+                        + "\"puppeteer_disjoint_endpoint_sweep\",\n");
+                writer.write("  \"scripts\": ");
+                writeGenericJson(writer, rawAcceptedScripts);
+                writer.write("\n}\n");
+            }
+
+            System.out.println(
+                    "SELENIUM4_RAW_CDP_SNAPSHOT_WRITTEN: " + file);
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                    "Could not write raw CDP coverage snapshot",
+                    exception);
+        }
+    }
+
+    private static void writeGenericJson(
+            BufferedWriter writer,
+            Object value) throws IOException {
+
+        if (value == null) {
+            writer.write("null");
+            return;
+        }
+        if (value instanceof String) {
+            writer.write("\"");
+            writer.write(json((String) value));
+            writer.write("\"");
+            return;
+        }
+        if (value instanceof Number || value instanceof Boolean) {
+            writer.write(String.valueOf(value));
+            return;
+        }
+        if (value instanceof Map<?, ?>) {
+            writer.write("{");
+            boolean first = true;
+            for (Map.Entry<?, ?> entry : ((Map<?, ?>) value).entrySet()) {
+                if (!first) {
+                    writer.write(",");
+                }
+                first = false;
+                writer.write("\"");
+                writer.write(json(String.valueOf(entry.getKey())));
+                writer.write("\":");
+                writeGenericJson(writer, entry.getValue());
+            }
+            writer.write("}");
+            return;
+        }
+        if (value instanceof List<?>) {
+            writer.write("[");
+            List<?> list = (List<?>) value;
+            for (int index = 0; index < list.size(); index++) {
+                if (index > 0) {
+                    writer.write(",");
+                }
+                writeGenericJson(writer, list.get(index));
+            }
+            writer.write("]");
+            return;
+        }
+
+        writer.write("\"");
+        writer.write(json(String.valueOf(value)));
+        writer.write("\"");
     }
 
     private void writeReports() {
@@ -1115,6 +1234,18 @@ public final class Selenium4JsCoverage {
     private static final class EffectiveRanges {
         private final IntervalSet known = new IntervalSet();
         private final IntervalSet covered = new IntervalSet();
+    }
+
+    private static final class RangePoint {
+        private final long offset;
+        private final int type;
+        private final RawRange range;
+
+        private RangePoint(long offset, int type, RawRange range) {
+            this.offset = offset;
+            this.type = type;
+            this.range = range;
+        }
     }
 
     private static final class RawRange {

@@ -1,0 +1,1431 @@
+{
+  "metric": "source_map_mapped_application_line_coverage",
+  "primaryMetric": true,
+  "scriptUrl": "http://localhost:4200/assets/splittypie.js",
+  "mappedSourceFiles": 236,
+  "mappedLines": 3399,
+  "coveredLines": 2736,
+  "coveragePercent": 80.494263,
+  "generatedApplicationKnownBytes": 266447,
+  "generatedApplicationCoveredBytes": 218527,
+  "generatedApplicationByteCoveragePercent": 82.015185,
+  "lineCoverageSemantics": "A mapped original line is covered when at least one generated source-map segment for that line intersects a covered V8 detailed range. The denominator contains application-owned original lines represented by known generated ranges.",
+  "files": [
+    {
+      "source": "splittypie/adapters/offline/application.js",
+      "mappedLines": 4,
+      "coveredLines": 4,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/adapters/offline/currency.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/adapters/offline/transaction.js",
+      "mappedLines": 11,
+      "coveredLines": 10,
+      "coveragePercent": 90.909091
+    },
+    {
+      "source": "splittypie/adapters/online/application.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/adapters/online/currency.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/app.js",
+      "mappedLines": 9,
+      "coveredLines": 9,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/-lf-get-outlet-state.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/add-transaction-button.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/back-button.js",
+      "mappedLines": 10,
+      "coveredLines": 10,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/base-form.js",
+      "mappedLines": 27,
+      "coveredLines": 21,
+      "coveragePercent": 77.777778
+    },
+    {
+      "source": "splittypie/components/calendar-page.js",
+      "mappedLines": 16,
+      "coveredLines": 16,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/content-backdrop.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/date-picker.js",
+      "mappedLines": 35,
+      "coveredLines": 35,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/ember-notify.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/ember-notify/message.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/ember-wormhole.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/event-form.js",
+      "mappedLines": 25,
+      "coveredLines": 23,
+      "coveragePercent": 92.0
+    },
+    {
+      "source": "splittypie/components/event-url.js",
+      "mappedLines": 15,
+      "coveredLines": 14,
+      "coveragePercent": 93.333333
+    },
+    {
+      "source": "splittypie/components/illiquid-model.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/components/liquid-bind.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/liquid-child.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/liquid-container.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/liquid-if.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/components/liquid-measured.js",
+      "mappedLines": 13,
+      "coveredLines": 1,
+      "coveragePercent": 7.692308
+    },
+    {
+      "source": "splittypie/components/liquid-outlet.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/liquid-spacer.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/components/liquid-sync.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/components/liquid-unless.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/components/liquid-versions.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/mobile-toolbar.js",
+      "mappedLines": 8,
+      "coveredLines": 8,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/modal-dialog.js",
+      "mappedLines": 27,
+      "coveredLines": 27,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/my-checkbox-list.js",
+      "mappedLines": 31,
+      "coveredLines": 29,
+      "coveragePercent": 93.548387
+    },
+    {
+      "source": "splittypie/components/my-select.js",
+      "mappedLines": 47,
+      "coveredLines": 47,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/nav-link-to.js",
+      "mappedLines": 6,
+      "coveredLines": 6,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/onboarding-transaction-add.js",
+      "mappedLines": 5,
+      "coveredLines": 5,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/pikaday-input.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/pikaday-inputless.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/components/previous-events.js",
+      "mappedLines": 51,
+      "coveredLines": 18,
+      "coveragePercent": 35.294118
+    },
+    {
+      "source": "splittypie/components/quick-add-form.js",
+      "mappedLines": 69,
+      "coveredLines": 67,
+      "coveragePercent": 97.101449
+    },
+    {
+      "source": "splittypie/components/scroll-to.js",
+      "mappedLines": 53,
+      "coveredLines": 44,
+      "coveragePercent": 83.018868
+    },
+    {
+      "source": "splittypie/components/settlement-transfer-list.js",
+      "mappedLines": 56,
+      "coveredLines": 56,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/side-menu-link-to.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/side-menu-toggle-custom.js",
+      "mappedLines": 5,
+      "coveredLines": 5,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/side-menu-toggle.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/components/side-menu.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/switch-event-dropdown.js",
+      "mappedLines": 15,
+      "coveredLines": 15,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/switch-user-dropdown.js",
+      "mappedLines": 18,
+      "coveredLines": 18,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/transaction-form.js",
+      "mappedLines": 15,
+      "coveredLines": 15,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/transaction-list-header.js",
+      "mappedLines": 16,
+      "coveredLines": 16,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/transaction-list-item.js",
+      "mappedLines": 16,
+      "coveredLines": 16,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/transaction-list.js",
+      "mappedLines": 39,
+      "coveredLines": 39,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/transfer-form.js",
+      "mappedLines": 5,
+      "coveredLines": 1,
+      "coveragePercent": 20.0
+    },
+    {
+      "source": "splittypie/components/user-balance-list-item.js",
+      "mappedLines": 8,
+      "coveredLines": 8,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/user-balance-list.js",
+      "mappedLines": 10,
+      "coveredLines": 10,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/user-form.js",
+      "mappedLines": 17,
+      "coveredLines": 17,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/components/user-list.js",
+      "mappedLines": 22,
+      "coveredLines": 22,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/controllers/array.js",
+      "mappedLines": 2,
+      "coveredLines": 1,
+      "coveragePercent": 50.0
+    },
+    {
+      "source": "splittypie/controllers/event/transactions/new.js",
+      "mappedLines": 5,
+      "coveredLines": 5,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/controllers/object.js",
+      "mappedLines": 2,
+      "coveredLines": 1,
+      "coveragePercent": 50.0
+    },
+    {
+      "source": "splittypie/ember-cli-test-model-waiter/tests/template-deprecations-test.js",
+      "mappedLines": 1,
+      "coveredLines": 1,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/forms/event.js",
+      "mappedLines": 39,
+      "coveredLines": 39,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/forms/expense.js",
+      "mappedLines": 32,
+      "coveredLines": 32,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/forms/form-object.js",
+      "mappedLines": 62,
+      "coveredLines": 62,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/forms/transfer.js",
+      "mappedLines": 20,
+      "coveredLines": 13,
+      "coveragePercent": 65.0
+    },
+    {
+      "source": "splittypie/forms/user.js",
+      "mappedLines": 22,
+      "coveredLines": 22,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/helpers/any.js",
+      "mappedLines": 18,
+      "coveredLines": 18,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/helpers/app-version.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/helpers/format-money.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/helpers/format-number.js",
+      "mappedLines": 2,
+      "coveredLines": 1,
+      "coveragePercent": 50.0
+    },
+    {
+      "source": "splittypie/helpers/inline-svg.js",
+      "mappedLines": 28,
+      "coveredLines": 27,
+      "coveragePercent": 96.428571
+    },
+    {
+      "source": "splittypie/helpers/is-equal.js",
+      "mappedLines": 11,
+      "coveredLines": 11,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/helpers/is-included.js",
+      "mappedLines": 14,
+      "coveredLines": 12,
+      "coveragePercent": 85.714286
+    },
+    {
+      "source": "splittypie/helpers/is-not.js",
+      "mappedLines": 10,
+      "coveredLines": 10,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/helpers/lf-lock-model.js",
+      "mappedLines": 13,
+      "coveredLines": 11,
+      "coveragePercent": 84.615385
+    },
+    {
+      "source": "splittypie/helpers/lf-or.js",
+      "mappedLines": 13,
+      "coveredLines": 11,
+      "coveragePercent": 84.615385
+    },
+    {
+      "source": "splittypie/helpers/pluralize.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/helpers/print-month-year.js",
+      "mappedLines": 17,
+      "coveredLines": 16,
+      "coveragePercent": 94.117647
+    },
+    {
+      "source": "splittypie/helpers/read-path.js",
+      "mappedLines": 15,
+      "coveredLines": 15,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/helpers/route-action.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/helpers/singularize.js",
+      "mappedLines": 2,
+      "coveredLines": 1,
+      "coveragePercent": 50.0
+    },
+    {
+      "source": "splittypie/helpers/transition-to.js",
+      "mappedLines": 29,
+      "coveredLines": 1,
+      "coveragePercent": 3.448276
+    },
+    {
+      "source": "splittypie/initializers/app-version.js",
+      "mappedLines": 8,
+      "coveredLines": 8,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/initializers/connection.js",
+      "mappedLines": 12,
+      "coveredLines": 12,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/initializers/container-debug-adapter.js",
+      "mappedLines": 9,
+      "coveredLines": 9,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/initializers/data-adapter.js",
+      "mappedLines": 12,
+      "coveredLines": 12,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/initializers/ember-data.js",
+      "mappedLines": 36,
+      "coveredLines": 36,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/initializers/emberfire.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/initializers/export-application-global.js",
+      "mappedLines": 38,
+      "coveredLines": 35,
+      "coveragePercent": 92.105263
+    },
+    {
+      "source": "splittypie/initializers/extensions.js",
+      "mappedLines": 20,
+      "coveredLines": 20,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/initializers/forms.js",
+      "mappedLines": 14,
+      "coveredLines": 14,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/initializers/injectStore.js",
+      "mappedLines": 12,
+      "coveredLines": 12,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/initializers/liquid-fire.js",
+      "mappedLines": 6,
+      "coveredLines": 6,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/initializers/offline-support.js",
+      "mappedLines": 34,
+      "coveredLines": 32,
+      "coveragePercent": 94.117647
+    },
+    {
+      "source": "splittypie/initializers/remember-scroll.js",
+      "mappedLines": 10,
+      "coveredLines": 10,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/initializers/repositories.js",
+      "mappedLines": 10,
+      "coveredLines": 10,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/initializers/rollbar.js",
+      "mappedLines": 36,
+      "coveredLines": 36,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/initializers/side-menu.js",
+      "mappedLines": 13,
+      "coveredLines": 11,
+      "coveragePercent": 84.615385
+    },
+    {
+      "source": "splittypie/initializers/store.js",
+      "mappedLines": 12,
+      "coveredLines": 12,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/initializers/transforms.js",
+      "mappedLines": 12,
+      "coveredLines": 12,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/initializers/user-context.js",
+      "mappedLines": 11,
+      "coveredLines": 11,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/instance-initializers/ember-data.js",
+      "mappedLines": 5,
+      "coveredLines": 5,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/instance-initializers/syncer.js",
+      "mappedLines": 11,
+      "coveredLines": 11,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/instance-initializers/test-model-waiter.js",
+      "mappedLines": 13,
+      "coveredLines": 11,
+      "coveragePercent": 84.615385
+    },
+    {
+      "source": "splittypie/mixins/model-mixin.js",
+      "mappedLines": 60,
+      "coveredLines": 14,
+      "coveragePercent": 23.333333
+    },
+    {
+      "source": "splittypie/mixins/remember-scroll.js",
+      "mappedLines": 25,
+      "coveredLines": 25,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/mixins/reset-scroll.js",
+      "mappedLines": 8,
+      "coveredLines": 1,
+      "coveragePercent": 12.5
+    },
+    {
+      "source": "splittypie/models/currency.js",
+      "mappedLines": 16,
+      "coveredLines": 16,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/models/event.js",
+      "mappedLines": 13,
+      "coveredLines": 13,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/models/sync-job.js",
+      "mappedLines": 10,
+      "coveredLines": 10,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/models/transaction.js",
+      "mappedLines": 27,
+      "coveredLines": 26,
+      "coveragePercent": 96.296296
+    },
+    {
+      "source": "splittypie/models/user.js",
+      "mappedLines": 22,
+      "coveredLines": 22,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/repositories/event.js",
+      "mappedLines": 59,
+      "coveredLines": 42,
+      "coveragePercent": 71.186441
+    },
+    {
+      "source": "splittypie/repositories/transaction.js",
+      "mappedLines": 40,
+      "coveredLines": 27,
+      "coveragePercent": 67.5
+    },
+    {
+      "source": "splittypie/resolver.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/router.js",
+      "mappedLines": 24,
+      "coveredLines": 24,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/routes/application.js",
+      "mappedLines": 67,
+      "coveredLines": 60,
+      "coveragePercent": 89.552239
+    },
+    {
+      "source": "splittypie/routes/error.js",
+      "mappedLines": 17,
+      "coveredLines": 1,
+      "coveragePercent": 5.882353
+    },
+    {
+      "source": "splittypie/routes/event.js",
+      "mappedLines": 111,
+      "coveredLines": 92,
+      "coveragePercent": 82.882883
+    },
+    {
+      "source": "splittypie/routes/event/edit.js",
+      "mappedLines": 53,
+      "coveredLines": 41,
+      "coveragePercent": 77.358491
+    },
+    {
+      "source": "splittypie/routes/event/index.js",
+      "mappedLines": 37,
+      "coveredLines": 21,
+      "coveragePercent": 56.756757
+    },
+    {
+      "source": "splittypie/routes/event/transactions.js",
+      "mappedLines": 9,
+      "coveredLines": 9,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/routes/event/transactions/edit.js",
+      "mappedLines": 41,
+      "coveredLines": 28,
+      "coveragePercent": 68.292683
+    },
+    {
+      "source": "splittypie/routes/event/transactions/new.js",
+      "mappedLines": 53,
+      "coveredLines": 53,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/routes/event/who-are-you.js",
+      "mappedLines": 17,
+      "coveredLines": 17,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/routes/index.js",
+      "mappedLines": 8,
+      "coveredLines": 8,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/routes/new.js",
+      "mappedLines": 47,
+      "coveredLines": 45,
+      "coveragePercent": 95.744681
+    },
+    {
+      "source": "splittypie/serializers/localforage.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/serializers/offline/event.js",
+      "mappedLines": 8,
+      "coveredLines": 8,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/serializers/online/event.js",
+      "mappedLines": 11,
+      "coveredLines": 1,
+      "coveragePercent": 9.090909
+    },
+    {
+      "source": "splittypie/services/ajax.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/services/connection.js",
+      "mappedLines": 30,
+      "coveredLines": 22,
+      "coveragePercent": 73.333333
+    },
+    {
+      "source": "splittypie/services/firebase-app.js",
+      "mappedLines": 2,
+      "coveredLines": 1,
+      "coveragePercent": 50.0
+    },
+    {
+      "source": "splittypie/services/firebase.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/services/form-factory.js",
+      "mappedLines": 13,
+      "coveredLines": 13,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/services/job-processor.js",
+      "mappedLines": 54,
+      "coveredLines": 42,
+      "coveragePercent": 77.777778
+    },
+    {
+      "source": "splittypie/services/liquid-fire-transitions.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/services/local-storage.js",
+      "mappedLines": 43,
+      "coveredLines": 32,
+      "coveragePercent": 74.418605
+    },
+    {
+      "source": "splittypie/services/modal.js",
+      "mappedLines": 19,
+      "coveredLines": 6,
+      "coveragePercent": 31.578947
+    },
+    {
+      "source": "splittypie/services/notify.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/services/online-store.js",
+      "mappedLines": 18,
+      "coveredLines": 18,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/services/side-menu.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/services/store.js",
+      "mappedLines": 11,
+      "coveredLines": 11,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/services/sync-queue.js",
+      "mappedLines": 83,
+      "coveredLines": 69,
+      "coveragePercent": 83.13253
+    },
+    {
+      "source": "splittypie/services/syncer.js",
+      "mappedLines": 191,
+      "coveredLines": 115,
+      "coveragePercent": 60.209424
+    },
+    {
+      "source": "splittypie/services/user-context.js",
+      "mappedLines": 24,
+      "coveredLines": 22,
+      "coveragePercent": 91.666667
+    },
+    {
+      "source": "splittypie/services/user-country-code.js",
+      "mappedLines": 25,
+      "coveredLines": 21,
+      "coveragePercent": 84.0
+    },
+    {
+      "source": "splittypie/svgs.js",
+      "mappedLines": 16,
+      "coveredLines": 16,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/application.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/add-transaction-button.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/back-button.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/calendar-page.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/date-picker.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/event-form.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/mobile-toolbar.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/modal-dialog.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/my-checkbox-list.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/my-select.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/nav-link-to.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/onboarding-transaction-add.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/previous-events.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/quick-add-form.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/scroll-to.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/settlement-transfer-list.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/side-menu-toggle-custom.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/side-menu-toggle.js",
+      "mappedLines": 2,
+      "coveredLines": 1,
+      "coveragePercent": 50.0
+    },
+    {
+      "source": "splittypie/templates/components/side-menu.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/switch-event-dropdown.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/switch-user-dropdown.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/transaction-form.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/transaction-list-header.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/transaction-list-item.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/transaction-list.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/transfer-form.js",
+      "mappedLines": 2,
+      "coveredLines": 1,
+      "coveragePercent": 50.0
+    },
+    {
+      "source": "splittypie/templates/components/user-balance-list-item.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/user-balance-list.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/user-form.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/components/user-list.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/error.js",
+      "mappedLines": 2,
+      "coveredLines": 1,
+      "coveragePercent": 50.0
+    },
+    {
+      "source": "splittypie/templates/event.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/event/edit.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/event/index.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/event/transactions.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/event/transactions/edit.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/event/transactions/new.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/event/who-are-you.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/index.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/modals/confirm.js",
+      "mappedLines": 2,
+      "coveredLines": 1,
+      "coveragePercent": 50.0
+    },
+    {
+      "source": "splittypie/templates/modals/quick-add.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/modals/remove-previous-event.js",
+      "mappedLines": 2,
+      "coveredLines": 1,
+      "coveragePercent": 50.0
+    },
+    {
+      "source": "splittypie/templates/modals/settle-up.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/modals/share.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/new.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/not-found.js",
+      "mappedLines": 2,
+      "coveredLines": 1,
+      "coveragePercent": 50.0
+    },
+    {
+      "source": "splittypie/templates/shared/brand.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/shared/errors/not-found.js",
+      "mappedLines": 2,
+      "coveredLines": 1,
+      "coveragePercent": 50.0
+    },
+    {
+      "source": "splittypie/templates/shared/errors/unknown.js",
+      "mappedLines": 2,
+      "coveredLines": 1,
+      "coveragePercent": 50.0
+    },
+    {
+      "source": "splittypie/templates/shared/footer.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/templates/shared/navbar.js",
+      "mappedLines": 2,
+      "coveredLines": 2,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/torii-providers/firebase.js",
+      "mappedLines": 2,
+      "coveredLines": 1,
+      "coveragePercent": 50.0
+    },
+    {
+      "source": "splittypie/transitions.js",
+      "mappedLines": 4,
+      "coveredLines": 4,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/transitions/cross-fade.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/transitions/default.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/transitions/explode.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/transitions/fade.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/transitions/flex-grow.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/transitions/fly-to.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/transitions/move-over.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/transitions/scale.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/transitions/scroll-then.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/transitions/to-down.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/transitions/to-left.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/transitions/to-right.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/transitions/to-up.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/transitions/wait.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/utils/country-to-currency-code.js",
+      "mappedLines": 46,
+      "coveredLines": 46,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/utils/generate-base-58.js",
+      "mappedLines": 10,
+      "coveredLines": 1,
+      "coveragePercent": 10.0
+    },
+    {
+      "source": "splittypie/utils/generate-unique-id.js",
+      "mappedLines": 57,
+      "coveredLines": 57,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/utils/is-mobile.js",
+      "mappedLines": 6,
+      "coveredLines": 6,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/utils/left-pad.js",
+      "mappedLines": 5,
+      "coveredLines": 5,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/utils/parse-transaction.js",
+      "mappedLines": 49,
+      "coveredLines": 41,
+      "coveragePercent": 83.673469
+    },
+    {
+      "source": "splittypie/validators/alias.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/validators/array.js",
+      "mappedLines": 22,
+      "coveredLines": 1,
+      "coveragePercent": 4.545455
+    },
+    {
+      "source": "splittypie/validators/belongs-to.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/validators/collection.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/validators/confirmation.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/validators/date.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/validators/dependent.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/validators/ds-error.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/validators/exclusion.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/validators/format.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/validators/has-many.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/validators/inclusion.js",
+      "mappedLines": 7,
+      "coveredLines": 1,
+      "coveragePercent": 14.285714
+    },
+    {
+      "source": "splittypie/validators/length.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/validators/messages.js",
+      "mappedLines": 11,
+      "coveredLines": 11,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/validators/number.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    },
+    {
+      "source": "splittypie/validators/presence.js",
+      "mappedLines": 7,
+      "coveredLines": 7,
+      "coveragePercent": 100.0
+    }
+  ]
+}

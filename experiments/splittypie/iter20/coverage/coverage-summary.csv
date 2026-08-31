@@ -1,0 +1,4 @@
+metric,coverage_percent,covered,total,unit
+raw_bundle_coverage,70.286780,3340543,4752733,generated_bundle_bytes
+modern_application_coverage,80.494263,2736,3399,source_mapped_lines
+dante_compatible_coverage,70.9582,193371,272514,historical_character_units

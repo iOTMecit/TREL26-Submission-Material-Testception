@@ -75,3 +75,36 @@ dante/applications/* resources used during coverage runs
 # Runtime output
 coverage-results/
 logs/
+
+# ------------------------------------------------------------
+# Local development artifacts
+# ------------------------------------------------------------
+*.bak
+*.bak-*
+*~
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Runtime logs
+logs/
+*.log
+
+# Local raw coverage output
+coverage-results/
+
+# Temporary inspection files
+output.txt
+2.txt
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+
+# Intermediate source snapshots
+*.before-*
+
+# Large raw experiment coverage traces
+experiments/**/coverage/**/test-raw-ranges.json

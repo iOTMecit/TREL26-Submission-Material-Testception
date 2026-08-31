@@ -30,20 +30,28 @@ def sanitize_scenario(scenario):
     seen = set()
 
     for step in scenario:
-        xpath = (step.get("xpath") or "").strip()
-
-        if is_invalid_xpath(xpath):
-            continue
-
         action = (step.get("action") or "click").lower()
         input_value = step.get("input_value", "") or ""
+        xpath = (step.get("xpath") or "").strip()
+
+        # Synthetic graph-gap navigation has no DOM locator. It keeps the same
+        # browser/session and opens the URL recorded for the next orphan state.
+        if action == "navigate":
+            if not str(input_value).strip():
+                continue
+        elif is_invalid_xpath(xpath):
+            continue
         feature_bucket = step.get("feature_bucket", "") or ""
         feature_signature = step.get("feature_signature", "") or ""
         state_type = step.get("state_type", "") or ""
         scenario_reason = step.get("scenario_reason", "") or ""
         element = step.get("element", "") or ""
+        press_enter_after_input = bool(step.get("press_enter_after_input", False))
+
+        state = step.get("state", "") or ""
 
         signature = (
+            state,
             action,
             xpath,
             input_value,
@@ -51,6 +59,7 @@ def sanitize_scenario(scenario):
             feature_signature,
             state_type,
             element,
+            press_enter_after_input,
         )
 
         if signature in seen:
@@ -70,6 +79,8 @@ def sanitize_scenario(scenario):
             "feature_signature": feature_signature,
             "state_type": state_type,
             "scenario_reason": scenario_reason,
+            "state": state,
+            "press_enter_after_input": press_enter_after_input,
         })
 
     return cleaned
@@ -90,12 +101,14 @@ def step_prefix_key(step):
     xpath = normalize_for_prefix(step.get("xpath", ""))
     input_value = normalize_for_prefix(step.get("input_value", ""))
     feature_signature = normalize_for_prefix(step.get("feature_signature", ""))
+    press_enter_after_input = bool(step.get("press_enter_after_input", False))
 
     # Click için input_value anlamsız.
     if action == "click":
         input_value = ""
 
-    return (action, xpath, input_value, feature_signature)
+    state = normalize_for_prefix(step.get("state", ""))
+    return (state, action, xpath, input_value, feature_signature, press_enter_after_input)
 
 
 def scenario_prefix_key(scenario):
@@ -694,15 +707,27 @@ public class {class_name_coverage} {{
 
             if action == "input":
                 java_step += f"\t\t\tsafeType(\"{safe_xpath}\", \"{input_val}\");\n"
+                if step.get("press_enter_after_input", False):
+                    java_step += (
+                        f"\t\t\tfindVisibleElement(\"{safe_xpath}\")"
+                        ".sendKeys(Keys.ENTER);\n"
+                    )
             elif action == "select":
                 java_step += f"\t\t\tsafeSelect(\"{safe_xpath}\", \"{input_val}\");\n"
+            elif action == "navigate":
+                java_step += f"\t\t\tdriver.get(\"{input_val}\");\n"
             else:
                 java_step += f"\t\t\tsafeClick(\"{safe_xpath}\");\n"
 
             java_step += f"\t\t\tThread.sleep({wait_time});\n"
+            skip_label = (
+                f"NAVIGATE:{input_val}"
+                if action == "navigate"
+                else safe_xpath
+            )
             java_step += (
                 "\t\t} catch (Exception e) { "
-                f"System.out.println(\"STEP_SKIPPED: {safe_xpath}\"); "
+                f"System.out.println(\"STEP_SKIPPED: {skip_label}\"); "
                 "}\n"
             )
 

@@ -1,0 +1,516 @@
+{
+  "scenario_reason": "Complete test suite for Petclinic application covering all CRUD operations and flows.",
+  "scenarios": [
+    {
+      "scenario_name": "Add New Owner",
+      "scenario_reason": "Happy path for adding a new owner.",
+      "start_state": "index.html",
+      "actions": [
+        {
+          "state_name": "state28.html",
+          "selected_id": "g12_el_4",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state29.html",
+          "selected_id": "g13_el_10",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "John"
+        },
+        {
+          "state_name": "state29.html",
+          "selected_id": "g13_el_11",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "Doe"
+        },
+        {
+          "state_name": "state29.html",
+          "selected_id": "g13_el_12",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "123 Main St"
+        },
+        {
+          "state_name": "state29.html",
+          "selected_id": "g13_el_13",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "Springfield"
+        },
+        {
+          "state_name": "state29.html",
+          "selected_id": "g13_el_14",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "5551234567"
+        },
+        {
+          "state_name": "state29.html",
+          "selected_id": "g13_el_16",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        }
+      ]
+    },
+    {
+      "scenario_name": "Edit Owner",
+      "scenario_reason": "Happy path for editing an existing owner.",
+      "start_state": "index.html",
+      "actions": [
+        {
+          "state_name": "state28.html",
+          "selected_id": "g12_el_4",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state30.html",
+          "selected_id": "g14_el_11",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state32.html",
+          "selected_id": "g16_el_10",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "Jane"
+        },
+        {
+          "state_name": "state32.html",
+          "selected_id": "g16_el_11",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "Smith"
+        },
+        {
+          "state_name": "state32.html",
+          "selected_id": "g16_el_12",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "456 Elm St"
+        },
+        {
+          "state_name": "state32.html",
+          "selected_id": "g16_el_13",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "Shelbyville"
+        },
+        {
+          "state_name": "state32.html",
+          "selected_id": "g16_el_14",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "5559876543"
+        },
+        {
+          "state_name": "state32.html",
+          "selected_id": "g16_el_16",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        }
+      ]
+    },
+    {
+      "scenario_name": "Add New Pet",
+      "scenario_reason": "Happy path for adding a new pet for an owner.",
+      "start_state": "index.html",
+      "actions": [
+        {
+          "state_name": "state28.html",
+          "selected_id": "g12_el_4",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state30.html",
+          "selected_id": "g14_el_12",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state34.html",
+          "selected_id": "g17_el_10",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "Rover"
+        },
+        {
+          "state_name": "state34.html",
+          "selected_id": "g17_el_11",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "Buddy"
+        },
+        {
+          "state_name": "state34.html",
+          "selected_id": "g17_el_12",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "2026/04/08"
+        },
+        {
+          "state_name": "state34.html",
+          "selected_id": "g17_el_17",
+          "robust_xpath": "",
+          "action": "select",
+          "input_value": "BootstrapType28357"
+        },
+        {
+          "state_name": "state34.html",
+          "selected_id": "g17_el_19",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        }
+      ]
+    },
+    {
+      "scenario_name": "Edit Pet",
+      "scenario_reason": "Happy path for editing an existing pet.",
+      "start_state": "index.html",
+      "actions": [
+        {
+          "state_name": "state28.html",
+          "selected_id": "g12_el_4",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state30.html",
+          "selected_id": "g14_el_11",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state36.html",
+          "selected_id": "g19_el_10",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "RoverUpdated"
+        },
+        {
+          "state_name": "state36.html",
+          "selected_id": "g19_el_12",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "2026/04/08"
+        },
+        {
+          "state_name": "state36.html",
+          "selected_id": "g19_el_20",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        }
+      ]
+    },
+    {
+      "scenario_name": "Add Visit",
+      "scenario_reason": "Happy path for adding a visit for a pet.",
+      "start_state": "index.html",
+      "actions": [
+        {
+          "state_name": "state28.html",
+          "selected_id": "g12_el_4",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state30.html",
+          "selected_id": "g14_el_12",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state38.html",
+          "selected_id": "g20_el_10",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "2026/07/24"
+        },
+        {
+          "state_name": "state38.html",
+          "selected_id": "g20_el_15",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "Routine check-up"
+        },
+        {
+          "state_name": "state38.html",
+          "selected_id": "g20_el_17",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        }
+      ]
+    },
+    {
+      "scenario_name": "Edit Visit",
+      "scenario_reason": "Happy path for editing an existing visit.",
+      "start_state": "index.html",
+      "actions": [
+        {
+          "state_name": "state28.html",
+          "selected_id": "g12_el_4",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state30.html",
+          "selected_id": "g14_el_12",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state39.html",
+          "selected_id": "g21_el_12",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state40.html",
+          "selected_id": "g23_el_10",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "2026/07/10"
+        },
+        {
+          "state_name": "state40.html",
+          "selected_id": "g23_el_15",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "Updated examination notes"
+        },
+        {
+          "state_name": "state40.html",
+          "selected_id": "g23_el_17",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        }
+      ]
+    },
+    {
+      "scenario_name": "Delete Visit",
+      "scenario_reason": "Happy path for deleting a visit.",
+      "start_state": "index.html",
+      "actions": [
+        {
+          "state_name": "state28.html",
+          "selected_id": "g12_el_4",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state30.html",
+          "selected_id": "g14_el_12",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state39.html",
+          "selected_id": "g21_el_15",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state42.html",
+          "selected_id": "g24_el_14",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        }
+      ]
+    },
+    {
+      "scenario_name": "Add New Veterinarian",
+      "scenario_reason": "Happy path for adding a new veterinarian.",
+      "start_state": "index.html",
+      "actions": [
+        {
+          "state_name": "state6.html",
+          "selected_id": "g28_el_7",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state44.html",
+          "selected_id": "g25_el_11",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state45.html",
+          "selected_id": "g26_el_10",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "Dr. Smith"
+        },
+        {
+          "state_name": "state45.html",
+          "selected_id": "g26_el_11",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "Johnson"
+        },
+        {
+          "state_name": "state45.html",
+          "selected_id": "g26_el_12",
+          "robust_xpath": "",
+          "action": "select",
+          "input_value": "BootstrapSpecialty28357"
+        },
+        {
+          "state_name": "state45.html",
+          "selected_id": "g26_el_14",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        }
+      ]
+    },
+    {
+      "scenario_name": "Edit Veterinarian",
+      "scenario_reason": "Happy path for editing an existing veterinarian.",
+      "start_state": "index.html",
+      "actions": [
+        {
+          "state_name": "state6.html",
+          "selected_id": "g28_el_7",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state44.html",
+          "selected_id": "g25_el_11",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state46.html",
+          "selected_id": "g27_el_10",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "Dr. Smith Updated"
+        },
+        {
+          "state_name": "state46.html",
+          "selected_id": "g27_el_11",
+          "robust_xpath": "",
+          "action": "input",
+          "input_value": "Johnson Updated"
+        },
+        {
+          "state_name": "state46.html",
+          "selected_id": "g27_el_13",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        }
+      ]
+    },
+    {
+      "scenario_name": "Negative Validation Add Owner",
+      "scenario_reason": "Negative validation for adding an owner without required fields.",
+      "start_state": "index.html",
+      "actions": [
+        {
+          "state_name": "state28.html",
+          "selected_id": "g12_el_4",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state29.html",
+          "selected_id": "g13_el_16",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        }
+      ]
+    },
+    {
+      "scenario_name": "Negative Validation Add Pet",
+      "scenario_reason": "Negative validation for adding a pet without required fields.",
+      "start_state": "index.html",
+      "actions": [
+        {
+          "state_name": "state28.html",
+          "selected_id": "g12_el_4",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state30.html",
+          "selected_id": "g14_el_12",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state34.html",
+          "selected_id": "g17_el_19",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        }
+      ]
+    },
+    {
+      "scenario_name": "Negative Validation Add Visit",
+      "scenario_reason": "Negative validation for adding a visit without required fields.",
+      "start_state": "index.html",
+      "actions": [
+        {
+          "state_name": "state28.html",
+          "selected_id": "g12_el_4",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state30.html",
+          "selected_id": "g14_el_12",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        },
+        {
+          "state_name": "state38.html",
+          "selected_id": "g20_el_17",
+          "robust_xpath": "",
+          "action": "click",
+          "input_value": ""
+        }
+      ]
+    }
+  ]
+}

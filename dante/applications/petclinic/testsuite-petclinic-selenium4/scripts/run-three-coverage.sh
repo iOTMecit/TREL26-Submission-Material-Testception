@@ -101,16 +101,28 @@ run_phase \
     "modern_raw" \
     "${TESTCEPTION_RAW_INCLUDE_REGEX:-^http://localhost:3000/.*\\.js(?:\\?.*)?$}"
 
-"$PYTHON_BIN" "$POSTPROCESSOR" \
-    --coverage-root "$COVERAGE_ROOT" \
-    --sourcemap-url "$SOURCEMAP_URL" \
-    --main-script-regex "$MAIN_SCRIPT_REGEX" \
-    --app-source-include-regex "$APP_SOURCE_INCLUDE_REGEX" \
-    --app-source-exclude-regex "$APP_SOURCE_EXCLUDE_REGEX" \
-    --dante-src-code-folder "$DANTE_SRC_CODE_FOLDER" \
-    --dante-src-code-files-to-exclude "$DANTE_SRC_CODE_FILES_TO_EXCLUDE" \
-    --dante-empty-exclusion-behavior "$DANTE_EMPTY_EXCLUSION_BEHAVIOR" \
-    --output-dir "$COVERAGE_ROOT"
+# TESTCEPTION_POSTPROCESS_POLICY_V1
+if [[ "${TESTCEPTION_RUN_POSTPROCESS:-true}" == "true" ]]; then
+    echo
+    echo "Running coverage post-processing..."
+    "$PYTHON_BIN" "$POSTPROCESSOR" \
+        --coverage-root "$COVERAGE_ROOT" \
+        --sourcemap-url "$SOURCEMAP_URL" \
+        --main-script-regex "$MAIN_SCRIPT_REGEX" \
+        --app-source-include-regex "$APP_SOURCE_INCLUDE_REGEX" \
+        --app-source-exclude-regex "$APP_SOURCE_EXCLUDE_REGEX" \
+        --dante-src-code-folder "$DANTE_SRC_CODE_FOLDER" \
+        --dante-src-code-files-to-exclude "$DANTE_SRC_CODE_FILES_TO_EXCLUDE" \
+        --dante-empty-exclusion-behavior "$DANTE_EMPTY_EXCLUSION_BEHAVIOR" \
+        --output-dir "$COVERAGE_ROOT"
+else
+    echo
+    echo "POSTPROCESS_SKIPPED"
+    echo "Application : $APP"
+    echo "Reason      : TESTCEPTION_RUN_POSTPROCESS=false"
+    echo "DANTE raw   : $COVERAGE_ROOT/dante-compatible-run/test-raw-ranges.json"
+    echo "Modern/raw  : $COVERAGE_ROOT/modern-raw-run/suite-coverage.json"
+fi
 
 echo
 echo "Final reports:"
